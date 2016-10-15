@@ -12,7 +12,7 @@ import {fetchJwt} from '../reducers/user/userActions';
 @connect((store) => {
     return {
         jwt: store.user.jwt,
-        processing: store.user.processing,
+        inProgress: store.user.inProgress,
         error: store.user.error
     };
 })
@@ -49,10 +49,10 @@ class Login extends React.Component {
                     style={s.button}
                     underlayColor={'#777777'}
                     onPress={() => this.handleSubmit()}>
-                    <Text style={s.buttonText}> Login </Text>
+                    <Text style={s.buttonText}> {this.props.inProgress===true? "Logging In":"Log In"} </Text>
                 </TouchableHighlight>
-                { this.props.jwt != null && !this.props.processing && <Text> {this.props.jwt} </Text> }
-                { this.props.error != null && !this.props.processing && <Text> {this.props.error.toString()} </Text> }
+                { this.props.jwt != null && !this.props.inProgress && <Text> {this.props.jwt} </Text> }
+                { this.props.error != null && !this.props.inProgress && <Text> {this.props.error.toString()} </Text> }
             </View>
         );
 

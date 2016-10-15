@@ -1,6 +1,6 @@
 export default (state = {
     jwt: null,
-    processing: false,
+    inProgress: false,
     name: null,
     mobile: null,
     email: null,
@@ -13,6 +13,6 @@ export default (state = {
         case "FETCH_USER_FULFILLED": newState.user = action.payload; newState.error = null; break;
         case "FETCH_USER_FAILED": newState.error = action.payload; break;
     }
-    newState.processing = action.type === "PROCESSING";
+    newState.inProgress = action.type === "IN_PROGRESS";
     return newState;
 };
