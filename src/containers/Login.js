@@ -5,7 +5,7 @@ import {
     StyleSheet
 } from 'react-native';
 import Button from 'react-native-button';
-import Login from '../components/LoginComponent';
+import Login from '../components/LoginForm';
 import {Actions} from 'react-native-router-flux';
 
 export default class Cart extends Component {
