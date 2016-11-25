@@ -10,8 +10,10 @@ import {Scene, Router, Actions, ActionConst, Reducer} from 'react-native-router-
 import Login from './Login';
 import Cart from './Cart';
 import Orders from './Orders';
-import TabIcon from '../components/TabIcon';
-import NavBarIcon from '../components/NavBarIcon';
+import TabIcon from '../views/TabIcon';
+import NavBarIcon from '../views/NavBarIcon';
+import DishList from '../containers/DishList';
+import ComboList from '../containers/ComboList';
 
 const reducerCreate = (params) => {
     const defaultReducer = Reducer(params);
@@ -27,8 +29,8 @@ export default class App extends Component {
         return (
             <Router createReducer={reducerCreate}>
                 <Scene key="root" tabs={true} tabBarStyle={s.mainTabs}>
-                    <Scene title="Foodmash"
-                           component={Login}
+                    <Scene title="Mash"
+                           component={DishList}
                            icon={TabIcon}
                            tabIcon="cutlery"
                            key="foodmash"
@@ -36,7 +38,7 @@ export default class App extends Component {
                            initial={true}/>
                     <Scene title="Cart"
                            renderRightButton={()=>{ return <NavBarIcon navIcon="md-trash"/> }}
-                           component={Cart}
+                           component={ComboList}
                            icon={TabIcon}
                            tabIcon="shopping-cart"
                            key="cart"/>

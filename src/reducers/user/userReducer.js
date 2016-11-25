@@ -13,6 +13,6 @@ export default (state = {
         case "FETCH_USER_FULFILLED": newState.user = action.payload; newState.error = null; break;
         case "FETCH_USER_FAILED": newState.error = action.payload; break;
     }
-    newState.inProgress = action.type === "IN_PROGRESS";
+    newState.inProgress = action.type === "FETCH_JWT_IN_PROGRESS";
     return newState;
 };

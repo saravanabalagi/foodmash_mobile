@@ -4,7 +4,7 @@ import {
     Text,
     StyleSheet
 } from 'react-native';
-import Button from 'react-native-button';
+import OrderList from '../containers/OrderList';
 import {Actions} from 'react-native-router-flux';
 
 export default class Orders extends Component {
@@ -17,8 +17,7 @@ export default class Orders extends Component {
     render() {
         return (
             <View style={{paddingTop: 50}}>
-                <Text>This is orders page</Text>
-                <Button onPress={Actions.login}>Click me for Login</Button>
+                <OrderList/>
             </View>
         );
     }
