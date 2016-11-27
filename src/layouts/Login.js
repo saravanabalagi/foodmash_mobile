@@ -5,7 +5,7 @@ import {
     StyleSheet
 } from 'react-native';
 import Button from 'react-native-button';
-import Login from '../containers/LoginForm';
+import LoginForm from '../containers/LoginForm';
 import {Actions} from 'react-native-router-flux';
 
 export default class Cart extends Component {
@@ -17,9 +17,8 @@ export default class Cart extends Component {
 
     render() {
         return (
-            <View style={{paddingTop: 50}}>
-                <Login />
-                <Button onPress={Actions.cart}>Click me for Cart</Button>
+            <View style={{flex:1}}>
+                <LoginForm />
             </View>
         );
     }
