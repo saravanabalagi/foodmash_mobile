@@ -9,10 +9,10 @@ import {
 import {Scene, Router, Actions, ActionConst, Reducer} from 'react-native-router-flux';
 import Login from './Login';
 import Cart from './Cart';
-import Orders from './Orders';
+import Orders from './ViewOrders';
 import TabIcon from '../views/TabIcon';
 import NavBarIcon from '../views/NavBarIcon';
-import DishList from '../containers/DishList';
+import DishCategoryList from '../containers/DishCategoryList';
 import ComboList from '../containers/ComboList';
 
 const reducerCreate = (params) => {
@@ -30,7 +30,7 @@ export default class App extends Component {
             <Router createReducer={reducerCreate}>
                 <Scene key="root" tabs={true} tabBarStyle={s.mainTabs}>
                     <Scene title="Mash"
-                           component={DishList}
+                           component={DishCategoryList}
                            icon={TabIcon}
                            tabIcon="cutlery"
                            key="foodmash"
@@ -41,16 +41,19 @@ export default class App extends Component {
                            component={ComboList}
                            icon={TabIcon}
                            tabIcon="shopping-cart"
+                           hideNavBar={true}
                            key="cart"/>
                     <Scene title="Orders"
                            component={Orders}
                            icon={TabIcon}
                            tabIcon="truck"
+                           hideNavBar={true}
                            key="orders"/>
                     <Scene title="Account"
                            component={Login}
                            icon={TabIcon}
                            tabIcon="user"
+                           hideNavBar={true}
                            key="account"/>
                 </Scene>
             </Router>

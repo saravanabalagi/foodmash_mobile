@@ -16,7 +16,7 @@ export default class Cart extends Component {
 
     render() {
         return (
-            <View style={{paddingTop: 50}}>
+            <View style={s.parent}>
                 <Text>This is cart page</Text>
                 <Button onPress={Actions.orders}>Click me for Orders</Button>
             </View>
@@ -25,6 +25,8 @@ export default class Cart extends Component {
 
 }
 
-// const s = StyleSheet.create({
-//
-// });
+const s = StyleSheet.create({
+    parent: {
+        paddingTop: 50
+    }
+});

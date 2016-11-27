@@ -7,14 +7,14 @@ import {
     StyleSheet
 } from 'react-native'
 import {connect} from 'react-redux';
-import {fetchDishes} from '../reducers/dish/dishActions';
-import Dish from '../views/Dish';
+import {fetchDishCategories} from '../reducers/dishCategory/dishCategoryActions';
+import DishCategory from '../views/DishCategory';
 
 @connect((store) => {
     return {
-        dishes: store.dish.dishes,
-        inProgress: store.dish.inProgress,
-        error: store.dish.error
+        dishCategories: store.dishCategory.dishCategories,
+        inProgress: store.dishCategory.inProgress,
+        error: store.dishCategory.error
     };
 })
 
@@ -26,7 +26,7 @@ class DishList extends React.Component {
     }
 
     componentDidMount = () => {
-        this.props.dispatch(fetchDishes())
+        this.props.dispatch(fetchDishCategories())
     };
 
     render() {
@@ -34,8 +34,8 @@ class DishList extends React.Component {
             <View style={s.parent}>
                 { this.props.inProgress && <Text> inProgress </Text> }
                 {
-                    this.props.dishes.map((dish) => {
-                        return <Dish key={dish.id} dish={dish} />
+                    this.props.dishCategories.map((dishCategory) => {
+                        return <DishCategory key={dishCategory.id} dishCategory={dishCategory} />
                     })
                 }
                 { this.props.error != null && !this.props.inProgress && <Text> {this.props.error.toString()} </Text> }

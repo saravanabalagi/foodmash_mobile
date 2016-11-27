@@ -1,11 +1,11 @@
 import axios from 'axios';
 
-export function fetchDishes() {
-    const url = '/dishes';
+export function fetchDish(id) {
+    const url = '/dishes/'+id.toString();
     return (dispatch) => {
-        dispatch({type: "FETCH_DISHES_IN_PROGRESS"});
+        dispatch({type: "FETCH_DISH_IN_PROGRESS"});
         axios.get(url)
-            .then((response) => { dispatch({ type: "FETCH_DISHES_FULFILLED", payload: response.data}); })
-            .catch((error) => { dispatch({ type: "FETCH_DISHES_FAILED", payload: error }); });
+            .then((response) => { dispatch({ type: "FETCH_DISH_FULFILLED", payload: response.data}); })
+            .catch((error) => { dispatch({ type: "FETCH_DISH_FAILED", payload: error }); });
     };
 }

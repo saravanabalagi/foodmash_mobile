@@ -5,9 +5,9 @@ export default (state = {
 }, action) => {
     const newState = {...state};
     switch(action.type) {
-        case "FETCH_DISHES_FULFILLED": newState.dishes = action.payload; newState.error = null; break;
-        case "FETCH_DISHES_FAILED": newState.error = action.payload; break;
+        case "FETCH_DISH_FULFILLED": newState.dishes.push(action.payload); newState.error = null; break;
+        case "FETCH_DISH_FAILED": newState.error = action.payload; break;
     }
-    newState.inProgress = action.type === "FETCH_DISHES_IN_PROGRESS";
+    newState.inProgress = action.type === "FETCH_DISH_IN_PROGRESS";
     return newState;
 }
