@@ -37,7 +37,7 @@ class DishCategoryList extends React.Component {
     render() {
         return (
             <View style={s.parent}>
-                <ScrollView style={s.tabBar} horizontal={true}>
+                <ScrollView style={s.tabBar} horizontal={true} showsHorizontalScrollIndicator={false} >
                     { this.props.inProgress && <Text> inProgress </Text> }
                     {   this.props.dishCategories &&
                         this.props.dishCategories.map((dishCategory) => {
@@ -50,9 +50,7 @@ class DishCategoryList extends React.Component {
                     }
                     { this.props.error != null && !this.props.inProgress && <Text> {this.props.error.toString()} </Text> }
                 </ScrollView>
-                <Text> {this.props.selectedDishCategory} Start of DishList </Text>
                 { this.props.selectedDishCategory && <DishList /> }
-                <Text> End of DishLish </Text>
 
             </View>
         );
@@ -63,6 +61,8 @@ class DishCategoryList extends React.Component {
 
 const s = StyleSheet.create({
     tabBar: {
+        marginLeft: 20,
+        marginRight: 20
     }
 });
 
