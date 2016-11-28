@@ -10,9 +10,9 @@ import {
 import {connect} from 'react-redux';
 import {Scene, Router, Actions, ActionConst, Reducer} from 'react-native-router-flux';
 import DishCategory from '../views/DishCategory';
+import DishList from '../containers/DishList';
 
-import {fetchDishCategories} from '../reducers/dishCategory/dishCategoryActions';
-import {selectDishCategory} from '../reducers/dishCategory/dishCategoryActions';
+import {fetchDishCategories, selectDishCategoryAndFetchDishes} from '../reducers/dishCategory/dishCategoryActions';
 
 
 @connect((store) => {
@@ -24,22 +24,22 @@ import {selectDishCategory} from '../reducers/dishCategory/dishCategoryActions';
     };
 })
 
-class DishList extends React.Component {
+class DishCategoryList extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {};
     }
 
-    componentDidMount = () => { this.props.dispatch(fetchDishCategories()) };
-    handleSelectDishCategory = (id) => { this.props.dispatch(selectDishCategory(id)); };
+    componentDidMount = () => { this.props.dispatch(fetchDishCategories()); };
+    handleSelectDishCategory = (id) => { this.props.dispatch(selectDishCategoryAndFetchDishes(id)); };
 
     render() {
         return (
             <View style={s.parent}>
                 <ScrollView style={s.tabBar} horizontal={true}>
                     { this.props.inProgress && <Text> inProgress </Text> }
-                    {
+                    {   this.props.dishCategories &&
                         this.props.dishCategories.map((dishCategory) => {
                             return <DishCategory
                                         key={dishCategory.id}
@@ -50,9 +50,10 @@ class DishList extends React.Component {
                     }
                     { this.props.error != null && !this.props.inProgress && <Text> {this.props.error.toString()} </Text> }
                 </ScrollView>
-                <View style={{padding:50, backgroundColor: 'blue'}}>
-                    <Text>Hello there</Text>
-                </View>
+                <Text> {this.props.selectedDishCategory} Start of DishList </Text>
+                { this.props.selectedDishCategory && <DishList /> }
+                <Text> End of DishLish </Text>
+
             </View>
         );
 
@@ -65,4 +66,4 @@ const s = StyleSheet.create({
     }
 });
 
-export default DishList;
+export default DishCategoryList;

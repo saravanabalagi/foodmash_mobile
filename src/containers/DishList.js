@@ -7,38 +7,40 @@ import {
     StyleSheet
 } from 'react-native'
 import {connect} from 'react-redux';
-import {fetchDishCategories} from '../reducers/dishCategory/dishCategoryActions';
-import DishCategory from '../views/DishCategory';
+import Dish from '../views/Dish';
+
+import {selectDishCategoryAndFetchDishes} from '../reducers/dishCategory/dishCategoryActions';
 
 @connect((store) => {
     return {
         dishCategories: store.dishCategory.dishCategories,
-        inProgress: store.dishCategory.inProgress,
-        error: store.dishCategory.error
+        selectedDishCategory: store.dishCategory.selected,
     };
 })
 
 class DishList extends React.Component {
 
-    constructor(props) {
-        super(props);
-        this.state = {};
-    }
+    constructor(props) { super(props); }
 
     componentDidMount = () => {
-        this.props.dispatch(fetchDishCategories())
+        let dishCategory = this.getDishCategory();
+        if(!dishCategory.hasOwnProperty('dishes'))
+            this.props.dispatch(selectDishCategoryAndFetchDishes(this.props.selectedDishCategory));
     };
+
+    getDishCategory() { return this.props.dishCategories.filter(dishCategory => dishCategory.id === this.props.selectedDishCategory)[0]; }
 
     render() {
         return (
             <View style={s.parent}>
-                { this.props.inProgress && <Text> inProgress </Text> }
+                { this.getDishCategory().inProgress && <Text> inProgress </Text> }
                 {
-                    this.props.dishCategories.map((dishCategory) => {
-                        return <DishCategory key={dishCategory.id} dishCategory={dishCategory} />
+                    this.getDishCategory().dishes &&
+                    this.getDishCategory().dishes.map((dish) => {
+                        return <Dish key={dish.id} dish={dish} />
                     })
                 }
-                { this.props.error != null && !this.props.inProgress && <Text> {this.props.error.toString()} </Text> }
+                { this.getDishCategory().error != null && !this.getDishCategory().inProgress && <Text> {this.getDishCategory().error.toString()} </Text> }
             </View>
         );
 
