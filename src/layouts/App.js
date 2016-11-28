@@ -10,7 +10,8 @@ import {Scene, Router, Actions, ActionConst, Reducer} from 'react-native-router-
 import Login from './Login';
 import Cart from './Cart';
 import ViewDish from './ViewDish';
-import Orders from './ViewOrders';
+import ViewOrders from './ViewOrders';
+import ViewOrderDetails from './ViewOrderDetails';
 import TabIcon from '../views/TabIcon';
 import NavBarIcon from '../views/NavBarIcon';
 import DishCategoryList from '../containers/DishCategoryList';
@@ -44,6 +45,7 @@ export default class App extends Component {
                         <Scene title="Mash"
                                component={ViewDish}
                                key="viewDish"
+                               hideTabBar={true}
                                hideNavBar={true}/>
                     </Scene>
                     <Scene title="Cart"
@@ -56,13 +58,15 @@ export default class App extends Component {
                     <Scene title="Orders"
                            icon={TabIcon}
                            tabIcon="truck"
+                           type={ActionConst.REFRESH}
                            hideNavBar={true}
                            key="orders" >
                         <Scene title="Orders1"
-                               component={Orders}
+                               component={ViewOrders}
                                key="orderList"/>
                         <Scene title="Orders2"
-                               component={Orders}
+                               component={ViewOrderDetails}
+                               hideTabBar={true}
                                key="viewOrderDetails"/>
                     </Scene>
                     <Scene title="Account"

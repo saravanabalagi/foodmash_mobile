@@ -26,7 +26,13 @@ class Order extends React.Component {
 }
 
 const s = StyleSheet.create({
-
+    parent: {
+        padding: 20,
+        backgroundColor: '#CCC',
+        marginLeft: 5,
+        marginRight: 5,
+        marginBottom: 5
+    }
 });
 
 export default Order;

@@ -6,36 +6,38 @@ import {
     TouchableHighlight
 } from 'react-native';
 import OrderList from '../containers/OrderList';
+import LoginForm from '../containers/LoginForm';
 import {Actions} from 'react-native-router-flux';
+import {connect} from 'react-redux';
 
-export default class Orders extends Component {
+@connect((store) => {
+    return {
+        signedIn: store.user.session.jwt!=null
+    }
+})
+
+export default class ViewOrders extends Component {
 
     constructor(props) {
         super(props);
         this.state = {}
     }
 
+    // componentWillMount = () => { if(!this.props.signedIn) Actions.account() };
+
     render() {
         return (
-            <View style={{paddingTop: 50}}>
-                <OrderList/>
-
-                <TouchableHighlight
-                    onPress={Actions.orderList}
-                    style={{padding:10, backgroundColor: '#f77', margin: 10}}>
-                    <Text>OrdersList</Text>
-                </TouchableHighlight>
-                <TouchableHighlight
-                    onPress={Actions.viewOrderDetails}
-                    style={{padding:10, backgroundColor: '#7f7', margin: 10}}>
-                    <Text>ViewOrderDetails</Text>
-                </TouchableHighlight>
+            <View style={s.parent}>
+                { !this.props.signedIn && <LoginForm /> }
+                { this.props.signedIn && <OrderList/> }
             </View>
         );
     }
 
 }
 
-// const s = StyleSheet.create({
-//
-// });
+const s = StyleSheet.create({
+    parent: {
+        flex: 1
+    }
+});

@@ -7,6 +7,7 @@ import {
     StyleSheet
 } from 'react-native'
 import {connect} from 'react-redux';
+import {Actions} from 'react-native-router-flux';
 import {fetchOrders} from '../reducers/order/orderActions';
 import Order from '../views/Order';
 
@@ -25,9 +26,7 @@ class OrderList extends React.Component {
         this.state = {};
     }
 
-    componentDidMount = () => {
-        this.props.dispatch(fetchOrders())
-    };
+    componentDidMount = () => { this.props.dispatch(fetchOrders()) };
 
     render() {
         return (
