@@ -18,7 +18,6 @@ export default (state = {
 }
 
 let manageDishCategory = (state={}, action) => {
-    console.log("State inside ", state);
     const newState = {...state};
     switch(action.type) {
         case "FETCH_DISHES_FOR_CATEGORY_IN_PROGRESS": newState.inProgress = true; break;
