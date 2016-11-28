@@ -1,13 +1,13 @@
-export default (state = {
-    dishes: [],
-    inProgress: false,
-    error: null
-}, action) => {
+export default (state = [], action) => {
+    return state.map(dish => (dish.id == action.id) ? manageDish(dish, action) : dish);
+}
+
+let manageDish = (state = {},action) => {
     const newState = {...state};
     switch(action.type) {
-        case "FETCH_DISH_FULFILLED": newState.dishes.push(action.payload); newState.error = null; break;
-        case "FETCH_DISH_FAILED": newState.error = action.payload; break;
+        case "FETCH_DISH_IN_PROGRESS": newState.inProgress = true; break;
+        case "FETCH_DISH_FULFILLED": newState.dish = action.payload; newState.error = null; newState.inProgress = false; break;
+        case "FETCH_DISH_FAILED": newState.error = action.payload; newState.inProgress = false; break;
     }
-    newState.inProgress = action.type === "FETCH_DISH_IN_PROGRESS";
     return newState;
-}
+};
