@@ -31,7 +31,7 @@ class DishCategoryList extends React.Component {
         this.state = {};
     }
 
-    componentDidMount = () => { this.props.dispatch(fetchDishCategories()); };
+    componentDidMount = () => { if(this.props.dishCategories.length==0) this.props.dispatch(fetchDishCategories()); };
     handleSelectDishCategory = (id) => { this.props.dispatch(selectDishCategoryAndFetchDishes(id)); };
 
     render() {

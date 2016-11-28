@@ -9,6 +9,7 @@ import {
 import {Scene, Router, Actions, ActionConst, Reducer} from 'react-native-router-flux';
 import Login from './Login';
 import Cart from './Cart';
+import ViewDish from './ViewDish';
 import Orders from './ViewOrders';
 import TabIcon from '../views/TabIcon';
 import NavBarIcon from '../views/NavBarIcon';
@@ -30,12 +31,21 @@ export default class App extends Component {
             <Router createReducer={reducerCreate}>
                 <Scene key="root" tabs={true} tabBarStyle={s.mainTabs}>
                     <Scene title="Mash"
-                           component={DishCategoryList}
                            icon={TabIcon}
                            tabIcon="cutlery"
-                           key="foodmash"
+                           key="mash"
                            hideNavBar={true}
-                           initial={true}/>
+                           initial={true}>
+                        <Scene title="Mash"
+                               component={DishCategoryList}
+                               key="dishCategory"
+                               hideNavBar={true}
+                               initial={true}/>
+                        <Scene title="Mash"
+                               component={ViewDish}
+                               key="viewDish"
+                               hideNavBar={true}/>
+                    </Scene>
                     <Scene title="Cart"
                            renderRightButton={()=>{ return <NavBarIcon navIcon="md-trash"/> }}
                            component={ComboList}
@@ -44,11 +54,17 @@ export default class App extends Component {
                            hideNavBar={true}
                            key="cart"/>
                     <Scene title="Orders"
-                           component={Orders}
                            icon={TabIcon}
                            tabIcon="truck"
                            hideNavBar={true}
-                           key="orders"/>
+                           key="orders" >
+                        <Scene title="Orders1"
+                               component={Orders}
+                               key="orderList"/>
+                        <Scene title="Orders2"
+                               component={Orders}
+                               key="viewOrderDetails"/>
+                    </Scene>
                     <Scene title="Account"
                            component={Login}
                            icon={TabIcon}

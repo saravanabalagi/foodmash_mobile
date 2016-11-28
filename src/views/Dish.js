@@ -2,8 +2,11 @@ import React from 'react';
 import {
     Text,
     View,
-    StyleSheet
+    StyleSheet,
+    TouchableHighlight
 } from 'react-native'
+
+import {Actions} from 'react-native-router-flux'
 
 class Dish extends React.Component {
 
@@ -13,10 +16,15 @@ class Dish extends React.Component {
 
     render() {
         return (
-            <View style={s.parent}>
-                <Text> { this.props.dish.id } </Text>
-                <Text> { this.props.dish.name } </Text>
-            </View>
+            <TouchableHighlight
+                onPress={() => Actions.viewDish({id: this.props.dish.id})}
+                style={s.parent}>
+                <View>
+                    <Text> { this.props.dish.name } </Text>
+                    <Text> { this.props.dish.restaurant.name } </Text>
+                    <Text> { this.props.dish.price } </Text>
+                </View>
+            </TouchableHighlight>
         );
 
     }
@@ -24,7 +32,14 @@ class Dish extends React.Component {
 }
 
 const s = StyleSheet.create({
-
+    parent: {
+        padding: 20,
+        backgroundColor: '#CCC',
+        marginLeft: 5,
+        marginRight: 5,
+        marginBottom: 5,
+        borderRadius: 10
+    }
 });
 
 export default Dish;
