@@ -37,7 +37,7 @@ class DishList extends React.Component {
                 {
                     this.getDishCategory().dishes &&
                     this.getDishCategory().dishes.map((dish) => {
-                        return <Dish key={dish.id} dish={dish} />
+                        return <Dish key={dish.id} dish={dish} category_id={this.props.selectedDishCategory} />
                     })
                 }
                 { this.getDishCategory().error != null && !this.getDishCategory().inProgress && <Text> {this.getDishCategory().error.toString()} </Text> }

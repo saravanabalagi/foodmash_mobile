@@ -23,3 +23,13 @@ export function selectDishCategoryAndFetchDishes(id) {
             .catch((error) => { dispatch({ type: "FETCH_DISHES_FOR_CATEGORY_FAILED", payload: error, id: id }); });
     }
 }
+
+export function fetchDish(dish_id, category_id) {
+    const url = '/dishes/'+dish_id.toString();
+    return (dispatch) => {
+        dispatch({type: "FETCH_DISH_IN_PROGRESS", id: category_id, dish_id: dish_id});
+        axios.get(url)
+            .then((response) => { dispatch({ type: "FETCH_DISH_FULFILLED", payload: response.data, id: category_id, dish_id: dish_id }); })
+            .catch((error) => { dispatch({ type: "FETCH_DISH_FAILED", payload: error, id: category_id, dish_id: dish_id }); });
+    };
+}

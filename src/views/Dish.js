@@ -17,7 +17,7 @@ class Dish extends React.Component {
     render() {
         return (
             <TouchableHighlight
-                onPress={() => Actions.viewDish({id: this.props.dish.id})}
+                onPress={() => Actions.viewDish({id: this.props.dish.id, category_id: this.props.category_id})}
                 style={s.parent}>
                 <View>
                     <Text> { this.props.dish.name } </Text>

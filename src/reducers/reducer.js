@@ -4,7 +4,6 @@ import addressReducer from './address/addressReducer';
 import cartReducer from './cart/cartReducer';
 import cityReducer from './city/cityReducer';
 import comboReducer from './combo/comboReducer';
-import dishReducer from './dish/dishReducer';
 import dishCategoryReducer from './dishCategory/dishCategoryReducer';
 import locationReducer from './location/locationReducer';
 import orderReducer from './order/orderReducer';
@@ -15,7 +14,6 @@ export default combineReducers({
     cart: cartReducer,
     city: cityReducer,
     combo: comboReducer,
-    dish: dishReducer,
     dishCategory: dishCategoryReducer,
     location: locationReducer,
     order: orderReducer,
