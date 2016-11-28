@@ -5,7 +5,10 @@ export function fetchDishCategories() {
     return (dispatch) => {
         dispatch({type: "FETCH_DISH_CATEGORIES_IN_PROGRESS"});
         axios.get(url)
-            .then((response) => { dispatch({ type: "FETCH_DISH_CATEGORIES_FULFILLED", payload: response.data}); })
+            .then((response) => {
+                dispatch({ type: "FETCH_DISH_CATEGORIES_FULFILLED", payload: response.data});
+                if (response.data.length > 0) dispatch(selectDishCategoryAndFetchDishes(response.data[0].id));
+            })
             .catch((error) => { dispatch({ type: "FETCH_DISH_CATEGORIES_FAILED", payload: error }); });
     };
 }
