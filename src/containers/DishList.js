@@ -7,7 +7,7 @@ import {
     StyleSheet
 } from 'react-native'
 import {connect} from 'react-redux';
-import Dish from '../views/Dish';
+import DishMini from '../views/DishMini';
 
 import {selectDishCategoryAndFetchDishes} from '../reducers/dishCategory/dishCategoryActions';
 
@@ -37,7 +37,7 @@ class DishList extends React.Component {
                 {
                     this.getDishCategory().dishes &&
                     this.getDishCategory().dishes.map((dish) => {
-                        return <Dish key={dish.id} dish={dish} category_id={this.props.selectedDishCategory} />
+                        return <DishMini key={dish.id} dish={dish} category_id={this.props.selectedDishCategory} />
                     })
                 }
                 { this.getDishCategory().error != null && !this.getDishCategory().inProgress && <Text> {this.getDishCategory().error.toString()} </Text> }

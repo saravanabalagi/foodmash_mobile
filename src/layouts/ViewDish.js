@@ -27,6 +27,7 @@ export default class ViewDish extends Component {
     }
 
     componentDidMount = () => { if(this.getDish() && !this.getDish().hasOwnProperty('dish_variants')) this.props.dispatch(fetchDish(this.props.id, this.props.category_id)) };
+    handleAddToCart = (variant_id, dish_id, category_id) => { console.log("Veriant: "+variant_id+" Dish "+dish_id+" Category "+category_id) };
     getDish() { return this.props.dishCategories.filter(dishCategory => dishCategory.id === this.props.category_id)[0].dishes.filter(dish => dish.id == this.props.id)[0] }
 
     render() {
@@ -39,15 +40,7 @@ export default class ViewDish extends Component {
                 </TouchableHighlight>
                 <Text> Dish id: { this.props.id } </Text>
                 { this.getDish() && this.getDish().inProgress && <Text> inProgress </Text> }
-                { this.getDish() && this.getDish().hasOwnProperty('dish_variants') && this.getDish().dish_variants.map(variant => {
-                    return (
-                        <View key={variant.id}>
-                            <Text> {variant.id} </Text>
-                            <Text> {variant.price} </Text>
-                        </View>
-                    )
-                }) }
-                { this.getDish() && <Dish key={this.getDish().id} dish={this.getDish()} /> }
+                { this.getDish() && this.getDish().hasOwnProperty('dish_variants') && <Dish dish={this.getDish()} category_id={this.props.category_id} addToCart={this.handleAddToCart} /> }
                 { this.getDish() && this.getDish().error != null && !this.getDish().inProgress && <Text> {this.getDish().error.toString()} </Text> }
             </View>
         );
