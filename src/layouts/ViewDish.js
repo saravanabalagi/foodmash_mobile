@@ -11,6 +11,7 @@ import {connect} from 'react-redux';
 
 import Dish from '../views/Dish';
 import {fetchDish} from '../reducers/dishCategory/dishCategoryActions';
+import {plusOneDishVariantToCart, minusOneDishVariantToCart} from '../reducers/cart/cartActions'
 
 @connect((store) => {
     return {
@@ -27,7 +28,8 @@ export default class ViewDish extends Component {
     }
 
     componentDidMount = () => { if(this.getDish() && !this.getDish().hasOwnProperty('dish_variants')) this.props.dispatch(fetchDish(this.props.id, this.props.category_id)) };
-    handleAddToCart = (variant_id, dish_id, category_id) => { console.log("Veriant: "+variant_id+" Dish "+dish_id+" Category "+category_id) };
+    handleAddToCart = (variant_id) => { this.props.dispatch(plusOneDishVariantToCart({id: variant_id, ordered:{}})) };
+    handleRemoveFromCart = (variant_id) => { this.props.dispatch(minusOneDishVariantToCart({id: variant_id, ordered:{}})) };
     getDish() { return this.props.dishCategories.filter(dishCategory => dishCategory.id === this.props.category_id)[0].dishes.filter(dish => dish.id == this.props.id)[0] }
 
     render() {
@@ -40,7 +42,7 @@ export default class ViewDish extends Component {
                 </TouchableHighlight>
                 <Text> Dish id: { this.props.id } </Text>
                 { this.getDish() && this.getDish().inProgress && <Text> inProgress </Text> }
-                { this.getDish() && this.getDish().hasOwnProperty('dish_variants') && <Dish dish={this.getDish()} category_id={this.props.category_id} addToCart={this.handleAddToCart} /> }
+                { this.getDish() && this.getDish().hasOwnProperty('dish_variants') && <Dish dish={this.getDish()} category_id={this.props.category_id} addToCart={this.handleAddToCart} removeFromCart={this.handleRemoveFromCart} /> }
                 { this.getDish() && this.getDish().error != null && !this.getDish().inProgress && <Text> {this.getDish().error.toString()} </Text> }
             </View>
         );
