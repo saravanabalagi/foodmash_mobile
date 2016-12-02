@@ -22,7 +22,7 @@ export function addAddress(address) {
 }
 
 export function updateAddress(address) {
-    const url = '/addresses/' + address.id.toString();
+    const url = '/addresses/' + address.address.id;
     return (dispatch) => {
         dispatch({type: "UPDATE_ADDRESS_IN_PROGRESS"});
         axios.patch(url, address)

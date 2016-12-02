@@ -15,7 +15,7 @@ import {addAddress, updateAddress} from '../reducers/address/addressActions';
 
 @connect((store) => {
     return {
-
+        addresses: store.address.addresses
     };
 })
 
@@ -24,7 +24,7 @@ class EditAddress extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            id: this.props.id,
+            id: null,
             name: null,
             line1: null,
             line2: null,
@@ -33,9 +33,21 @@ class EditAddress extends React.Component {
         }
     }
 
+    componentDidMount = () => {
+        if(this.props.address) this.setState({
+            id:this.props.address.id,
+            name:this.props.address.name,
+            line1:this.props.address.line1,
+            line2:this.props.address.line2,
+            location_id:this.props.address.location.id,
+            mobile:this.props.address.mobile})
+    };
+
     handleSave = () => {
-        if(this.props.edit) this.props.dispatch(updateAddress({address: this.state}));
-        else this.props.dispatch(addAddress({address: this.state}));
+        if(this.props.address) {
+            console.log("State: ",this.state);
+            this.props.dispatch(updateAddress({address: this.state}));
+        } else this.props.dispatch(addAddress({address: this.state}));
     };
 
     render() {
@@ -45,6 +57,7 @@ class EditAddress extends React.Component {
                     <Icon style={s.inputIcon} name='user' size={30} color={'#CC0000'} />
                     <TextInput
                         placeholder='Name'
+                        value={this.state.name}
                         style={s.inputFields}
                         onChangeText={(text) => this.setState({name:text}) }/>
                 </View>
@@ -52,6 +65,7 @@ class EditAddress extends React.Component {
                     <Icon style={s.inputIcon} name='home' size={30} color={'#CC0000'} />
                     <TextInput
                         placeholder='Address Line 1'
+                        value={this.state.line1}
                         style={s.inputFields}
                         onChangeText={(text) => this.setState({line1:text}) }/>
                 </View>
@@ -59,6 +73,7 @@ class EditAddress extends React.Component {
                     <Icon style={s.inputIcon} name='road' size={30} color={'#CC0000'} />
                     <TextInput
                         placeholder='Address Line 2'
+                        value={this.state.line2}
                         style={s.inputFields}
                         onChangeText={(text) => this.setState({line2:text}) }/>
                 </View>
@@ -66,6 +81,7 @@ class EditAddress extends React.Component {
                     <Icon style={s.inputIcon} name='phone' size={30} color={'#CC0000'} />
                     <TextInput
                         placeholder='Mobile'
+                        value={this.state.mobile}
                         style={s.inputFields}
                         onChangeText={(text) => this.setState({mobile:text}) }/>
                 </View>
@@ -73,7 +89,7 @@ class EditAddress extends React.Component {
                     <TouchableHighlight style={s.button} onPress={this.handleSave}>
                         <Text>Save</Text>
                     </TouchableHighlight>
-                    <TouchableHighlight style={s.button} onPress={this.handleDelete}>
+                    <TouchableHighlight style={s.button} onPress={Actions.pop}>
                         <Text>Cancel</Text>
                     </TouchableHighlight>
                 </View>
