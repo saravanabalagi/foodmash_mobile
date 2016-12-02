@@ -8,6 +8,7 @@ import {
 
 import {Scene, Router, Actions, ActionConst, Reducer} from 'react-native-router-flux';
 import ViewAccount from './ViewAccount';
+import ManageAddresses from './ManageAddresses';
 import Cart from './Cart';
 import ViewDish from './ViewDish';
 import ViewOrders from './ViewOrders';
@@ -60,20 +61,27 @@ export default class App extends Component {
                            type={ActionConst.REFRESH}
                            hideNavBar={true}
                            key="orders" >
-                        <Scene title="Orders1"
+                        <Scene title="Orders"
                                component={ViewOrders}
                                key="orderList"/>
-                        <Scene title="Orders2"
+                        <Scene title="Order Details"
                                component={ViewOrderDetails}
                                hideTabBar={true}
                                key="viewOrderDetails"/>
                     </Scene>
                     <Scene title="Account"
-                           component={ViewAccount}
                            icon={TabIcon}
                            tabIcon="user"
                            hideNavBar={true}
-                           key="account"/>
+                           key="account">
+                        <Scene title="Profile"
+                               component={ViewAccount}
+                               key="profile"/>
+                        <Scene title="Addresses"
+                               component={ManageAddresses}
+                               hideTabBar={true}
+                               key="manageAddresses"/>
+                    </Scene>
                 </Scene>
             </Router>
         );

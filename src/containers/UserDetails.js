@@ -37,6 +37,10 @@ export default class UserDetails extends Component {
                 <Text> Name: {this.props.name} </Text>
                 <Text> Email: {this.props.email} </Text>
                 <Text> Mobile: {this.props.mobile} </Text>
+                <TouchableHighlight style={s.button}
+                    onPress={Actions.manageAddresses}>
+                    <Text>Manage Addresses</Text>
+                </TouchableHighlight>
                 { this.props.error != null && !this.props.inProgress && <Text> {this.props.error.toString()} </Text> }
             </View>
         );
@@ -48,5 +52,10 @@ const s = StyleSheet.create({
     parent: {
         padding: 30,
         backgroundColor: '#ccf'
+    },
+    button: {
+        padding: 10,
+        backgroundColor: '#C88',
+        margin: 10
     }
 });
