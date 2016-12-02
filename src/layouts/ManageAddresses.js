@@ -33,9 +33,6 @@ class ManageAddresses extends React.Component {
         return (
             <ScrollView style={s.parent}>
                 { this.props.inProgress && <Text> inProgress </Text> }
-                <TouchableHighlight style={s.button} onPress={this.handleEdit}>
-                    <Text>Add Address</Text>
-                </TouchableHighlight>
                 {
                     this.props.addresses.map((address) => {
                     let selectable =
@@ -45,12 +42,13 @@ class ManageAddresses extends React.Component {
                         onPress={() => this.props.chooseAddress(address.id)}>
                         <View><Address inCart={true} address={address}/></View>
                     </TouchableHighlight>;
-                    let normal = <Address key={address.id} address={address} />
+                    let normal = <Address key={address.id} address={address} />;
                     return ( this.props.chooseAddress? selectable: normal )})
                 }
-                <TouchableHighlight style={s.button} onPress={Actions.pop}>
-                    <Text>Back to Profile</Text>
+                <TouchableHighlight style={s.button} onPress={this.handleEdit}>
+                    <Text>Add Address</Text>
                 </TouchableHighlight>
+                { !this.props.chooseAddress && <TouchableHighlight style={s.button} onPress={Actions.pop}><Text>Back to Profile</Text></TouchableHighlight> }
                 { this.props.error != null && !this.props.inProgress && <Text> {this.props.error.toString()} </Text> }
             </ScrollView>
         );

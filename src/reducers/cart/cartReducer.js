@@ -14,6 +14,10 @@ export default (state = {
             newState.error = null; newState.inProgress = false; break;
         case "FETCH_CART_FAILED": newState.error = action.payload; newState.inProgress = false; break;
 
+        case "SET_ADDRESS_IN_PROGRESS": newState.inProgress = true; break;
+        case "SET_ADDRESS_FULFILLED": newState.error = null; newState.inProgress = false; break;
+        case "SET_ADDRESS_FAILED": newState.error = action.payload; newState.inProgress = false; break;
+
         case "SUBMIT_CART_IN_PROGRESS": newState.inProgress = true; break;
         case "SUBMIT_CART_FULFILLED": newState.error = null; newState.inProgress = false; break;
         case "SUBMIT_CART_FAILED": newState.error = action.payload; newState.inProgress = false; break;
