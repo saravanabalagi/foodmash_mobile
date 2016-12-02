@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 
 import {Scene, Router, Actions, ActionConst, Reducer} from 'react-native-router-flux';
-import Login from './Login';
+import ViewAccount from './ViewAccount';
 import Cart from './Cart';
 import ViewDish from './ViewDish';
 import ViewOrders from './ViewOrders';
@@ -69,7 +69,7 @@ export default class App extends Component {
                                key="viewOrderDetails"/>
                     </Scene>
                     <Scene title="Account"
-                           component={Login}
+                           component={ViewAccount}
                            icon={TabIcon}
                            tabIcon="user"
                            hideNavBar={true}
