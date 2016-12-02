@@ -1,6 +1,7 @@
 export default (state = {
     dish_variants: [],
     combos: [],
+    address_id: null,
     inProgress: false,
     error: null
 }, action) => {
@@ -28,6 +29,8 @@ export default (state = {
                 if(filtered[0].quantity == 1) newState.dish_variants = newState.dish_variants.filter(dish_variant => !checkEqualityOfDishVariantsExceptQuantity(dish_variant, action.dish_variant));
                 else if(filtered[0].quantity > 1) newState.dish_variants = newState.dish_variants.map(dish_variant => checkEqualityOfDishVariantsExceptQuantity(dish_variant, action.dish_variant)? changeQuantityToDishVariant(dish_variant,action,-1) :dish_variant );
             break;
+
+        case "CHOOSE_ADDRESS_FOR_CART": newState.address_id = action.address_id; break;
     }
 
     return newState;

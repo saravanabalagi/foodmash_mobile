@@ -23,9 +23,11 @@ export function submitCart(cart) {
 export function plusOneDishVariantToCart(dish_variant) { return (dispatch) => { dispatch({type: "PLUS_ONE_DISH_VARIANT", dish_variant: dish_variant}); }; }
 export function minusOneDishVariantToCart(dish_variant) { return (dispatch) => { dispatch({type: "MINUS_ONE_DISH_VARIANT", dish_variant: dish_variant}); }; }
 
-export function addComboToCart(combo) {
-    return (dispatch) => {
-        dispatch({type: "ADD_DISH_VARIANT_TO_CART", combo: combo});
-    };
-}
+export function chooseAddressForCart(address_id) { return (dispatch) => { dispatch({type: "CHOOSE_ADDRESS_FOR_CART", address_id: address_id}) } }
+
+// export function addComboToCart(combo) {
+//     return (dispatch) => {
+//         dispatch({type: "ADD_DISH_VARIANT_TO_CART", combo: combo});
+//     };
+// }
 

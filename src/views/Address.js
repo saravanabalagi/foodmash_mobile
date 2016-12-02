@@ -24,6 +24,7 @@ class Address extends React.Component {
     }
 
     handleDelete = () => {this.props.dispatch(deleteAddress(this.props.address.id))};
+    handleEdit = () => {if(this.props.inCart) Actions.editAddressOnChoose({address: this.props.address}); else Actions.editAddress({address: this.props.address}); };
 
     render() {
         return (
@@ -35,7 +36,7 @@ class Address extends React.Component {
                 <Text> { this.props.address.mobile } </Text>
                 <View style={{flexDirection: 'row'}}>
                     <TouchableHighlight style={s.button}
-                        onPress={()=>Actions.editAddress({address: this.props.address})}>
+                        onPress={this.handleEdit}>
                         <Text>Edit</Text>
                     </TouchableHighlight>
                     <TouchableHighlight style={s.button} onPress={this.handleDelete}>

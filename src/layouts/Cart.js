@@ -14,6 +14,7 @@ import CartDishVariant from '../views/CartDishVariant';
 
 @connect((store) => {
     return {
+        signedIn: store.user.session.jwt!=null,
         dishCategories: store.dishCategory.dishCategories,
         dishVariants: store.cart.dish_variants,
         combos: store.cart.combos,
@@ -50,6 +51,12 @@ export default class Cart extends Component {
                         dish={this.getDish(dish_variant.dish_id, this.getDishCategory(dish_variant.dish_category_id))}
                         dish_category={this.getDishCategory(dish_variant.dish_category_id)} />
                 }) }
+                {
+                    this.props.dishVariants.length>0 &&
+                    <TouchableHighlight style={s.button} onPress={Actions.chooseAddress}>
+                        <Text>Proceed</Text>
+                    </TouchableHighlight>
+                }
                 { this.props.error != null && !this.props.inProgress && <Text> {this.props.error.toString()} </Text> }
             </View>
         );
@@ -68,7 +75,7 @@ const s = StyleSheet.create({
         marginBottom: 5,
         backgroundColor: '#ccf'
     },
-    addToCart: {
+    button: {
         padding: 10,
         backgroundColor: '#C88',
         margin: 10

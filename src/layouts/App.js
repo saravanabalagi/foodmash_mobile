@@ -11,11 +11,11 @@ import ViewAccount from './ViewAccount';
 import ManageAddresses from './ManageAddresses';
 import EditAddress from './EditAddress';
 import Cart from './Cart';
+import ChooseAddress from './ChooseAddress';
 import ViewDish from './ViewDish';
 import ViewOrders from './ViewOrders';
 import ViewOrderDetails from './ViewOrderDetails';
 import TabIcon from '../views/TabIcon';
-import NavBarIcon from '../views/NavBarIcon';
 import DishCategoryList from '../containers/DishCategoryList';
 
 const reducerCreate = (params) => {
@@ -50,12 +50,22 @@ export default class App extends Component {
                                hideNavBar={true}/>
                     </Scene>
                     <Scene title="Cart"
-                           renderRightButton={()=>{ return <NavBarIcon navIcon="md-trash"/> }}
-                           component={Cart}
                            icon={TabIcon}
                            tabIcon="shopping-cart"
                            hideNavBar={true}
-                           key="cart"/>
+                           key="cart">
+                        <Scene title="In Cart"
+                               component={Cart}
+                               key="inCart"/>
+                        <Scene title="Choose Address"
+                               component={ChooseAddress}
+                               hideTabBar={true}
+                               key="chooseAddress"/>
+                        <Scene title="Choose Address"
+                               component={EditAddress}
+                               hideTabBar={true}
+                               key="editAddressOnChoose"/>
+                    </Scene>
                     <Scene title="Orders"
                            icon={TabIcon}
                            tabIcon="truck"
