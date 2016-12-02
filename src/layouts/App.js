@@ -9,6 +9,7 @@ import {
 import {Scene, Router, Actions, ActionConst, Reducer} from 'react-native-router-flux';
 import ViewAccount from './ViewAccount';
 import ManageAddresses from './ManageAddresses';
+import EditAddress from './EditAddress';
 import Cart from './Cart';
 import ViewDish from './ViewDish';
 import ViewOrders from './ViewOrders';
@@ -81,6 +82,10 @@ export default class App extends Component {
                                component={ManageAddresses}
                                hideTabBar={true}
                                key="manageAddresses"/>
+                        <Scene title="Addresses"
+                               component={EditAddress}
+                               hideTabBar={true}
+                               key="editAddress"/>
                     </Scene>
                 </Scene>
             </Router>
