@@ -2,10 +2,25 @@ import React, {Component} from 'react';
 import {
     View,
     Text,
-    StyleSheet
+    StyleSheet,
+    TouchableHighlight
 } from 'react-native';
-import Button from 'react-native-button';
+
 import {Actions} from 'react-native-router-flux';
+import {connect} from 'react-redux';
+import {plusOneDishVariantToCart, minusOneDishVariantToCart} from '../reducers/cart/cartActions'
+
+import CartDishVariant from '../views/CartDishVariant';
+
+@connect((store) => {
+    return {
+        dishCategories: store.dishCategory.dishCategories,
+        dishVariants: store.cart.dish_variants,
+        combos: store.cart.combos,
+        inProgress: store.cart.inProgress,
+        error: store.cart.error,
+    }
+})
 
 export default class Cart extends Component {
 
@@ -14,11 +29,28 @@ export default class Cart extends Component {
         this.state = {}
     }
 
+    handleAddToCart = (variant_id, dish_id, dish_category_id) => { this.props.dispatch(plusOneDishVariantToCart({id: variant_id, dish_id: dish_id, dish_category_id: dish_category_id, ordered:{}})) };
+    handleRemoveFromCart = (variant_id, dish_id, dish_category_id) => { this.props.dispatch(minusOneDishVariantToCart({id: variant_id, dish_id: dish_id, dish_category_id: dish_category_id, ordered:{}})) };
+
+    getDishCategory = (dish_category_id) => { return this.props.dishCategories.filter(dishCategory => dishCategory.id === dish_category_id)[0] };
+    getDish = (dish_id, dishCategory) => { return dishCategory.dishes.filter(dish => dish.id === dish_id)[0] };
+    getDishVariant = (dish_variant_id, dish) => { return dish.dish_variants.filter(dish_variant => dish_variant.id === dish_variant_id)[0] };
+
     render() {
         return (
             <View style={s.parent}>
-                <Text>This is cart page</Text>
-                <Button onPress={Actions.orders}>Click me for Orders</Button>
+                { this.props.inProgress && <Text> inProgress </Text> }
+                { this.props.dishVariants.map(dish_variant => {
+                    return <CartDishVariant
+                        key={dish_variant.id}
+                        addToCart={this.handleAddToCart}
+                        removeFromCart={this.handleRemoveFromCart}
+                        cart_dish_variant={dish_variant}
+                        dish_variant={this.getDishVariant(dish_variant.id, this.getDish(dish_variant.dish_id, this.getDishCategory(dish_variant.dish_category_id)))}
+                        dish={this.getDish(dish_variant.dish_id, this.getDishCategory(dish_variant.dish_category_id))}
+                        dish_category={this.getDishCategory(dish_variant.dish_category_id)} />
+                }) }
+                { this.props.error != null && !this.props.inProgress && <Text> {this.props.error.toString()} </Text> }
             </View>
         );
     }
@@ -27,6 +59,18 @@ export default class Cart extends Component {
 
 const s = StyleSheet.create({
     parent: {
-        paddingTop: 50
+        padding: 20
+    },
+    variant: {
+        padding: 10,
+        marginLeft: 5,
+        marginRight: 5,
+        marginBottom: 5,
+        backgroundColor: '#ccf'
+    },
+    addToCart: {
+        padding: 10,
+        backgroundColor: '#C88',
+        margin: 10
     }
 });

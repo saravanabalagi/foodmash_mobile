@@ -28,8 +28,8 @@ export default class ViewDish extends Component {
     }
 
     componentDidMount = () => { if(this.getDish() && !this.getDish().hasOwnProperty('dish_variants')) this.props.dispatch(fetchDish(this.props.id, this.props.category_id)) };
-    handleAddToCart = (variant_id) => { this.props.dispatch(plusOneDishVariantToCart({id: variant_id, ordered:{}})) };
-    handleRemoveFromCart = (variant_id) => { this.props.dispatch(minusOneDishVariantToCart({id: variant_id, ordered:{}})) };
+    handleAddToCart = (variant_id) => { this.props.dispatch(plusOneDishVariantToCart({id: variant_id, dish_id: this.getDish().id, dish_category_id: this.props.category_id, ordered:{}})) };
+    handleRemoveFromCart = (variant_id) => { this.props.dispatch(minusOneDishVariantToCart({id: variant_id, dish_id: this.getDish().id, dish_category_id: this.props.category_id, ordered:{}})) };
     getDish() { return this.props.dishCategories.filter(dishCategory => dishCategory.id === this.props.category_id)[0].dishes.filter(dish => dish.id == this.props.id)[0] }
 
     render() {

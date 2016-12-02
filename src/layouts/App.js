@@ -15,7 +15,6 @@ import ViewOrderDetails from './ViewOrderDetails';
 import TabIcon from '../views/TabIcon';
 import NavBarIcon from '../views/NavBarIcon';
 import DishCategoryList from '../containers/DishCategoryList';
-import ComboList from '../containers/ComboList';
 
 const reducerCreate = (params) => {
     const defaultReducer = Reducer(params);
@@ -50,7 +49,7 @@ export default class App extends Component {
                     </Scene>
                     <Scene title="Cart"
                            renderRightButton={()=>{ return <NavBarIcon navIcon="md-trash"/> }}
-                           component={ComboList}
+                           component={Cart}
                            icon={TabIcon}
                            tabIcon="shopping-cart"
                            hideNavBar={true}
