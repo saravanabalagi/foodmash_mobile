@@ -8,7 +8,7 @@ import {
 
 import {Actions} from 'react-native-router-flux';
 import {connect} from 'react-redux';
-import {chooseAddressForCart, submitCart, setAddress} from '../reducers/cart/cartActions'
+import {submitCart, setAddress} from '../reducers/cart/cartActions'
 
 import ManageAddresses from '../layouts/ManageAddresses';
 import LoginForm from '../containers/LoginForm';
@@ -27,18 +27,15 @@ export default class ChooseAddress extends Component {
         this.state = {}
     }
 
-    handleChooseAddress = (address_id) => { this.props.dispatch(chooseAddressForCart(address_id)); };
-    handleSubmitCart = () => {
-        this.props.dispatch(submitCart());
-        this.props.dispatch(setAddress(this.props.selectedAddress));
-    };
+    handleSetAddress = (address_id) => { this.props.dispatch(setAddress(address_id)); };
+    handleSubmitCartAndAddress = () => { this.props.dispatch(submitCart()); };
 
     render() {
         return (
             <View style={s.parent}>
                 { !this.props.signedIn && <LoginForm /> }
                 { this.props.signedIn && !this.props.selectedAddress &&<Text>Select an address to continue</Text> }
-                { this.props.signedIn && <ManageAddresses chooseAddress={this.handleChooseAddress} /> }
+                { this.props.signedIn && <ManageAddresses setAddress={this.handleSetAddress} /> }
                 { this.props.signedIn &&
                     <View style={{flexDirection: 'row'}}>
                         <TouchableHighlight
@@ -47,8 +44,9 @@ export default class ChooseAddress extends Component {
                             <Text>Cancel</Text>
                         </TouchableHighlight>
                         <TouchableHighlight
+                            disabled={this.props.selectedAddress==undefined}
                             style={this.proceedButtonStyle()}
-                            onPress={this.handleSubmitCart}>
+                            onPress={this.handleSubmitCartAndAddress}>
                             <Text>Proceed</Text>
                         </TouchableHighlight>
                     </View>

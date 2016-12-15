@@ -14,9 +14,9 @@ export default (state = {
             newState.error = null; newState.inProgress = false; break;
         case "FETCH_CART_FAILED": newState.error = action.payload; newState.inProgress = false; break;
 
-        case "SET_ADDRESS_IN_PROGRESS": newState.inProgress = true; break;
-        case "SET_ADDRESS_FULFILLED": newState.error = null; newState.inProgress = false; break;
-        case "SET_ADDRESS_FAILED": newState.error = action.payload; newState.inProgress = false; break;
+        case "SUBMIT_ADDRESS_IN_PROGRESS": newState.inProgress = true; break;
+        case "SUBMIT_ADDRESS_FULFILLED": newState.error = null; newState.inProgress = false; break;
+        case "SUBMIT_ADDRESS_FAILED": newState.error = action.payload; newState.inProgress = false; break;
 
         case "SUBMIT_CART_IN_PROGRESS": newState.inProgress = true; break;
         case "SUBMIT_CART_FULFILLED": newState.error = null; newState.inProgress = false; break;
@@ -34,7 +34,7 @@ export default (state = {
                 else if(filtered[0].quantity > 1) newState.dish_variants = newState.dish_variants.map(dish_variant => checkEqualityOfDishVariantsExceptQuantity(dish_variant, action.dish_variant)? changeQuantityToDishVariant(dish_variant,action,-1) :dish_variant );
             break;
 
-        case "CHOOSE_ADDRESS_FOR_CART": newState.address_id = action.address_id; break;
+        case "SET_ADDRESS_FOR_CART": newState.address_id = action.address_id; break;
     }
 
     return newState;

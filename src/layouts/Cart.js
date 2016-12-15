@@ -30,6 +30,7 @@ export default class Cart extends Component {
         this.state = {}
     }
 
+    handleSubmitCart = () => { this.props.dispatch(submitCart()); };
     handleAddToCart = (variant_id, dish_id, dish_category_id) => { this.props.dispatch(plusOneDishVariantToCart({id: variant_id, dish_id: dish_id, dish_category_id: dish_category_id, ordered:{}})) };
     handleRemoveFromCart = (variant_id, dish_id, dish_category_id) => { this.props.dispatch(minusOneDishVariantToCart({id: variant_id, dish_id: dish_id, dish_category_id: dish_category_id, ordered:{}})) };
 
@@ -54,7 +55,7 @@ export default class Cart extends Component {
                 {
                     this.props.dishVariants.length>0 &&
                     <TouchableHighlight style={s.button} onPress={Actions.chooseAddress}>
-                        <Text>Proceed</Text>
+                        <Text> { this.props.signedIn? "Proceed" : "Login" } </Text>
                     </TouchableHighlight>
                 }
                 { this.props.error != null && !this.props.inProgress && <Text> {this.props.error.toString()} </Text> }

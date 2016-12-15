@@ -27,7 +27,7 @@ class ManageAddresses extends React.Component {
     constructor(props) { super(props); }
 
     componentDidMount = () => { if (this.props.addresses.length === 0) this.props.dispatch(fetchAddresses()); };
-    handleEdit = () => { if(this.props.chooseAddress) Actions.editAddressOnChoose(); else Actions.editAddress(); };
+    handleEdit = () => { if(this.props.setAddress) Actions.editAddressOnChoose(); else Actions.editAddress(); };
 
     render() {
         return (
@@ -39,16 +39,16 @@ class ManageAddresses extends React.Component {
                     <TouchableHighlight
                         key={address.id}
                         style={this.selectedAddressStyle(address.id)}
-                        onPress={() => this.props.chooseAddress(address.id)}>
+                        onPress={() => this.props.setAddress(address.id)}>
                         <View><Address inCart={true} address={address}/></View>
                     </TouchableHighlight>;
                     let normal = <Address key={address.id} address={address} />;
-                    return ( this.props.chooseAddress? selectable: normal )})
+                    return ( this.props.setAddress? selectable: normal )})
                 }
                 <TouchableHighlight style={s.button} onPress={this.handleEdit}>
                     <Text>Add Address</Text>
                 </TouchableHighlight>
-                { !this.props.chooseAddress && <TouchableHighlight style={s.button} onPress={Actions.pop}><Text>Back to Profile</Text></TouchableHighlight> }
+                { !this.props.setAddress && <TouchableHighlight style={s.button} onPress={Actions.pop}><Text>Back to Profile</Text></TouchableHighlight> }
                 { this.props.error != null && !this.props.inProgress && <Text> {this.props.error.toString()} </Text> }
             </ScrollView>
         );
