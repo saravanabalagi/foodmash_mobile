@@ -1,6 +1,7 @@
 import axios from 'axios';
 import store from '../../store';
-import {Actions} from 'react-native-router-flux';
+import {Actions, ActionConst} from 'react-native-router-flux';
+import {fetchOrders} from '../order/orderActions';
 
 export function fetchCart() {
     const url = '/cart';
@@ -18,7 +19,7 @@ export function submitAddress() {
     return (dispatch) => {
         dispatch({type: "SUBMIT_ADDRESS_IN_PROGRESS"});
         axios.post(url, {address_id: address_id})
-            .then((response) => { dispatch({ type: "SUBMIT_ADDRESS_FULFILLED", payload: response.data }); })
+            .then((response) => { dispatch({ type: "SUBMIT_ADDRESS_FULFILLED", payload: response.data }); Actions.checkout(); })
             .catch((error) => { dispatch({ type: "SUBMIT_ADDRESS_FAILED", payload: error }); });
     };
 }
@@ -38,6 +39,19 @@ export function plusOneDishVariantToCart(dish_variant) { return (dispatch) => { 
 export function minusOneDishVariantToCart(dish_variant) { return (dispatch) => { dispatch({type: "MINUS_ONE_DISH_VARIANT", dish_variant: dish_variant}); }; }
 
 export function setAddress(address_id) { return (dispatch) => { dispatch({type: "SET_ADDRESS_FOR_CART", address_id: address_id}) } }
+
+export function purchaseCart() {
+    const url = '/cart/purchase/cod';
+    const cart = store.getState().cart;
+    return (dispatch) => {
+        dispatch({type: "PURCHASE_CART_IN_PROGRESS"});
+        axios.post(url)
+            .then((response) => { dispatch({ type: "PURCHASE_CART_FULFILLED", payload: response.data });
+                                    dispatch({type: "RESET_CART"}); dispatch(fetchOrders());
+                                    Actions.orders(); })
+            .catch((error) => { dispatch({ type: "PURCHASE_CART_FAILED", payload: error }); });
+    };
+}
 
 // export function getTotal() {
 //     let total = 0;

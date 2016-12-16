@@ -3,6 +3,13 @@ export default (state = {
     combos: [],
     address_id: null,
     inProgress: false,
+    values: {
+        id: null,
+        total: null,
+        sub_total: null,
+        vat: null,
+        delivery: null
+    },
     error: null
 }, action) => {
     const newState = {...state};
@@ -15,7 +22,7 @@ export default (state = {
         case "FETCH_CART_FAILED": newState.error = action.payload; newState.inProgress = false; break;
 
         case "SUBMIT_ADDRESS_IN_PROGRESS": newState.inProgress = true; break;
-        case "SUBMIT_ADDRESS_FULFILLED": newState.error = null; newState.inProgress = false; break;
+        case "SUBMIT_ADDRESS_FULFILLED": newState.error = null; newState.values = action.payload;  newState.inProgress = false; break;
         case "SUBMIT_ADDRESS_FAILED": newState.error = action.payload; newState.inProgress = false; break;
 
         case "SUBMIT_CART_IN_PROGRESS": newState.inProgress = true; break;
@@ -35,6 +42,11 @@ export default (state = {
             break;
 
         case "SET_ADDRESS_FOR_CART": newState.address_id = action.address_id; break;
+
+        case "RESET_CART": newState.dish_variants = []; newState.combos = [];
+                            newState.address_id = null; newState.inProgress = false;
+                            newState.values = {id: null, total: null, sub_total: null, vat: null, delivery: null};
+                            newState.error = null; break;
     }
 
     return newState;

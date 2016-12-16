@@ -12,6 +12,7 @@ import ManageAddresses from './ManageAddresses';
 import EditAddress from './EditAddress';
 import Cart from './Cart';
 import ChooseAddress from './ChooseAddress';
+import Checkout from './Checkout';
 import ViewDish from './ViewDish';
 import ViewOrders from './ViewOrders';
 import ViewOrderDetails from './ViewOrderDetails';
@@ -22,6 +23,7 @@ const reducerCreate = (params) => {
     const defaultReducer = Reducer(params);
     return (state, action)=> {
         console.log("ACTION:", action);
+        console.log("STATE:", state);
         return defaultReducer(state, action);
     }
 };
@@ -65,6 +67,10 @@ export default class App extends Component {
                                component={EditAddress}
                                hideTabBar={true}
                                key="editAddressOnChoose"/>
+                        <Scene title="Checkout"
+                               component={Checkout}
+                               hideTabBar={true}
+                               key="checkout"/>
                     </Scene>
                     <Scene title="Orders"
                            icon={TabIcon}
