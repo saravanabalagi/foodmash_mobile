@@ -1,4 +1,16 @@
 import axios from 'axios';
+import {Actions, ActionConst} from 'react-native-router-flux';
+
+export function fetchOrdersAndfetchOrder(id) {
+    const url = '/orders';
+    return (dispatch) => {
+        dispatch({type: "FETCH_ORDERS_IN_PROGRESS"});
+        axios.get(url)
+            .then((response) => { dispatch({ type: "FETCH_ORDERS_FULFILLED", payload: response.data});
+                                    Actions.viewOrderDetails({id: id}); })
+            .catch((error) => { dispatch({ type: "FETCH_ORDERS_FAILED", payload: error }); });
+    };
+}
 
 export function fetchOrders() {
     const url = '/orders';

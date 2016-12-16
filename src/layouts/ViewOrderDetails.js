@@ -31,22 +31,26 @@ export default class ViewOrderDetails extends Component {
         return (
             <View style={s.parent}>
                 <Text> Order id: {this.props.id} </Text>
+                { this.getOrder() && this.getOrder().inProgress && <Text> inProgress </Text> }
+                { this.getOrder() && <Text> Sub Total: {this.getOrder().sub_total} </Text> }
+                { this.getOrder() && <Text> Aggregation Charges: {this.getOrder().delivery} </Text> }
+                { this.getOrder() && <Text> VAT: {this.getOrder().vat} </Text> }
+                { this.getOrder() && <Text> Total: {this.getOrder().total} </Text> }
+                { this.getOrder() && this.getOrder().hasOwnProperty('address') &&
+                    <View style={s.address}>
+                        <Text> Name: { this.getOrder().address.name } </Text>
+                        <Text> Line 1: { this.getOrder().address.line1 } </Text>
+                        <Text> Line 2: { this.getOrder().address.line2 } </Text>
+                        <Text> Location: { this.getOrder().address.location.name }, { this.getOrder().address.location.city.name }</Text>
+                        <Text> Mobile: { this.getOrder().address.mobile } </Text>
+                    </View>
+                }
+                { this.getOrder() && this.getOrder().error != null && !this.getOrder().inProgress && <Text> {this.getOrder().error.toString()} </Text> }
                 <TouchableHighlight
                     onPress={Actions.pop}
-                    style={{padding:10, backgroundColor: '#f77', margin: 10}}>
-                    <Text>OrdersList</Text>
+                    style={{padding:10, backgroundColor: '#f77', marginTop: 10}}>
+                    <Text>Back</Text>
                 </TouchableHighlight>
-                { this.getOrder() && this.getOrder().inProgress && <Text> inProgress </Text> }
-                { this.getOrder() && <Text> {this.getOrder().sub_total} </Text> }
-                { this.getOrder() && <Text> {this.getOrder().delivery} </Text> }
-                { this.getOrder() && <Text> {this.getOrder().vat} </Text> }
-                { this.getOrder() && this.getOrder().hasOwnProperty('address') && Object.keys(this.getOrder().address).forEach(key => {
-                    console.log(key+" "+this.getOrder().address[key]);
-                    return (
-                        <Text> { this.getOrder().address[key]} </Text>
-                    )
-                }) }
-                { this.getOrder() && this.getOrder().error != null && !this.getOrder().inProgress && <Text> {this.getOrder().error.toString()} </Text> }
             </View>
         );
     }
@@ -55,6 +59,11 @@ export default class ViewOrderDetails extends Component {
 
 const s = StyleSheet.create({
     parent: {
-
+        padding: 30
+    },
+    address: {
+        backgroundColor: '#CCC',
+        padding: 10,
+        marginTop: 10
     }
 });
