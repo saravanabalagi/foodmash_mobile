@@ -7,6 +7,7 @@ import {
 } from 'react-native';
 
 import {Scene, Router, Actions, ActionConst, Reducer} from 'react-native-router-flux';
+import SelectLocation from './SelectLocation';
 import ViewAccount from './ViewAccount';
 import ManageAddresses from './ManageAddresses';
 import EditAddress from './EditAddress';
@@ -33,18 +34,19 @@ export default class App extends Component {
     render() {
         return (
             <Router createReducer={reducerCreate}>
-                <Scene key="root" tabs={true} tabBarStyle={s.mainTabs}>
+                <Scene hideNavBar={true}
+                       component={SelectLocation}
+                       key="location"/>
+                <Scene key="app" tabs={true} tabBarStyle={s.mainTabs}>
                     <Scene title="Mash"
                            icon={TabIcon}
                            tabIcon="cutlery"
                            key="mash"
-                           hideNavBar={true}
-                           initial={true}>
+                           hideNavBar={true}>
                         <Scene title="Mash"
                                component={DishCategoryList}
                                key="dishCategory"
-                               hideNavBar={true}
-                               initial={true}/>
+                               hideNavBar={true}/>
                         <Scene title="Mash"
                                component={ViewDish}
                                key="viewDish"
