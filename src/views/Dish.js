@@ -6,7 +6,8 @@ import {
     TouchableHighlight
 } from 'react-native'
 
-import {Actions} from 'react-native-router-flux'
+import {Actions} from 'react-native-router-flux';
+import DishVariant from './DishVariant';
 
 class Dish extends React.Component {
 
@@ -14,32 +15,19 @@ class Dish extends React.Component {
         super(props);
     }
 
+    handleAddToCart = (dish_variant_id) => {this.props.addToCart(dish_variant_id, this.props.dish.id, this.props.category_id)};
+    handleRemoveFromCart = (dish_variant_id) => {this.props.removeFromCart(dish_variant_id, this.props.dish.id, this.props.category_id)};
+
     render() {
         return (
             <View style={s.parent}>
                 { this.props.dish.inProgress && <Text> inProgress </Text> }
                 <Text> { this.props.dish.name } </Text>
                 <Text> Restaurant: { this.props.dish.restaurant.name } </Text>
-                { this.props.dish.dish_variants.map(variant => {
+                { this.props.dish.dish_variants.map((dish_variant,index) => {
                     return (
-                        <View key={variant.id} style={s.variant}>
-                            <Text> Variant ID: {variant.id} </Text>
-                            <Text> Rs. {variant.price} </Text>
-                            <View style={{flexDirection: 'row'}}>
-                                <TouchableHighlight
-                                    onPress={() => this.props.addToCart(variant.id, this.props.dish.id, this.props.category_id)}
-                                    underlayColor={'#000'}
-                                    style={s.addToCart} >
-                                    <Text>Add to Cart</Text>
-                                </TouchableHighlight>
-                                <TouchableHighlight
-                                    onPress={() => this.props.removeFromCart(variant.id, this.props.dish.id, this.props.category_id)}
-                                    underlayColor={'#000'}
-                                    style={s.addToCart} >
-                                    <Text>Remove from Cart</Text>
-                                </TouchableHighlight>
-                            </View>
-                        </View>
+                        <DishVariant key={dish_variant.id} dish_variant={dish_variant} index={index}
+                              addToCart={this.handleAddToCart} removeFromCart={this.handleRemoveFromCart} />
                     )
                 }) }
                 { this.props.dish && this.props.dish.error != null && !this.props.dish.inProgress && <Text> {this.props.dish.error.toString()} </Text> }
