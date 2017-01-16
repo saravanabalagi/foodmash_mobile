@@ -24,13 +24,13 @@ class CartDishVariant extends React.Component {
                 <Text> Ordered: {JSON.stringify(this.props.cart_dish_variant.ordered)} </Text>
                 <View style={{flexDirection: 'row'}}>
                     <TouchableHighlight
-                        onPress={() => this.props.handleAddToCart(this.props.dish_variant.id, this.props.dish_variant.dish_id, this.props.dish_variant.dish_category_id)}
+                        onPress={() => this.props.addToCart(this.props.dish_variant.id, this.props.dish_variant.dish_id, this.props.dish_variant.dish_category_id)}
                         underlayColor={'#000'}
                         style={s.addToCart} >
                         <Text>Add to Cart</Text>
                     </TouchableHighlight>
                     <TouchableHighlight
-                        onPress={() => this.props.handleRemoveFromCart(this.props.dish_variant.id, this.props.dish_variant.dish_id, this.props.dish_variant.dish_category_id)}
+                        onPress={() => this.props.removeFromCart(this.props.dish_variant.id, this.props.dish_variant.dish_id, this.props.dish_variant.dish_category_id)}
                         underlayColor={'#000'}
                         style={s.addToCart} >
                         <Text>Remove from Cart</Text>
