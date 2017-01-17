@@ -17,7 +17,7 @@ class DishCategory extends React.Component {
             <View style={s.parent}>
                 <TouchableHighlight
                     style={s.tab} underlayColor={'#BBB'}
-                    onPress={(id) => this.props.selectDishCategory(this.props.dishCategory.id)}>
+                    onPress={() => this.props.selectDishCategory(this.props.dishCategory.id)}>
                     <Text style={s.text}> { this.props.dishCategory.name } </Text>
                 </TouchableHighlight>
                 { this.props.selected && <View style={s.highlight} /> }
