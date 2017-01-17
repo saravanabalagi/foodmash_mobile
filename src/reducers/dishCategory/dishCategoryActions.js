@@ -37,6 +37,8 @@ export function fetchDish(dish_id, category_id) {
 
 export function getPrice(dish_variant_id, dish_id, dish_category_id) {
     let dishCategories = store.getState().dishCategory.dishCategories;
-    let dishVariant = dishCategories.filter(dishCategory => dishCategory.id === dish_category_id)[0].dishes.filter(dish => dish.id === dish_id)[0].dish_variants.filter(dish_variant => dish_variant.id === dish_variant_id)[0];
-    return dishVariant.price;
+    return dishCategories.filter(dishCategory => dishCategory.id === dish_category_id)[0]
+                        .dishes.filter(dish => dish.id === dish_id)[0]
+                        .dish_variants.filter(dish_variant => dish_variant.id === dish_variant_id)[0]
+                        .price;
 }
