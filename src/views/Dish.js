@@ -15,9 +15,6 @@ class Dish extends React.Component {
         super(props);
     }
 
-    handleAddToCart = (dish_variant_id) => {this.props.addToCart(dish_variant_id, this.props.dish.id, this.props.category_id)};
-    handleRemoveFromCart = (dish_variant_id) => {this.props.removeFromCart(dish_variant_id, this.props.dish.id, this.props.category_id)};
-
     render() {
         return (
             <View style={s.parent}>
@@ -27,7 +24,7 @@ class Dish extends React.Component {
                 { this.props.dish.dish_variants.map((dish_variant,index) => {
                     return (
                         <DishVariant key={dish_variant.id} dish_variant={dish_variant} index={index}
-                              addToCart={this.handleAddToCart} removeFromCart={this.handleRemoveFromCart} />
+                              selectVariant={this.props.selectVariant} />
                     )
                 }) }
                 { this.props.dish && this.props.dish.error != null && !this.props.dish.inProgress && <Text> {this.props.dish.error.toString()} </Text> }

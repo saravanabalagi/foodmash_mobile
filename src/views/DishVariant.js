@@ -14,6 +14,8 @@ class DishVariant extends React.Component {
         super(props);
     }
 
+    componentDidMount = () => { if(this.props.index==0) this.props.selectVariant(this.props.dish_variant.id); };
+
     render() {
         return (
             <View key={this.props.dish_variant.id} style={s.variant}>
@@ -21,16 +23,10 @@ class DishVariant extends React.Component {
                 <Text> Rs. {this.props.dish_variant.price} </Text>
                 <View style={{flexDirection: 'row'}}>
                     <TouchableHighlight
-                        onPress={() => this.props.addToCart(this.props.dish_variant.id)}
+                        onPress={() => this.props.selectVariant(this.props.dish_variant.id)}
                         underlayColor={'#000'}
-                        style={s.addToCart} >
-                        <Text>Add to Cart</Text>
-                    </TouchableHighlight>
-                    <TouchableHighlight
-                        onPress={() => this.props.removeFromCart(this.props.dish_variant.id)}
-                        underlayColor={'#000'}
-                        style={s.addToCart} >
-                        <Text>Remove from Cart</Text>
+                        style={s.button} >
+                        <Text>Select</Text>
                     </TouchableHighlight>
                 </View>
             </View>
@@ -44,9 +40,9 @@ const s = StyleSheet.create({
     parent: {
         padding: 20
     },
-    addToCart: {
+    button: {
         padding: 10,
-        backgroundColor: '#C88',
+        backgroundColor: '#CC8',
         margin: 10
     }
 });
