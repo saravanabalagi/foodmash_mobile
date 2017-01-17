@@ -15,13 +15,15 @@ class Dish extends React.Component {
         super(props);
     }
 
+    componentWillMount = () => { this.props.dish.dish_variants.length == 1 && this.props.selectVariant(this.props.dish.dish_variants[0].id); };
+
     render() {
         return (
             <View style={s.parent}>
                 { this.props.dish.inProgress && <Text> inProgress </Text> }
                 <Text> { this.props.dish.name } </Text>
                 <Text> Restaurant: { this.props.dish.restaurant.name } </Text>
-                { this.props.dish.dish_variants.map((dish_variant,index) => {
+                { this.props.dish.dish_variants.length>1 && this.props.dish.dish_variants.map((dish_variant,index) => {
                     return (
                         <DishVariant key={dish_variant.id} dish_variant={dish_variant} index={index}
                               selectVariant={this.props.selectVariant} />
