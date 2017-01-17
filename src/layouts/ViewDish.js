@@ -38,7 +38,7 @@ export default class ViewDish extends Component {
     setSelectedVariant = (variant_id) => { this.setState({selected_variant_id: variant_id}); };
 
     getDish() { return this.props.dishCategories.filter(dishCategory => dishCategory.id === this.props.category_id)[0].dishes.filter(dish => dish.id == this.props.id)[0] }
-    getQuantity() { return this.props.cartDishVariants.reduce((quantity, dish_variant) => { if (dish_variant.dish_id === this.props.id) return quantity+dish_variant.quantity; }, 0); };
+    getQuantity() { return this.props.cartDishVariants.reduce((quantity, dish_variant) => { return (dish_variant.dish_id === this.props.id)? quantity+dish_variant.quantity : quantity; }, 0); };
 
     render() {
         return (
