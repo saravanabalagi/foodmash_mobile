@@ -17,6 +17,7 @@ export function fetchCities() {
 export function selectCityAndFetchLocations(city_id) {
     const url = '/cities/' + city_id.toString();
     return (dispatch) => {
+        dispatch({type: "SELECT_CITY", payload: city_id});
         dispatch({type: "FETCHING_LOCATIONS_FOR_CITY", payload: city_id});
         dispatch(fetchLocations(city_id));
     }

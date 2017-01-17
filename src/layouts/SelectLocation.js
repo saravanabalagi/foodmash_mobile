@@ -38,7 +38,7 @@ export default class SelectLocation extends Component {
                     this.props.city.cities.map((city) => {
                         return <TouchableHighlight
                             style={s.city}
-                            onPress={() => this.props.dispatch(selectCityAndFetchLocations(city_id))}
+                            onPress={() => this.props.dispatch(selectCityAndFetchLocations(city.id))}
                             key={city.id}>
                             <Text> { city.name } {this.props.city.selected === city.id? "(Selected)":"" } </Text>
                         </TouchableHighlight>
