@@ -18,10 +18,13 @@ export function selectDishCategoryAndFetchDishes(id) {
     const url = '/dish_categories/' + id.toString() + '/dishes';
     return (dispatch) => {
         dispatch({type: "SELECT_DISH_CATEGORY", payload: id});
-        dispatch({type: "FETCH_DISHES_FOR_CATEGORY_IN_PROGRESS", id: id});
-        axios.get(url)
-            .then((response) => { dispatch({ type: "FETCH_DISHES_FOR_CATEGORY_FULFILLED", payload: response.data, id: id}); })
-            .catch((error) => { dispatch({ type: "FETCH_DISHES_FOR_CATEGORY_FAILED", payload: error, id: id }); });
+        let dishCategories = store.getState().dishCategory.dishCategories;
+        if(!dishCategories.filter(dishCategory => dishCategory.id === id)[0].hasOwnProperty('dishes')) {
+            dispatch({type: "FETCH_DISHES_FOR_CATEGORY_IN_PROGRESS", id: id});
+            axios.get(url)
+                .then((response) => { dispatch({ type: "FETCH_DISHES_FOR_CATEGORY_FULFILLED", payload: response.data, id: id}); })
+                .catch((error) => { dispatch({ type: "FETCH_DISHES_FOR_CATEGORY_FAILED", payload: error, id: id }); });
+        }
     }
 }
 
