@@ -3,12 +3,14 @@ import {
     View,
     Text,
     StyleSheet,
+    ScrollView,
     TouchableHighlight
 } from 'react-native';
 
 import {Actions} from 'react-native-router-flux';
 import {connect} from 'react-redux';
 import {plusOneDishVariantToCart, minusOneDishVariantToCart} from '../reducers/cart/cartActions'
+import {getTotal, getTotalItems} from '../reducers/cart/cartActions'
 
 import CartDishVariant from '../views/CartDishVariant';
 
@@ -20,6 +22,8 @@ import CartDishVariant from '../views/CartDishVariant';
         combos: store.cart.combos,
         inProgress: store.cart.inProgress,
         error: store.cart.error,
+        total: getTotal(),
+        totalItems: getTotalItems()
     }
 })
 
@@ -40,26 +44,30 @@ export default class Cart extends Component {
 
     render() {
         return (
-            <View style={s.parent}>
-                { this.props.inProgress && <Text> inProgress </Text> }
-                { this.props.dishVariants.map(dish_variant => {
-                    return <CartDishVariant
-                        key={dish_variant.id}
-                        addToCart={this.handleAddToCart}
-                        removeFromCart={this.handleRemoveFromCart}
-                        cart_dish_variant={dish_variant}
-                        dish_variant={this.getDishVariant(dish_variant.id, this.getDish(dish_variant.dish_id, this.getDishCategory(dish_variant.dish_category_id)))}
-                        dish={this.getDish(dish_variant.dish_id, this.getDishCategory(dish_variant.dish_category_id))}
-                        dish_category={this.getDishCategory(dish_variant.dish_category_id)} />
-                }) }
-                {
-                    this.props.dishVariants.length>0 &&
-                    <TouchableHighlight style={s.button} onPress={Actions.chooseAddress}>
-                        <Text> { this.props.signedIn? "Proceed" : "Login" } </Text>
-                    </TouchableHighlight>
-                }
-                { this.props.error != null && !this.props.inProgress && <Text> {this.props.error.toString()} </Text> }
-            </View>
+            <ScrollView style={s.parent}>
+                <View>
+                    { this.props.inProgress && <Text> inProgress </Text> }
+                    { this.props.dishVariants.map(dish_variant => {
+                        return <CartDishVariant
+                            key={dish_variant.id}
+                            addToCart={this.handleAddToCart}
+                            removeFromCart={this.handleRemoveFromCart}
+                            cart_dish_variant={dish_variant}
+                            dish_variant={this.getDishVariant(dish_variant.id, this.getDish(dish_variant.dish_id, this.getDishCategory(dish_variant.dish_category_id)))}
+                            dish={this.getDish(dish_variant.dish_id, this.getDishCategory(dish_variant.dish_category_id))}
+                            dish_category={this.getDishCategory(dish_variant.dish_category_id)} />
+                    }) }
+                    <Text> Total: { this.props.total } </Text>
+                    <Text> Items: { this.props.totalItems } </Text>
+                    {
+                        this.props.dishVariants.length>0 &&
+                        <TouchableHighlight style={s.button} onPress={Actions.chooseAddress}>
+                            <Text> { this.props.signedIn? "Proceed" : "Login" } </Text>
+                        </TouchableHighlight>
+                    }
+                    { this.props.error != null && !this.props.inProgress && <Text> {this.props.error.toString()} </Text> }
+                </View>
+            </ScrollView>
         );
     }
 
@@ -67,7 +75,8 @@ export default class Cart extends Component {
 
 const s = StyleSheet.create({
     parent: {
-        padding: 20
+        padding: 10,
+        marginBottom: 80
     },
     variant: {
         padding: 10,

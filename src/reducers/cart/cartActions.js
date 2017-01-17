@@ -1,7 +1,9 @@
 import axios from 'axios';
 import store from '../../store';
+
 import {Actions, ActionConst} from 'react-native-router-flux';
 import {fetchOrdersAndfetchOrder} from '../order/orderActions';
+import {getPrice} from '../dishCategory/dishCategoryActions';
 
 export function fetchCart() {
     const url = '/cart';
@@ -54,13 +56,19 @@ export function purchaseCart() {
     };
 }
 
-// export function getTotal() {
-//     let total = 0;
-//     store.getState().cart.dish_variants.reduce((total, dish_variant)=>{
-//         store.getState().dishCategory.
-//     },0);
-//     return total;
-// }
+export function getTotal() {
+    return store.getState().cart.dish_variants.reduce((total, dish_variant)=>{
+        return total +  getPrice(dish_variant.id, dish_variant.dish_id, dish_variant.dish_category_id)*dish_variant.quantity;
+    },0);
+}
+
+export function getTotalItems() {
+    return store.getState().cart.dish_variants.reduce((total, dish_variant)=>{
+        return total +  dish_variant.quantity;
+    },0);
+}
+
+
 
 // export function addComboToCart(combo) {
 //     return (dispatch) => {
