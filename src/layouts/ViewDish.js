@@ -48,7 +48,8 @@ export default class ViewDish extends Component {
         if(this.getSelectedDishVariant()) {
             addOns.push(...this.getSelectedDishVariant().add_on_type_links);
             addOns.push(...this.getSelectedDishVariant().variant.add_on_type_links);
-            addOns.push(...this.getSelectedDishVariant().variant.variant_category.add_on_type_links);
+            if(addOns.push(...this.getSelectedDishVariant().variant.hasOwnProperty('variant_category')))
+                addOns.push(...this.getSelectedDishVariant().variant.variant_category.add_on_type_links);
         }
         return addOns;
     };
