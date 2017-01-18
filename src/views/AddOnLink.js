@@ -15,7 +15,7 @@ class AddOnLink extends React.Component {
     render() {
         return (
             <View style={s.parent}>
-                <Text>{this.props.add_on_link.add_on.name} ({this.props.add_on_link.price}) </Text>
+                <Text>{this.props.addOnLink.add_on.name} ({this.props.addOnLink.price}) </Text>
             </View>
         );
 
