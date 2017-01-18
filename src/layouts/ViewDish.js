@@ -16,9 +16,9 @@ import AddOnSelector from '../views/AddOnSelector';
 import {fetchDish} from '../reducers/dishCategory/dishCategoryActions';
 import {plusOneDishVariantToCart, minusOneDishVariantToCart, getDishQuantity} from '../reducers/cart/cartActions';
 
-@connect((store) => {
+@connect((store,props) => {
     return {
-        dishCategories: store.dishCategory.dish_categories,
+        dish: store.dishCategory.dish_categories.filter(dishCategory => dishCategory.id === props.dishCategoryId)[0].dishes.filter(dish => dish.id == props.id)[0],
         cartDishVariants: store.cart.dish_variants
     }
 })
@@ -29,19 +29,18 @@ export default class ViewDish extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            selected_variant_id: null
+            selectedVariantId: null
         }
     }
 
-    componentDidMount = () => { if(this.getDish() && !this.getDish().hasOwnProperty('dish_variants')) this.props.dispatch(fetchDish(this.props.id, this.props.category_id));};
+    componentDidMount = () => { if(this.props.dish && !this.props.dish.hasOwnProperty('dish_variants')) this.props.dispatch(fetchDish(this.props.id, this.props.dishCategoryId));};
 
-    addToCart = () => { this.props.dispatch(plusOneDishVariantToCart({id: this.state.selected_variant_id, dish_id: this.getDish().id, dish_category_id: this.props.category_id, ordered:{}})) };
-    removeFromCart = () => { this.props.dispatch(minusOneDishVariantToCart({id: this.state.selected_variant_id, dish_id: this.getDish().id, dish_category_id: this.props.category_id, ordered:{}})) };
-    setSelectedVariant = (variant_id) => { this.setState({selected_variant_id: variant_id}); };
+    addToCart = () => { this.props.dispatch(plusOneDishVariantToCart({id: this.state.selectedVariantId, dish_id: this.props.dish.id, dish_category_id: this.props.dishCategoryId, ordered:{}})) };
+    removeFromCart = () => { this.props.dispatch(minusOneDishVariantToCart({id: this.state.selectedVariantId, dish_id: this.props.dish.id, dish_category_id: this.props.dishCategoryId, ordered:{}})) };
+    setSelectedVariant = (variantId) => { this.setState({selectedVariantId: variantId}); };
 
-    getDish() { return this.props.dishCategories.filter(dishCategory => dishCategory.id === this.props.category_id)[0].dishes.filter(dish => dish.id == this.props.id)[0] }
-    getSelectedDishVariant() { if(this.getDish().hasOwnProperty('dish_variants')) return this.getDish().dish_variants.filter(dish_variant => dish_variant.id === this.state.selected_variant_id)[0]; }
-    getQuantity() { return this.props.cartDishVariants.reduce((quantity, dish_variant) => { return (dish_variant.dish_id === this.props.id)? quantity+dish_variant.quantity : quantity; }, 0); }
+    getSelectedDishVariant() { if(this.props.dish.hasOwnProperty('dish_variants')) return this.props.dish.dish_variants.filter(dishVariant => dishVariant.id === this.state.selectedVariantId)[0]; }
+    getQuantity() { return this.props.cartDishVariants.reduce((quantity, dishVariant) => { return (dishVariant.dish_id === this.props.id)? quantity+dishVariant.quantity : quantity; }, 0); }
 
     getAddOnTypeLinks() {
         let addOns = [];
@@ -63,15 +62,15 @@ export default class ViewDish extends Component {
                     <Text>Go back</Text>
                 </TouchableHighlight>
                 <Text> Dish id: { this.props.id } </Text>
-                { this.getDish() && this.getDish().inProgress && <Text> inProgress </Text> }
-                { this.getDish() && this.getDish().hasOwnProperty('dish_variants') && <Dish dish={this.getDish()} category_id={this.props.category_id} selectVariant={this.setSelectedVariant} /> }
-                { this.getDish() && this.getDish().error == null && !this.getDish().inProgress &&
+                { this.props.dish && this.props.dish.inProgress && <Text> inProgress </Text> }
+                { this.props.dish && this.props.dish.hasOwnProperty('dish_variants') && <Dish dish={this.props.dish} category_id={this.props.dishCategoryId} selectVariant={this.setSelectedVariant} /> }
+                { this.props.dish && this.props.dish.error == null && !this.props.dish.inProgress &&
                     <View>
                         {
-                            this.getDish().hasOwnProperty('dish_variants') &&
-                            <AddOnSelector add_on_type_links={this.getAddOnTypeLinks()} />
+                            this.props.dish.hasOwnProperty('dish_variants') &&
+                            <AddOnSelector addOnTypeLinks={this.getAddOnTypeLinks()} />
                         }
-                        <Text> Selected: {this.state.selected_variant_id} </Text>
+                        <Text> Selected: {this.state.selectedVariantId} </Text>
                         <Text> In Cart : {this.getQuantity()} </Text>
                         <View style={{flexDirection: 'row'}}>
                             <TouchableHighlight
@@ -89,7 +88,7 @@ export default class ViewDish extends Component {
                         </View>
                     </View>
                 }
-                { this.getDish() && this.getDish().error != null && !this.getDish().inProgress && <Text> {this.getDish().error.toString()} </Text> }
+                { this.props.dish && this.props.dish.error != null && !this.props.dish.inProgress && <Text> {this.props.dish.error.toString()} </Text> }
             </View>
         );
     }

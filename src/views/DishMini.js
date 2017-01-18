@@ -17,7 +17,7 @@ class DishMini extends React.Component {
     render() {
         return (
             <TouchableHighlight
-                onPress={() => Actions.viewDish({id: this.props.dish.id, category_id: this.props.category_id})}
+                onPress={() => Actions.viewDish({id: this.props.dish.id, dishCategoryId: this.props.dishCategoryId})}
                 style={s.parent}>
                 <View>
                     <Text> { this.props.dish.name } </Text>

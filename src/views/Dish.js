@@ -23,9 +23,9 @@ class Dish extends React.Component {
                 { this.props.dish.inProgress && <Text> inProgress </Text> }
                 <Text> { this.props.dish.name } </Text>
                 <Text> Restaurant: { this.props.dish.restaurant.name } </Text>
-                { this.props.dish.dish_variants.length>1 && this.props.dish.dish_variants.map((dish_variant,index) => {
+                { this.props.dish.dish_variants.length>1 && this.props.dish.dish_variants.map((dishVariant,index) => {
                     return (
-                        <DishVariant key={dish_variant.id} dish_variant={dish_variant} index={index}
+                        <DishVariant key={dishVariant.id} dishVariant={dishVariant} index={index}
                               selectVariant={this.props.selectVariant} />
                     )
                 }) }

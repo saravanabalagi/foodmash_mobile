@@ -8,16 +8,15 @@ export function fetchDishCategories() {
         axios.get(url)
             .then((response) => {
                 dispatch({ type: "FETCH_DISH_CATEGORIES_FULFILLED", payload: response.data});
-                if (response.data.length > 0) dispatch(selectDishCategoryAndFetchDishes(response.data[0].id));
+                if (response.data.length > 0) dispatch(fetchDishesForDishCategory(response.data[0].id));
             })
             .catch((error) => { dispatch({ type: "FETCH_DISH_CATEGORIES_FAILED", payload: error }); });
     };
 }
 
-export function selectDishCategoryAndFetchDishes(id) {
+export function fetchDishesForDishCategory(id) {
     const url = '/dish_categories/' + id.toString() + '/dishes';
     return (dispatch) => {
-        dispatch({type: "SELECT_DISH_CATEGORY", payload: id});
         let dishCategories = store.getState().dishCategory.dish_categories;
         if(!dishCategories.filter(dishCategory => dishCategory.id === id)[0].hasOwnProperty('dishes')) {
             dispatch({type: "FETCH_DISHES_FOR_CATEGORY_IN_PROGRESS", id: id});

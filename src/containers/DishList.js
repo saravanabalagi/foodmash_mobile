@@ -5,42 +5,27 @@ import {
     TextInput,
     TouchableHighlight,
     StyleSheet
-} from 'react-native'
-import {connect} from 'react-redux';
+} from 'react-native';
 import DishMini from '../views/DishMini';
-
-import {selectDishCategoryAndFetchDishes} from '../reducers/dishCategory/dishCategoryActions';
-
-@connect((store) => {
-    return {
-        dishCategories: store.dishCategory.dish_categories,
-        selectedDishCategory: store.dishCategory.selected,
-    };
-})
 
 class DishList extends React.Component {
 
-    constructor(props) { super(props); }
-
-    componentDidMount = () => {
-        let dishCategory = this.getDishCategory();
-        if(!dishCategory.hasOwnProperty('dishes'))
-            this.props.dispatch(selectDishCategoryAndFetchDishes(this.props.selectedDishCategory));
-    };
-
-    getDishCategory() { return this.props.dishCategories.filter(dishCategory => dishCategory.id === this.props.selectedDishCategory)[0]; }
+    constructor(props) {
+        super(props);
+    }
 
     render() {
         return (
             <View style={s.parent}>
-                { this.getDishCategory().inProgress && <Text> inProgress </Text> }
-                {
-                    this.getDishCategory().dishes &&
-                    this.getDishCategory().dishes.map((dish) => {
-                        return <DishMini key={dish.id} dish={dish} category_id={this.props.selectedDishCategory} />
+                { this.props.dishCategory && this.props.dishCategory.inProgress && <Text> inProgress </Text> }
+                { this.props.dishCategory && this.props.dishCategory.dishes &&
+                    this.props.dishCategory.dishes.map((dish) => {
+                        return <DishMini key={dish.id}
+                                         dish={dish}
+                                         dishCategoryId={this.props.dishCategory.id} />
                     })
                 }
-                { this.getDishCategory().error != null && !this.getDishCategory().inProgress && <Text> {this.getDishCategory().error.toString()} </Text> }
+                { this.props.dishCategory && this.props.dishCategory.error != null && !this.props.dishCategory.inProgress && <Text> {this.props.dishCategory.error.toString()} </Text> }
             </View>
         );
 

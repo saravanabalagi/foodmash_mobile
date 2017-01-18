@@ -12,6 +12,8 @@ class DishCategory extends React.Component {
         super(props);
     }
 
+    componentWillMount = () => { if(this.props.index === 0) this.props.selectDishCategory(this.props.dishCategory.id) };
+
     render() {
         return (
             <View style={s.parent}>
@@ -27,8 +29,6 @@ class DishCategory extends React.Component {
     }
 
 }
-
-// onPress={this.props.selectDishCategory(this.props.dishCategory.id)}
 
 const s = StyleSheet.create({
     tab: { padding: 10},
