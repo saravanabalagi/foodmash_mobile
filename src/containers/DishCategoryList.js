@@ -17,7 +17,7 @@ import {fetchDishCategories, selectDishCategoryAndFetchDishes} from '../reducers
 
 @connect((store) => {
     return {
-        dishCategories: store.dishCategory.dishCategories,
+        dishCategories: store.dishCategory.dish_categories,
         selectedDishCategory: store.dishCategory.selected,
         inProgress: store.dishCategory.inProgress,
         error: store.dishCategory.error

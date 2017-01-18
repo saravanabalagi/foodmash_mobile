@@ -13,7 +13,7 @@ import {selectDishCategoryAndFetchDishes} from '../reducers/dishCategory/dishCat
 
 @connect((store) => {
     return {
-        dishCategories: store.dishCategory.dishCategories,
+        dishCategories: store.dishCategory.dish_categories,
         selectedDishCategory: store.dishCategory.selected,
     };
 })

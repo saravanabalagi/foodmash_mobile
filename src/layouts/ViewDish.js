@@ -18,7 +18,7 @@ import {plusOneDishVariantToCart, minusOneDishVariantToCart, getDishQuantity} fr
 
 @connect((store) => {
     return {
-        dishCategories: store.dishCategory.dishCategories,
+        dishCategories: store.dishCategory.dish_categories,
         cartDishVariants: store.cart.dish_variants
     }
 })

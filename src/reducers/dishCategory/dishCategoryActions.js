@@ -18,7 +18,7 @@ export function selectDishCategoryAndFetchDishes(id) {
     const url = '/dish_categories/' + id.toString() + '/dishes';
     return (dispatch) => {
         dispatch({type: "SELECT_DISH_CATEGORY", payload: id});
-        let dishCategories = store.getState().dishCategory.dishCategories;
+        let dishCategories = store.getState().dishCategory.dish_categories;
         if(!dishCategories.filter(dishCategory => dishCategory.id === id)[0].hasOwnProperty('dishes')) {
             dispatch({type: "FETCH_DISHES_FOR_CATEGORY_IN_PROGRESS", id: id});
             axios.get(url)
@@ -39,7 +39,7 @@ export function fetchDish(dish_id, category_id) {
 }
 
 export function getPrice(dish_variant_id, dish_id, dish_category_id) {
-    let dishCategories = store.getState().dishCategory.dishCategories;
+    let dishCategories = store.getState().dishCategory.dish_categories;
     return dishCategories.filter(dishCategory => dishCategory.id === dish_category_id)[0]
                         .dishes.filter(dish => dish.id === dish_id)[0]
                         .dish_variants.filter(dish_variant => dish_variant.id === dish_variant_id)[0]

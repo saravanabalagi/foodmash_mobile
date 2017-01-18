@@ -17,7 +17,7 @@ import CartDishVariant from '../views/CartDishVariant';
 @connect((store) => {
     return {
         signedIn: store.user.session.jwt!=null,
-        dishCategories: store.dishCategory.dishCategories,
+        dishCategories: store.dishCategory.dish_categories,
         dishVariants: store.cart.dish_variants,
         combos: store.cart.combos,
         inProgress: store.cart.inProgress,
