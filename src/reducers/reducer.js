@@ -12,6 +12,7 @@ import variantCategoryReducer from './variantCategory/variantCategoryReducer';
 import restaurantReducer from './restaurant/restaurantReducer';
 import addOnReducer from './addOn/addOnReducer';
 import addOnLinkReducer from './addOnLink/addOnLinkReducer';
+import addOnTypeReducer from './addOnType/addOnTypeReducer';
 import locationReducer from './location/locationReducer';
 import orderReducer from './order/orderReducer';
 import userReducer from './user/userReducer'
@@ -29,6 +30,7 @@ export default combineReducers({
     restaurant: restaurantReducer,
     addOn: addOnReducer,
     addOnLink: addOnLinkReducer,
+    addOnType: addOnTypeReducer,
     location: locationReducer,
     order: orderReducer,
     user: userReducer
