@@ -9,6 +9,7 @@ import dishReducer from './dish/dishReducer';
 import dishVariantReducer from './dishVariant/dishVariantReducer';
 import variantReducer from './variant/variantReducer';
 import variantCategoryReducer from './variantCategory/variantCategoryReducer';
+import restaurantReducer from './restaurant/restaurantReducer';
 import locationReducer from './location/locationReducer';
 import orderReducer from './order/orderReducer';
 import userReducer from './user/userReducer'
@@ -23,6 +24,7 @@ export default combineReducers({
     dishVariant: dishVariantReducer,
     variant: variantReducer,
     variantCategory: variantCategoryReducer,
+    restaurant: restaurantReducer,
     location: locationReducer,
     order: orderReducer,
     user: userReducer
