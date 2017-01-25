@@ -68,6 +68,11 @@ export function getTotalItems() {
     },0);
 }
 
+export function getDishQuantity(id) {
+    return store.getState().cart.dish_variants.reduce((quantity, dishVariant) => {
+        return (dishVariant.dish_id === id)? quantity+dishVariant.quantity : quantity;
+    }, 0);
+}
 
 
 // export function addComboToCart(combo) {
