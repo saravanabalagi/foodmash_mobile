@@ -48,7 +48,8 @@ class AddOnSelector extends React.Component {
                 addOnLinksOfSelectedAddOnTypeLink: [],
                 selectedAddOnTypeLink: null
             });
-            this.props.dispatch(fetchVariantCategory(nextProps.variant.variant_category_id));
+            if(nextProps.variant.variant_category_id!=null)
+                this.props.dispatch(fetchVariantCategory(nextProps.variant.variant_category_id));
             this.setState({variantCategory: nextProps.variantCategories[nextProps.variant.variant_category_id]}, this.fetchAddOnTypeLinks);
         }
         if(this.state.variantCategory!=null) this.fetchAddOnTypeLinks(nextProps.addOnTypeLinks);
