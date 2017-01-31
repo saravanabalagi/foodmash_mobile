@@ -9,36 +9,91 @@ import {
 
 import AddOnTypeLink from '../views/AddOnTypeLink';
 import AddOnLink from '../views/AddOnLink';
+import {connect} from 'react-redux';
+
+import {fetchVariant} from '../reducers/variant/variantActions';
+import {fetchVariantCategory} from '../reducers/variantCategory/variantCategoryActions';
+import {fetchAddOnTypeLink} from '../reducers/addOnTypeLink/addOnTypeLinkActions';
+import {fetchAddOnLink} from '../reducers/addOnLink/addOnLinkActions';
+
+@connect((store,props) => {
+    return {
+        variant: store.variant.variants[props.dishVariant.variant_id],
+        variantCategories: store.variantCategory.variantCategories,
+        addOnTypeLinks: store.addOnTypeLink.addOnTypeLinks,
+        addOnLinks: store.addOnLink.addOnLinks
+    }
+})
 
 class AddOnSelector extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            selectedAddOnTypeLinkId: null
+            variantCategory: null,
+            addOnTypeLinks: [],
+            addOnLinksOfSelectedAddOnTypeLink: [],
+            selectedAddOnTypeLink: null
         }
     }
 
-    setSelectedAddOnTypeLinkId = (addOnTypeLinkId) => { this.setState({selectedAddOnTypeLinkId: addOnTypeLinkId}); };
-    getSelectedAddOnTypeLink() { return this.props.addOnTypeLinks.filter(addOnTypeLink => addOnTypeLink.id === this.state.selectedAddOnTypeLinkId)[0]; }
+    componentWillMount = () => { this.componentWillReceiveProps(this.props) };
+
+    componentWillReceiveProps = (nextProps) => {
+        if(nextProps.variant==null) this.props.dispatch(fetchVariant(this.props.dishVariant.variant_id));
+        if((nextProps.variant!=null && this.state.variantCategory==null) || nextProps.variant!=this.props.variant) {
+            if(nextProps.variant!=this.props.variant) this.setState({
+                variantCategory: null,
+                addOnTypeLinks: [],
+                addOnLinksOfSelectedAddOnTypeLink: [],
+                selectedAddOnTypeLink: null
+            });
+            this.props.dispatch(fetchVariantCategory(nextProps.variant.variant_category_id));
+            this.setState({variantCategory: nextProps.variantCategories[nextProps.variant.variant_category_id]}, this.fetchAddOnTypeLinks);
+        }
+        if(this.state.variantCategory!=null) this.fetchAddOnTypeLinks(nextProps.addOnTypeLinks);
+        if(this.state.selectedAddOnTypeLink!=null) this.fetchAddOnLinks();
+    };
+
+    fetchAddOnTypeLinks = (nextPropsAddOnTypeLinks) => {
+        let addOnTypeLinkIds = [];
+        addOnTypeLinkIds.push(...this.props.dishVariant.add_on_type_link_ids);
+        this.props.variant && addOnTypeLinkIds.push(...this.props.variant.add_on_type_link_ids);
+        this.state.variantCategory && addOnTypeLinkIds.push(...this.state.variantCategory.add_on_type_link_ids);
+        addOnTypeLinkIds.map(addOnTypeLinkId => this.props.dispatch(fetchAddOnTypeLink(addOnTypeLinkId)));
+        let addOnTypeLinks = nextPropsAddOnTypeLinks || this.props.addOnTypeLinks;
+        let requiredAddOnTypeLinks = addOnTypeLinkIds
+            .map(addOnTypeLinkId => addOnTypeLinks[addOnTypeLinkId])
+            .filter(Boolean);
+        if(requiredAddOnTypeLinks.length>0 && this.state.selectedAddOnTypeLink == null)
+            this.setState({selectedAddOnTypeLink: requiredAddOnTypeLinks[0]}, this.fetchAddOnLinks);
+        this.setState({addOnTypeLinks: requiredAddOnTypeLinks});
+    };
+
+    fetchAddOnLinks = () => {
+        this.state.selectedAddOnTypeLink.add_on_link_ids.map(addOnLinkId => this.props.dispatch(fetchAddOnLink(addOnLinkId)));
+        this.setState({addOnLinksOfSelectedAddOnTypeLink:
+            this.state.selectedAddOnTypeLink.add_on_link_ids
+                .map(addOnLinkId => this.props.addOnLinks[addOnLinkId])
+                .filter(Boolean)});
+    };
 
     render() {
         return (
             <View style={s.parent}>
                 <ScrollView style={s.tabBar} horizontal={true} showsHorizontalScrollIndicator={false} >
-                    { this.props.addOnTypeLinks.map((addOnTypeLink, index) => {
+                    { this.state.addOnTypeLinks.map(addOnTypeLink => {
                         return (
                             <AddOnTypeLink key={addOnTypeLink.id}
-                                           index={index}
-                                           selected={addOnTypeLink.id === this.state.selectedAddOnTypeLinkId}
-                                           selectAddOnTypeLink={this.setSelectedAddOnTypeLinkId}
+                                           selected={this.state.selectedAddOnTypeLink && addOnTypeLink.id === this.state.selectedAddOnTypeLink.id}
+                                           selectAddOnTypeLink={(addOnTypeLink) => this.setState({selectedAddOnTypeLink: addOnTypeLink}, this.fetchAddOnLinks)}
                                            addOnTypeLink={addOnTypeLink} />
                         )
                     }) }
                 </ScrollView>
                 <View style={s.addOnLinkListView}>
-                    {this.state.selectedAddOnTypeLinkId && this.getSelectedAddOnTypeLink() &&
-                        this.getSelectedAddOnTypeLink().add_on_links.map(addOnLink => {
+                    {this.state.selectedAddOnTypeLink &&
+                        this.state.addOnLinksOfSelectedAddOnTypeLink.map(addOnLink => {
                         return (
                             <AddOnLink key={addOnLink.id}
                                        addOnLink={addOnLink} />

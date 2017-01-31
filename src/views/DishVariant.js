@@ -6,7 +6,14 @@ import {
     TouchableHighlight
 } from 'react-native'
 
-import {Actions} from 'react-native-router-flux'
+import {connect} from 'react-redux';
+import {fetchVariant} from '../reducers/variant/variantActions';
+
+@connect((store, props) => {
+    return {
+        variant: store.variant.variants[props.dishVariant.variant_id]
+    }
+})
 
 class DishVariant extends React.Component {
 
@@ -14,16 +21,16 @@ class DishVariant extends React.Component {
         super(props);
     }
 
-    componentDidMount = () => { if(this.props.index==0) this.props.selectVariant(this.props.dishVariant.id); };
+    componentWillMount = () => { this.props.dispatch(fetchVariant(this.props.dishVariant.variant_id)); };
 
     render() {
         return (
             <View key={this.props.dishVariant.id} style={s.variant}>
-                <Text> Variant: {this.props.dishVariant.variant.display_name}</Text>
+                <Text> Variant: {this.props.variant && this.props.variant.display_name}</Text>
                 <Text> Rs. {this.props.dishVariant.price} </Text>
                 <View style={{flexDirection: 'row'}}>
                     <TouchableHighlight
-                        onPress={() => this.props.selectVariant(this.props.dishVariant.id)}
+                        onPress={() => this.props.selectVariant(this.props.dishVariant)}
                         underlayColor={'#000'}
                         style={s.button} >
                         <Text>Select</Text>

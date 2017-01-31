@@ -17,9 +17,10 @@ import CartDishVariant from '../views/CartDishVariant';
 @connect((store) => {
     return {
         signedIn: store.user.session.jwt!=null,
-        dishCategories: store.dishCategory.dish_categories,
-        dishVariants: store.cart.dish_variants,
-        combos: store.cart.combos,
+        cartDishVariants: store.cart.dishVariants,
+        dishVariants: store.dishVariant.dishVariants,
+        dishes: store.dish.dishes,
+        restaurants: store.restaurant.restaurants,
         inProgress: store.cart.inProgress,
         error: store.cart.error,
         total: getTotal(),
@@ -34,33 +35,33 @@ export default class Cart extends Component {
         this.state = {}
     }
 
-    handleSubmitCart = () => { this.props.dispatch(submitCart()); };
-    handleAddToCart = (variant_id, dish_id, dish_category_id) => { this.props.dispatch(plusOneDishVariantToCart({id: variant_id, dish_id: dish_id, dish_category_id: dish_category_id, ordered:{}})) };
-    handleRemoveFromCart = (variant_id, dish_id, dish_category_id) => { this.props.dispatch(minusOneDishVariantToCart({id: variant_id, dish_id: dish_id, dish_category_id: dish_category_id, ordered:{}})) };
+    handleAddToCart = (variantId) => { this.props.dispatch(plusOneDishVariantToCart({id: variantId, ordered:{}})) };
+    handleRemoveFromCart = (variantId) => { this.props.dispatch(minusOneDishVariantToCart({id: variantId, ordered:{}})) };
 
-    getDishCategory = (dish_category_id) => { return this.props.dishCategories.filter(dishCategory => dishCategory.id === dish_category_id)[0] };
-    getDish = (dish_id, dishCategory) => { return dishCategory.dishes.filter(dish => dish.id === dish_id)[0] };
-    getDishVariant = (dish_variant_id, dish) => { return dish.dish_variants.filter(dish_variant => dish_variant.id === dish_variant_id)[0] };
+    getDishVariant = (dishVariantId) => { return this.props.dishVariants[dishVariantId] };
+    getDish = (dishVariantId) => { return this.getDishVariant(dishVariantId)? this.props.dishes[this.getDishVariant(dishVariantId).dish_id] : null };
+    getRestaurant = (dishVariantId) => { return this.getDish(dishVariantId)? this.props.restaurants[this.getDish(dishVariantId).restaurant_id] : null };
 
     render() {
         return (
             <ScrollView style={s.parent}>
                 <View>
                     { this.props.inProgress && <Text> inProgress </Text> }
-                    { this.props.dishVariants.map(dish_variant => {
+                    { this.props.cartDishVariants.map(dishVariant => {
                         return <CartDishVariant
-                            key={dish_variant.id}
+                            key={dishVariant.id}
                             addToCart={this.handleAddToCart}
                             removeFromCart={this.handleRemoveFromCart}
-                            cart_dish_variant={dish_variant}
-                            dish_variant={this.getDishVariant(dish_variant.id, this.getDish(dish_variant.dish_id, this.getDishCategory(dish_variant.dish_category_id)))}
-                            dish={this.getDish(dish_variant.dish_id, this.getDishCategory(dish_variant.dish_category_id))}
-                            dish_category={this.getDishCategory(dish_variant.dish_category_id)} />
+                            cartDishVariant={dishVariant}
+                            dishVariant={this.getDishVariant(dishVariant.id)}
+                            dish={this.getDish(dishVariant.id)}
+                            restaurant={this.getRestaurant(dishVariant.id)}
+                        />
                     }) }
                     <Text> Total: { this.props.total } </Text>
                     <Text> Items: { this.props.totalItems } </Text>
                     {
-                        this.props.dishVariants.length>0 &&
+                        this.props.cartDishVariants.length>0 &&
                         <TouchableHighlight style={s.button} onPress={Actions.chooseAddress}>
                             <Text> { this.props.signedIn? "Proceed" : "Login" } </Text>
                         </TouchableHighlight>

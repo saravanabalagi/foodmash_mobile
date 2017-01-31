@@ -1,9 +1,8 @@
 import axios from 'axios';
 import store from '../../store';
 
-import {Actions, ActionConst} from 'react-native-router-flux';
+import {Actions} from 'react-native-router-flux';
 import {fetchOrdersAndfetchOrder} from '../order/orderActions';
-import {getPrice} from '../dishCategory/dishCategoryActions';
 
 export function fetchCart() {
     const url = '/cart';
@@ -17,10 +16,10 @@ export function fetchCart() {
 
 export function submitAddress() {
     const url = '/cart/set_address';
-    const address_id = store.getState().cart.address_id;
+    const addressId = store.getState().cart.addressId;
     return (dispatch) => {
         dispatch({type: "SUBMIT_ADDRESS_IN_PROGRESS"});
-        axios.post(url, {address_id: address_id})
+        axios.post(url, {address_id: addressId})
             .then((response) => { dispatch({ type: "SUBMIT_ADDRESS_FULFILLED", payload: response.data }); Actions.checkout(); })
             .catch((error) => { dispatch({ type: "SUBMIT_ADDRESS_FAILED", payload: error }); });
     };
@@ -31,16 +30,16 @@ export function submitCart() {
     const cart = store.getState().cart;
     return (dispatch) => {
         dispatch({type: "SUBMIT_CART_IN_PROGRESS"});
-        axios.post(url, { dish_variants: cart.dish_variants})
+        axios.post(url, { dish_variants: cart.dishVariants})
             .then((response) => { dispatch({ type: "SUBMIT_CART_FULFILLED", payload: response.data }); dispatch(submitAddress()); })
             .catch((error) => { dispatch({ type: "SUBMIT_CART_FAILED", payload: error }); });
     };
 }
 
-export function plusOneDishVariantToCart(dish_variant) { return (dispatch) => { dispatch({type: "PLUS_ONE_DISH_VARIANT", dish_variant: dish_variant}); }; }
-export function minusOneDishVariantToCart(dish_variant) { return (dispatch) => { dispatch({type: "MINUS_ONE_DISH_VARIANT", dish_variant: dish_variant}); }; }
+export function plusOneDishVariantToCart(dishVariant) { return (dispatch) => { dispatch({type: "PLUS_ONE_DISH_VARIANT", dishVariant: dishVariant}); }; }
+export function minusOneDishVariantToCart(dishVariant) { return (dispatch) => { dispatch({type: "MINUS_ONE_DISH_VARIANT", dishVariant: dishVariant}); }; }
 
-export function setAddress(address_id) { return (dispatch) => { dispatch({type: "SET_ADDRESS_FOR_CART", address_id: address_id}) } }
+export function setAddress(addressId) { return (dispatch) => { dispatch({type: "SET_ADDRESS_FOR_CART", addressId: addressId}) } }
 
 export function purchaseCart() {
     const url = '/cart/purchase/cod';
@@ -57,20 +56,24 @@ export function purchaseCart() {
 }
 
 export function getTotal() {
-    return store.getState().cart.dish_variants.reduce((total, dish_variant)=>{
-        return total +  getPrice(dish_variant.id, dish_variant.dish_id, dish_variant.dish_category_id)*dish_variant.quantity;
+    let cartDishVariants = store.getState().cart.dishVariants;
+    let dishVariants = store.getState().dishVariant.dishVariants;
+    return cartDishVariants.reduce((total, dishVariant)=>{
+        return total + dishVariants[dishVariant.id].price*dishVariant.quantity;
     },0);
 }
 
 export function getTotalItems() {
-    return store.getState().cart.dish_variants.reduce((total, dish_variant)=>{
+    return store.getState().cart.dishVariants.reduce((total, dish_variant)=>{
         return total +  dish_variant.quantity;
     },0);
 }
 
 export function getDishQuantity(id) {
-    return store.getState().cart.dish_variants.reduce((quantity, dishVariant) => {
-        return (dishVariant.dish_id === id)? quantity+dishVariant.quantity : quantity;
+    let cartDishVariants = store.getState().cart.dishVariants;
+    let dishVariants = store.getState().dishVariant.dishVariants;
+    return cartDishVariants.reduce((quantity, dishVariant) => {
+        return (dishVariants[dishVariant.id].dish_id === id)? quantity+dishVariant.quantity : quantity;
     }, 0);
 }
 

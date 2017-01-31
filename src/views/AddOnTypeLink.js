@@ -4,7 +4,16 @@ import {
     View,
     StyleSheet,
     TouchableHighlight
-} from 'react-native'
+} from 'react-native';
+
+import {fetchAddOnType} from '../reducers/addOnType/addOnTypeActions';
+import {connect} from 'react-redux';
+
+@connect((store,props)=>{
+    return {
+        addOnType: store.addOnType.addOnTypes[props.addOnTypeLink.add_on_type_id]
+    }
+})
 
 class AddOnTypeLink extends React.Component {
 
@@ -12,15 +21,15 @@ class AddOnTypeLink extends React.Component {
         super(props);
     }
 
-    componentWillMount = () => { if(this.props.index === 0) this.props.selectAddOnTypeLink(this.props.addOnTypeLink.id); };
+    componentWillMount = () => { this.props.dispatch(fetchAddOnType(this.props.addOnTypeLink.add_on_type_id)); };
 
     render() {
         return (
             <View style={s.parent}>
                 <TouchableHighlight
                     style={s.tab} underlayColor={'#BBB'}
-                    onPress={() => this.props.selectAddOnTypeLink(this.props.addOnTypeLink.id)}>
-                    <Text style={s.text}> { this.props.addOnTypeLink.add_on_type.name } </Text>
+                    onPress={() => this.props.selectAddOnTypeLink(this.props.addOnTypeLink)}>
+                    <Text style={s.text}> { this.props.addOnType && this.props.addOnType.name } ({this.props.addOnTypeLink.id}) </Text>
                 </TouchableHighlight>
                 { this.props.selected && <View style={s.highlight} /> }
             </View>

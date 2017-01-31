@@ -10,16 +10,16 @@ import {
 import {Actions} from 'react-native-router-flux';
 import {connect} from 'react-redux';
 
-import Dish from '../views/Dish';
+import DishVariant from '../views/DishVariant';
 import AddOnSelector from '../views/AddOnSelector';
 
-import {fetchDish} from '../reducers/dishCategory/dishCategoryActions';
+import {fetchDishVariant} from '../reducers/dishVariant/dishVariantActions';
 import {plusOneDishVariantToCart, minusOneDishVariantToCart, getDishQuantity} from '../reducers/cart/cartActions';
 
 @connect((store,props) => {
     return {
-        dish: store.dishCategory.dish_categories.filter(dishCategory => dishCategory.id === props.dishCategoryId)[0].dishes.filter(dish => dish.id == props.id)[0],
-        cartDishVariants: store.cart.dish_variants
+        dishVariants: props.dish.dish_variant_ids.map(dishVariantId => store.dishVariant.dishVariants[dishVariantId]).filter(Boolean),
+        quantityInCart: getDishQuantity(props.dish.id) || 0
     }
 })
 
@@ -29,29 +29,15 @@ export default class ViewDish extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            selectedVariantId: null
+            selectedDishVariant: this.props.dishVariants[0]
         }
     }
 
-    componentDidMount = () => { if(this.props.dish && !this.props.dish.hasOwnProperty('dish_variants')) this.props.dispatch(fetchDish(this.props.id, this.props.dishCategoryId));};
+    componentWillMount = () => { console.log("ViewDish Mounted"); this.props.dish.dish_variant_ids.map(dishVariantId => this.props.dispatch(fetchDishVariant(dishVariantId))); };
+    componentWillReceiveProps = (nextProps) => { if(this.state.selectedDishVariant == null && nextProps.dishVariants != null) this.setState({selectedDishVariant: nextProps.dishVariants[0]}); };
 
-    addToCart = () => { this.props.dispatch(plusOneDishVariantToCart({id: this.state.selectedVariantId, dish_id: this.props.dish.id, dish_category_id: this.props.dishCategoryId, ordered:{}})) };
-    removeFromCart = () => { this.props.dispatch(minusOneDishVariantToCart({id: this.state.selectedVariantId, dish_id: this.props.dish.id, dish_category_id: this.props.dishCategoryId, ordered:{}})) };
-    setSelectedVariant = (variantId) => { this.setState({selectedVariantId: variantId}); };
-
-    getSelectedDishVariant() { if(this.props.dish.hasOwnProperty('dish_variants')) return this.props.dish.dish_variants.filter(dishVariant => dishVariant.id === this.state.selectedVariantId)[0]; }
-    getQuantity() { return this.props.cartDishVariants.reduce((quantity, dishVariant) => { return (dishVariant.dish_id === this.props.id)? quantity+dishVariant.quantity : quantity; }, 0); }
-
-    getAddOnTypeLinks() {
-        let addOns = [];
-        if(this.getSelectedDishVariant()) {
-            addOns.push(...this.getSelectedDishVariant().add_on_type_links);
-            addOns.push(...this.getSelectedDishVariant().variant.add_on_type_links);
-            if(addOns.push(...this.getSelectedDishVariant().variant.hasOwnProperty('variant_category')))
-                addOns.push(...this.getSelectedDishVariant().variant.variant_category.add_on_type_links);
-        }
-        return addOns;
-    };
+    addToCart = () => { this.props.dispatch(plusOneDishVariantToCart({id: this.state.selectedDishVariant.id, ordered:{}})) };
+    removeFromCart = () => { this.props.dispatch(minusOneDishVariantToCart({id: this.state.selectedDishVariant.id, ordered:{}})) };
 
     render() {
         return (
@@ -61,17 +47,24 @@ export default class ViewDish extends Component {
                     style={{padding:10, backgroundColor: '#f77', margin: 10}}>
                     <Text>Go back</Text>
                 </TouchableHighlight>
-                <Text> Dish id: { this.props.id } </Text>
-                { this.props.dish && this.props.dish.inProgress && <Text> inProgress </Text> }
-                { this.props.dish && this.props.dish.hasOwnProperty('dish_variants') && <Dish dish={this.props.dish} category_id={this.props.dishCategoryId} selectVariant={this.setSelectedVariant} /> }
-                { this.props.dish && this.props.dish.error == null && !this.props.dish.inProgress &&
+                <Text> Dish id: { this.props.dish.id } </Text>
+                <Text> Name: { this.props.dish.name } </Text>
+                <Text> DishVariants: { this.props.dishVariants.length } </Text>
+                { this.props.dishVariants.length>1 && this.props.dishVariants.map(dishVariant => {
+                    return (
+                        <DishVariant key={dishVariant.id}
+                                     dishVariant={dishVariant}
+                                     selectVariant={(dishVariant)=>this.setState({selectedDishVariant: dishVariant})} />
+                    )
+                }) }
+                { this.props.dish.error == null && !this.props.dish.inProgress &&
                     <View>
                         {
-                            this.props.dish.hasOwnProperty('dish_variants') &&
-                            <AddOnSelector addOnTypeLinks={this.getAddOnTypeLinks()} />
+                            this.state.selectedDishVariant &&
+                            <AddOnSelector dishVariant={this.state.selectedDishVariant} />
                         }
-                        <Text> Selected: {this.state.selectedVariantId} </Text>
-                        <Text> In Cart : {this.getQuantity()} </Text>
+                        <Text> Selected: {this.state.selectedDishVariant && this.state.selectedDishVariant.id} </Text>
+                        <Text> In Cart : {this.props.quantityInCart} </Text>
                         <View style={{flexDirection: 'row'}}>
                             <TouchableHighlight
                                 onPress={this.addToCart}
@@ -88,7 +81,6 @@ export default class ViewDish extends Component {
                         </View>
                     </View>
                 }
-                { this.props.dish && this.props.dish.error != null && !this.props.dish.inProgress && <Text> {this.props.dish.error.toString()} </Text> }
             </View>
         );
     }

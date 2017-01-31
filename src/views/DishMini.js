@@ -7,6 +7,17 @@ import {
 } from 'react-native'
 
 import {Actions} from 'react-native-router-flux'
+import {connect} from 'react-redux';
+
+import {fetchRestaurant} from '../reducers/restaurant/restaurantActions';
+
+@connect((store, props) => {
+    return {
+        restaurant: store.restaurant.restaurants[props.dish.restaurant_id],
+        inProgress: store.dish.inProgress,
+        error: store.dish.error
+    };
+})
 
 class DishMini extends React.Component {
 
@@ -14,15 +25,16 @@ class DishMini extends React.Component {
         super(props);
     }
 
+    componentWillMount = () => { this.props.dispatch(fetchRestaurant(this.props.dish.restaurant_id)); };
+
     render() {
         return (
             <TouchableHighlight
-                onPress={() => Actions.viewDish({id: this.props.dish.id, dishCategoryId: this.props.dishCategoryId})}
+                onPress={() => Actions.viewDish({dish: this.props.dish})}
                 style={s.parent}>
                 <View>
                     <Text> { this.props.dish.name } </Text>
-                    <Text> { this.props.dish.restaurant.name } </Text>
-                    <Text> { this.props.dish.price } </Text>
+                    <Text> { this.props.restaurant && this.props.restaurant.name } </Text>
                 </View>
             </TouchableHighlight>
         );

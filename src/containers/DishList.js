@@ -6,7 +6,17 @@ import {
     TouchableHighlight,
     StyleSheet
 } from 'react-native';
+
 import DishMini from '../views/DishMini';
+import {connect} from 'react-redux';
+
+@connect((store, props) => {
+    return {
+        dishes: props.dish_ids.map(key => store.dish.dishes[key]).filter(Boolean),
+        inProgress: store.dish.inProgress,
+        error: store.dish.error
+    };
+})
 
 class DishList extends React.Component {
 
@@ -17,15 +27,14 @@ class DishList extends React.Component {
     render() {
         return (
             <View style={s.parent}>
-                { this.props.dishCategory && this.props.dishCategory.inProgress && <Text> inProgress </Text> }
-                { this.props.dishCategory && this.props.dishCategory.dishes &&
-                    this.props.dishCategory.dishes.map((dish) => {
+                { this.props.inProgress && <Text> inProgress </Text> }
+                { this.props.dishes &&
+                    this.props.dishes.map((dish) => {
                         return <DishMini key={dish.id}
-                                         dish={dish}
-                                         dishCategoryId={this.props.dishCategory.id} />
+                                         dish={dish}/>
                     })
                 }
-                { this.props.dishCategory && this.props.dishCategory.error != null && !this.props.dishCategory.inProgress && <Text> {this.props.dishCategory.error.toString()} </Text> }
+                { this.props.error != null && !this.props.inProgress && <Text> {this.props.error.toString()} </Text> }
             </View>
         );
 

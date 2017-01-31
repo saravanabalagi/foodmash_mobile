@@ -1,7 +1,7 @@
 export default (state = {
-    dish_variants: [],
+    dishVariants: [],
     combos: [],
-    address_id: null,
+    addressId: null,
     inProgress: false,
     values: {
         id: null,
@@ -16,7 +16,7 @@ export default (state = {
     switch(action.type) {
         case "FETCH_CART_IN_PROGRESS": newState.inProgress = true; break;
         case "FETCH_CART_FULFILLED":
-            if(action.payload.hasOwnProperty('dish_variants')) newState.dish_variants = action.payload['dish_variants'];
+            if(action.payload.hasOwnProperty('dishVariants')) newState.dishVariants = action.payload['dishVariants'];
             if(action.payload.hasOwnProperty('combos')) newState.combos = action.payload['combos'];
             newState.error = null; newState.inProgress = false; break;
         case "FETCH_CART_FAILED": newState.error = action.payload; newState.inProgress = false; break;
@@ -30,21 +30,21 @@ export default (state = {
         case "SUBMIT_CART_FAILED": newState.error = action.payload; newState.inProgress = false; break;
 
         case "PLUS_ONE_DISH_VARIANT":
-            let found = newState.dish_variants.filter(dish_variant => checkEqualityOfDishVariantsExceptQuantity(dish_variant, action.dish_variant)).length;
-            if(found==0) { action.dish_variant.quantity = 1; newState.dish_variants = [...newState.dish_variants, action.dish_variant]; }
-            else if(found==1) newState.dish_variants = newState.dish_variants.map(dish_variant => checkEqualityOfDishVariantsExceptQuantity(dish_variant, action.dish_variant)? changeQuantityToDishVariant(dish_variant,action,1) :dish_variant );
+            let found = newState.dishVariants.filter(dishVariant => checkEqualityOfDishVariantsExceptQuantity(dishVariant, action.dishVariant)).length;
+            if(found==0) { action.dishVariant.quantity = 1; newState.dishVariants = [...newState.dishVariants, action.dishVariant]; }
+            else if(found==1) newState.dishVariants = newState.dishVariants.map(dishVariant => checkEqualityOfDishVariantsExceptQuantity(dishVariant, action.dishVariant)? changeQuantityToDishVariant(dishVariant,action,1) :dishVariant );
             break;
         case "MINUS_ONE_DISH_VARIANT":
-            let filtered = newState.dish_variants.filter(dish_variant => checkEqualityOfDishVariantsExceptQuantity(dish_variant, action.dish_variant));
+            let filtered = newState.dishVariants.filter(dishVariant => checkEqualityOfDishVariantsExceptQuantity(dishVariant, action.dishVariant));
             if(filtered.length == 1)
-                if(filtered[0].quantity == 1) newState.dish_variants = newState.dish_variants.filter(dish_variant => !checkEqualityOfDishVariantsExceptQuantity(dish_variant, action.dish_variant));
-                else if(filtered[0].quantity > 1) newState.dish_variants = newState.dish_variants.map(dish_variant => checkEqualityOfDishVariantsExceptQuantity(dish_variant, action.dish_variant)? changeQuantityToDishVariant(dish_variant,action,-1) :dish_variant );
+                if(filtered[0].quantity == 1) newState.dishVariants = newState.dishVariants.filter(dishVariant => !checkEqualityOfDishVariantsExceptQuantity(dishVariant, action.dishVariant));
+                else if(filtered[0].quantity > 1) newState.dishVariants = newState.dishVariants.map(dishVariant => checkEqualityOfDishVariantsExceptQuantity(dishVariant, action.dishVariant)? changeQuantityToDishVariant(dishVariant,action,-1) :dishVariant );
             break;
 
-        case "SET_ADDRESS_FOR_CART": newState.address_id = action.address_id; break;
+        case "SET_ADDRESS_FOR_CART": newState.addressId = action.addressId; break;
 
-        case "RESET_CART": newState.dish_variants = []; newState.combos = [];
-                            newState.address_id = null; newState.inProgress = false;
+        case "RESET_CART": newState.dishVariants = []; newState.combos = [];
+                            newState.addressId = null; newState.inProgress = false;
                             newState.values = {id: null, total: null, sub_total: null, vat: null, delivery: null};
                             newState.error = null; break;
     }

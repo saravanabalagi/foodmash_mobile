@@ -4,9 +4,7 @@ import {
     View,
     StyleSheet,
     TouchableHighlight
-} from 'react-native'
-
-import {Actions} from 'react-native-router-flux'
+} from 'react-native';
 
 class CartDishVariant extends React.Component {
 
@@ -17,20 +15,20 @@ class CartDishVariant extends React.Component {
     render() {
         return (
             <View style={s.parent}>
-                <Text> Variant ID: {this.props.dish_variant.id}, Price: {this.props.dish_variant.price} </Text>
+                <Text> Variant ID: {this.props.dishVariant.id}, Price: {this.props.dishVariant.price} </Text>
                 <Text> Dish: {this.props.dish.name} </Text>
-                <Text> Category: {this.props.dish_category.name} </Text>
-                <Text> Quantity: {this.props.cart_dish_variant.quantity} </Text>
-                <Text> Ordered: {JSON.stringify(this.props.cart_dish_variant.ordered)} </Text>
+                <Text> Restaurant: {this.props.restaurant.name} </Text>
+                <Text> Quantity: {this.props.cartDishVariant.quantity} </Text>
+                <Text> Ordered: {JSON.stringify(this.props.cartDishVariant.ordered)} </Text>
                 <View style={{flexDirection: 'row'}}>
                     <TouchableHighlight
-                        onPress={() => this.props.addToCart(this.props.dish_variant.id, this.props.dish_variant.dish_id, this.props.dish_variant.dish_category_id)}
+                        onPress={() => this.props.addToCart(this.props.dishVariant.id)}
                         underlayColor={'#000'}
                         style={s.addToCart} >
                         <Text>Add to Cart</Text>
                     </TouchableHighlight>
                     <TouchableHighlight
-                        onPress={() => this.props.removeFromCart(this.props.dish_variant.id, this.props.dish_variant.dish_id, this.props.dish_variant.dish_category_id)}
+                        onPress={() => this.props.removeFromCart(this.props.dishVariant.id)}
                         underlayColor={'#000'}
                         style={s.addToCart} >
                         <Text>Remove from Cart</Text>
