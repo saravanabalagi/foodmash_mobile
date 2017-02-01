@@ -34,8 +34,7 @@ export default class SelectLocation extends Component {
             <View style={s.parent}>
                 { this.props.city.inProgress && <Text> inProgress </Text> }
                 {
-                    this.props.city.cities &&
-                    this.props.city.cities.map((city) => {
+                    Object.values(this.props.city.cities).map((city) => {
                         return <TouchableHighlight
                             style={s.city}
                             onPress={() => this.props.dispatch(selectCityAndFetchLocations(city.id))}
@@ -48,8 +47,7 @@ export default class SelectLocation extends Component {
 
                 { this.props.location.inProgress && <Text> inProgress </Text> }
                 {
-                    this.props.location.locations &&
-                    this.props.location.locations.map((location) => {
+                    Object.values(this.props.location.locations).map((location) => {
                         return <TouchableHighlight
                             style={s.location}
                             onPress={() => this.props.dispatch(selectLocation(location.id, this.props.city.fetched))}

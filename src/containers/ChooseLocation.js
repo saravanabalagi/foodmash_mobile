@@ -12,7 +12,7 @@ import {fetchJwt} from '../reducers/user/userActions';
 @connect((store) => {
     return {
         selected: store.location.selected,
-        locations: store.location.locations,
+        locations: Object.values(store.location.locations),
         inProgress: store.location.inProgress,
         error: store.location.error
     };
