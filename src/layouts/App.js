@@ -9,10 +9,7 @@ import {
 import {Scene, Router, Actions, ActionConst, Reducer} from 'react-native-router-flux';
 import SelectLocation from './SelectLocation';
 import ViewAccount from './ViewAccount';
-import ManageAddresses from './ManageAddresses';
-import EditAddress from './EditAddress';
 import Cart from './Cart';
-import ChooseAddress from './ChooseAddress';
 import Checkout from './Checkout';
 import ViewDish from './ViewDish';
 import ViewOrders from './ViewOrders';
@@ -61,14 +58,6 @@ export default class App extends Component {
                         <Scene title="In Cart"
                                component={Cart}
                                key="inCart"/>
-                        <Scene title="Choose Address"
-                               component={ChooseAddress}
-                               hideTabBar={true}
-                               key="chooseAddress"/>
-                        <Scene title="Choose Address"
-                               component={EditAddress}
-                               hideTabBar={true}
-                               key="editAddressOnChoose"/>
                         <Scene title="Checkout"
                                component={Checkout}
                                hideTabBar={true}
@@ -96,14 +85,6 @@ export default class App extends Component {
                         <Scene title="Profile"
                                component={ViewAccount}
                                key="profile"/>
-                        <Scene title="Addresses"
-                               component={ManageAddresses}
-                               hideTabBar={true}
-                               key="manageAddresses"/>
-                        <Scene title="Addresses"
-                               component={EditAddress}
-                               hideTabBar={true}
-                               key="editAddress"/>
                     </Scene>
                 </Scene>
             </Router>

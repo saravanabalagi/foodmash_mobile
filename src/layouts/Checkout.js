@@ -12,7 +12,7 @@ import {purchaseCart} from '../reducers/cart/cartActions'
 
 @connect((store) => {
     return {
-        dish_variants: store.cart.dish_variants,
+        dishVariants: store.cart.dishVariants,
         values: store.cart.values
     }
 })
@@ -24,7 +24,7 @@ export default class Checkout extends Component {
         this.state = {}
     }
 
-    countItems = () => { return this.props.dish_variants.reduce((sum, dish_variant)=>{ return sum + dish_variant.quantity},0); };
+    countItems = () => { return this.props.dishVariants.reduce((sum, dish_variant)=>{ return sum + dish_variant.quantity},0); };
 
     render() {
         return (

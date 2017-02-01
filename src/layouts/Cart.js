@@ -10,7 +10,7 @@ import {
 import {Actions} from 'react-native-router-flux';
 import {connect} from 'react-redux';
 import {plusOneDishVariantToCart, minusOneDishVariantToCart} from '../reducers/cart/cartActions'
-import {getTotal, getTotalItems} from '../reducers/cart/cartActions'
+import {getTotal, getTotalItems, submitCart} from '../reducers/cart/cartActions'
 
 import CartDishVariant from '../views/CartDishVariant';
 
@@ -55,14 +55,13 @@ export default class Cart extends Component {
                             cartDishVariant={dishVariant}
                             dishVariant={this.getDishVariant(dishVariant.id)}
                             dish={this.getDish(dishVariant.id)}
-                            restaurant={this.getRestaurant(dishVariant.id)}
-                        />
+                            restaurant={this.getRestaurant(dishVariant.id)}/>
                     }) }
                     <Text> Total: { this.props.total } </Text>
                     <Text> Items: { this.props.totalItems } </Text>
                     {
                         this.props.cartDishVariants.length>0 &&
-                        <TouchableHighlight style={s.button} onPress={Actions.chooseAddress}>
+                        <TouchableHighlight style={s.button} onPress={()=>this.props.dispatch(submitCart())}>
                             <Text> { this.props.signedIn? "Proceed" : "Login" } </Text>
                         </TouchableHighlight>
                     }

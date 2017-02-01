@@ -14,32 +14,19 @@ export function fetchCart() {
     };
 }
 
-export function submitAddress() {
-    const url = '/cart/set_address';
-    const addressId = store.getState().cart.addressId;
-    return (dispatch) => {
-        dispatch({type: "SUBMIT_ADDRESS_IN_PROGRESS"});
-        axios.post(url, {address_id: addressId})
-            .then((response) => { dispatch({ type: "SUBMIT_ADDRESS_FULFILLED", payload: response.data }); Actions.checkout(); })
-            .catch((error) => { dispatch({ type: "SUBMIT_ADDRESS_FAILED", payload: error }); });
-    };
-}
-
 export function submitCart() {
     const url = '/cart';
     const cart = store.getState().cart;
     return (dispatch) => {
         dispatch({type: "SUBMIT_CART_IN_PROGRESS"});
         axios.post(url, { dish_variants: cart.dishVariants})
-            .then((response) => { dispatch({ type: "SUBMIT_CART_FULFILLED", payload: response.data }); dispatch(submitAddress()); })
+            .then((response) => { dispatch({ type: "SUBMIT_CART_FULFILLED", payload: response.data }); Actions.checkout(); })
             .catch((error) => { dispatch({ type: "SUBMIT_CART_FAILED", payload: error }); });
     };
 }
 
 export function plusOneDishVariantToCart(dishVariant) { return (dispatch) => { dispatch({type: "PLUS_ONE_DISH_VARIANT", dishVariant: dishVariant}); }; }
 export function minusOneDishVariantToCart(dishVariant) { return (dispatch) => { dispatch({type: "MINUS_ONE_DISH_VARIANT", dishVariant: dishVariant}); }; }
-
-export function setAddress(addressId) { return (dispatch) => { dispatch({type: "SET_ADDRESS_FOR_CART", addressId: addressId}) } }
 
 export function purchaseCart() {
     const url = '/cart/purchase/cod';
