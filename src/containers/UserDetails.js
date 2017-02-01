@@ -16,6 +16,7 @@ import {fetchUser} from '../reducers/user/userActions';
         name: store.user.name,
         email: store.user.email,
         mobile: store.user.mobile,
+        location: store.location.locations[store.user.locationId],
         inProgress: store.user.inProgress,
         error: store.user.error
     }
@@ -28,7 +29,7 @@ export default class UserDetails extends Component {
         this.state = {}
     }
 
-    componentDidMount = () => { if(!this.props.name) this.props.dispatch(fetchUser()); };
+    componentWillMount = () => { if(!this.props.name) this.props.dispatch(fetchUser()); };
 
     render() {
         return (
@@ -37,6 +38,7 @@ export default class UserDetails extends Component {
                 <Text> Name: {this.props.name} </Text>
                 <Text> Email: {this.props.email} </Text>
                 <Text> Mobile: {this.props.mobile} </Text>
+                <Text> Location: {(this.props.location) ? this.props.location.name : "Loading"} </Text>
                 { this.props.error != null && !this.props.inProgress && <Text> {this.props.error.toString()} </Text> }
             </View>
         );
