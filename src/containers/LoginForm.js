@@ -8,15 +8,15 @@ import {
 } from 'react-native'
 
 import {connect} from 'react-redux';
-import {fetchJwt} from '../reducers/user/userActions';
+import {fetchJwt} from '../reducers/session/sessionActions';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 @connect((store) => {
     return {
-        jwt: store.user.session.jwt,
-        inProgress: store.user.session.inProgress,
-        error: store.user.session.error
+        jwt: store.session.jwt,
+        inProgress: store.session.inProgress,
+        error: store.session.error
     };
 })
 

@@ -16,7 +16,7 @@ import CartDishVariant from '../views/CartDishVariant';
 
 @connect((store) => {
     return {
-        signedIn: store.user.session.jwt!=null,
+        signedIn: store.session.jwt!=null,
         cartDishVariants: store.cart.dishVariants,
         dishVariants: store.dishVariant.dishVariants,
         dishes: store.dish.dishes,
@@ -62,7 +62,7 @@ export default class Cart extends Component {
                     {
                         this.props.cartDishVariants.length>0 &&
                         <TouchableHighlight style={s.button} onPress={()=>this.props.dispatch(submitCart())}>
-                            <Text> { this.props.signedIn? "Proceed" : "Login" } </Text>
+                            <Text>Proceed</Text>
                         </TouchableHighlight>
                     }
                     { this.props.error != null && !this.props.inProgress && <Text> {this.props.error.toString()} </Text> }

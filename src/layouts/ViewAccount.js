@@ -14,7 +14,7 @@ import {connect} from 'react-redux';
 
 @connect((store) => {
     return {
-        signedIn: store.user.session.jwt!=null
+        signedIn: store.session.jwt!=null
     }
 })
 

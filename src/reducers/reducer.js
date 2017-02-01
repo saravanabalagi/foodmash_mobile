@@ -15,7 +15,8 @@ import addOnTypeReducer from './addOnType/addOnTypeReducer';
 import addOnTypeLinkReducer from './addOnTypeLink/addOnTypeLinkReducer';
 import locationReducer from './location/locationReducer';
 import orderReducer from './order/orderReducer';
-import userReducer from './user/userReducer'
+import sessionReducer from './session/sessionReducer';
+import userReducer from './user/userReducer';
 
 export default combineReducers({
     cart: cartReducer,
@@ -33,5 +34,6 @@ export default combineReducers({
     addOnTypeLink: addOnTypeLinkReducer,
     location: locationReducer,
     order: orderReducer,
+    session: sessionReducer,
     user: userReducer
 });

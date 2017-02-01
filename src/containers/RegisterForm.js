@@ -8,15 +8,15 @@ import {
 } from 'react-native'
 
 import {connect} from 'react-redux';
-import {signupUser} from '../reducers/user/userActions';
+import {signupUser} from '../reducers/session/sessionActions';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 @connect((store) => {
     return {
-        access_token: store.user.session.signup.oauth.access_token,
-        inProgress: store.user.session.signup.inProgress,
-        error: store.user.session.signup.error
+        accessToken: store.session.oauth,
+        inProgress: store.session.inProgress,
+        error: store.session.error
     };
 })
 
@@ -64,7 +64,7 @@ class RegisterForm extends React.Component {
                         onChangeText={(text) => this.setState({email:text}) }/>
                 </View>
                 {
-                    this.props.access_token!=null &&
+                    this.props.accessToken!=null &&
                     <View style={s.inputParent}>
                         <Icon name='key' size={24} color={'red'}/>
                         <TextInput

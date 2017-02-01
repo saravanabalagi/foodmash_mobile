@@ -5,7 +5,7 @@ export function setAxiosDefaults() {
     axios.defaults.baseURL = "http://localhost:8000";
     axios.defaults.headers.common['Content-Type'] = "application/json";
     axios.interceptors.request.use((config) => {
-        let token = store.getState().user.session.jwt;
+        let token = store.getState().session.jwt;
         let selectedLocation = store.getState().location.selected;
         if(token!=null) {
             console.log('attaching jwt header');
