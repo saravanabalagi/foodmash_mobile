@@ -11,6 +11,7 @@ import SelectLocation from './SelectLocation';
 import ViewAccount from './ViewAccount';
 import Cart from './Cart';
 import Checkout from './Checkout';
+import LoginForm from '../containers/LoginForm';
 import ViewDish from './ViewDish';
 import ViewOrders from './ViewOrders';
 import ViewOrderDetails from './ViewOrderDetails';
@@ -32,8 +33,8 @@ export default class App extends Component {
         return (
             <Router createReducer={reducerCreate}>
                 <Scene hideNavBar={true}
-                       component={SelectLocation}
-                       key="location"/>
+                       component={LoginForm}
+                       key="login"/>
                 <Scene key="app" tabs={true} tabBarStyle={s.mainTabs}>
                     <Scene title="Mash"
                            icon={TabIcon}
@@ -68,7 +69,7 @@ export default class App extends Component {
                            tabIcon="truck"
                            type={ActionConst.REFRESH}
                            hideNavBar={true}
-                           key="orders" >
+                           key="orders">
                         <Scene title="Orders"
                                component={ViewOrders}
                                key="orderList"/>

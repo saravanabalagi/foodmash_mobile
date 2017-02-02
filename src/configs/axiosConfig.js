@@ -6,7 +6,7 @@ export function setAxiosDefaults() {
     axios.defaults.headers.common['Content-Type'] = "application/json";
     axios.interceptors.request.use((config) => {
         let token = store.getState().session.jwt;
-        let selectedLocation = store.getState().location.selected;
+        let selectedLocation = 6;
         if(token!=null) {
             console.log('attaching jwt header');
             config.headers.Authorization = 'Bearer ' + token;

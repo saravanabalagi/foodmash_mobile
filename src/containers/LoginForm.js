@@ -9,6 +9,7 @@ import {
 
 import {connect} from 'react-redux';
 import {fetchJwt} from '../reducers/session/sessionActions';
+import {Actions} from 'react-native-router-flux';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
 
@@ -30,6 +31,9 @@ class LoginForm extends React.Component {
             secureText: true
         };
     }
+
+    componentWillMount = () => { this.componentWillReceiveProps(this.props) };
+    componentWillReceiveProps = (nextProps) => { if(nextProps.jwt!=null) Actions.app(); };
 
     handleSubmit = () => {
         this.props.dispatch(fetchJwt({

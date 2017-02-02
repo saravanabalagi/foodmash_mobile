@@ -36,7 +36,9 @@ export function purchaseCart() {
         axios.post(url)
             .then((response) => { dispatch({ type: "PURCHASE_CART_FULFILLED", payload: response.data });
                                     //TODO: clear cart stack and bring it back to inCart
-                                    dispatch(fetchOrdersAndfetchOrder(cart.values.id)); Actions.orders();
+                                    dispatch(fetchOrdersAndfetchOrder(cart.values.id));
+                                    Actions.pop();
+                                    Actions.orders();
                                     dispatch({type: "RESET_CART"}); })
             .catch((error) => { dispatch({ type: "PURCHASE_CART_FAILED", payload: error }); });
     };
