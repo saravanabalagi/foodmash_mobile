@@ -3,12 +3,14 @@ import {
     Text,
     View,
     TextInput,
+    ScrollView,
     TouchableHighlight,
     StyleSheet
 } from 'react-native';
 
-import DishMini from '../views/DishMini';
+import Dish from '../views/Dish';
 import {connect} from 'react-redux';
+import {fetchDish} from '../reducers/dish/dishActions';
 
 @connect((store, props) => {
     return {
@@ -24,18 +26,22 @@ class DishList extends React.Component {
         super(props);
     }
 
+    componentWillMount = () => { this.props.dish_ids.map(dish_id => this.props.dispatch(fetchDish(dish_id))); };
+
     render() {
         return (
-            <View style={s.parent}>
-                { this.props.inProgress && <Text> inProgress </Text> }
-                { this.props.dishes &&
-                    this.props.dishes.map((dish) => {
-                        return <DishMini key={dish.id}
+            <ScrollView>
+                <View style={s.parent}>
+                    { this.props.inProgress && <Text> inProgress </Text> }
+                    { this.props.dishes &&
+                        this.props.dishes.map((dish) => {
+                            return <Dish key={dish.id}
                                          dish={dish}/>
-                    })
-                }
-                { this.props.error != null && !this.props.inProgress && <Text> {this.props.error.toString()} </Text> }
-            </View>
+                        })
+                    }
+                    { this.props.error != null && !this.props.inProgress && <Text> {this.props.error.toString()} </Text> }
+                </View>
+            </ScrollView>
         );
 
     }

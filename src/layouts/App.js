@@ -7,12 +7,10 @@ import {
 } from 'react-native';
 
 import {Scene, Router, Actions, ActionConst, Reducer} from 'react-native-router-flux';
-import SelectLocation from './SelectLocation';
 import ViewAccount from './ViewAccount';
 import Cart from './Cart';
 import Checkout from './Checkout';
 import LoginForm from '../containers/LoginForm';
-import ViewDish from './ViewDish';
 import ViewOrders from './ViewOrders';
 import ViewOrderDetails from './ViewOrderDetails';
 import TabIcon from '../views/TabIcon';
@@ -44,11 +42,6 @@ export default class App extends Component {
                         <Scene title="Mash"
                                component={DishCategoryList}
                                key="dishCategory"
-                               hideNavBar={true}/>
-                        <Scene title="Mash"
-                               component={ViewDish}
-                               key="viewDish"
-                               hideTabBar={true}
                                hideNavBar={true}/>
                     </Scene>
                     <Scene title="Cart"

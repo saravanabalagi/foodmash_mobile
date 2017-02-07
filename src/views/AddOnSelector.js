@@ -92,15 +92,18 @@ class AddOnSelector extends React.Component {
                         )
                     }) }
                 </ScrollView>
-                <View style={s.addOnLinkListView}>
-                    {this.state.selectedAddOnTypeLink &&
+                {
+                    this.state.selectedAddOnTypeLink &&
+                    <View style={s.addOnLinkListView}>
+                        {this.state.selectedAddOnTypeLink &&
                         this.state.addOnLinksOfSelectedAddOnTypeLink.map(addOnLink => {
-                        return (
-                            <AddOnLink key={addOnLink.id}
-                                       addOnLink={addOnLink} />
-                        )
-                    })}
-                </View>
+                            return (
+                                <AddOnLink key={addOnLink.id}
+                                           addOnLink={addOnLink}/>
+                            )
+                        })}
+                    </View>
+                }
             </View>
         );
 

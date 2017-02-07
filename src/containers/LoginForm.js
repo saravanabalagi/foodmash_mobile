@@ -5,7 +5,7 @@ import {
     TextInput,
     TouchableHighlight,
     StyleSheet
-} from 'react-native'
+} from 'react-native';
 
 import {connect} from 'react-redux';
 import {fetchJwt} from '../reducers/session/sessionActions';
@@ -26,8 +26,8 @@ class LoginForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            email: '',
-            password: '',
+            email: "",
+            password: "",
             secureText: true
         };
     }
