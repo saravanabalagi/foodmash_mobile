@@ -10,14 +10,8 @@ export default (state = {
         case "FETCH_DISH_CATEGORIES_FAILED": newState.error = action.payload; newState.inProgress = false; break;
 
         case "FETCH_DISH_CATEGORY_IN_PROGRESS": newState.inProgress = true; break;
-        case "FETCH_DISH_CATEGORY_FULFILLED": newState.dishCategories = updateDishCategories(newState.dishCategories, action); newState.error = null; newState.inProgress = false; break;
+        case "FETCH_DISH_CATEGORY_FULFILLED": newState.dishCategories = {...newState.dishCategories, [action.payload.id]: action.payload}; newState.error = null; newState.inProgress = false; break;
         case "FETCH_DISH_CATEGORY_FAILED": newState.error = action.payload; newState.inProgress = false; break;
     }
-    return newState;
-}
-
-function updateDishCategories(state = {},action) {
-    const newState = {...state};
-    newState[action.payload.id] = action.payload;
     return newState;
 }
