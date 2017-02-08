@@ -1,7 +1,6 @@
 export default (state = {
     dishVariants: [],
     combos: [],
-    addressId: null,
     inProgress: false,
     values: {
         id: null,
@@ -37,10 +36,7 @@ export default (state = {
                 else if(filtered[0].quantity > 1) newState.dishVariants = newState.dishVariants.map(dishVariant => checkEqualityOfDishVariantsExceptQuantity(dishVariant, action.dishVariant)? changeQuantityToDishVariant(dishVariant,action,-1) :dishVariant );
             break;
 
-        case "SET_ADDRESS_FOR_CART": newState.addressId = action.addressId; break;
-
-        case "RESET_CART": newState.dishVariants = []; newState.combos = [];
-                            newState.addressId = null; newState.inProgress = false;
+        case "RESET_CART": newState.dishVariants = []; newState.combos = []; newState.inProgress = false;
                             newState.values = {id: null, total: null, sub_total: null, vat: null, delivery: null};
                             newState.error = null; break;
     }
