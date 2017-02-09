@@ -7,21 +7,21 @@ import {
     TouchableHighlight
 } from 'react-native'
 
-import AddOnTypeLink from '../views/AddOnTypeLink';
-import AddOnLink from '../views/AddOnLink';
+import AddOnLinkList from '../views/AddOnLinkList';
 import {connect} from 'react-redux';
 
 import {fetchVariant} from '../reducers/variant/variantActions';
+import {fetchAddOnType} from '../reducers/addOnType/addOnTypeActions';
 import {fetchVariantCategory} from '../reducers/variantCategory/variantCategoryActions';
 import {fetchAddOnTypeLink} from '../reducers/addOnTypeLink/addOnTypeLinkActions';
-import {fetchAddOnLink} from '../reducers/addOnLink/addOnLinkActions';
+import ScrollableTabView from 'react-native-scrollable-tab-view';
 
 @connect((store,props) => {
     return {
         variant: store.variant.variants[props.dishVariant.variant_id],
         variantCategories: store.variantCategory.variantCategories,
         addOnTypeLinks: store.addOnTypeLink.addOnTypeLinks,
-        addOnLinks: store.addOnLink.addOnLinks
+        addOnTypes: store.addOnType.addOnTypes
     }
 })
 
@@ -32,7 +32,6 @@ class AddOnSelector extends React.Component {
         this.state = {
             variantCategory: null,
             addOnTypeLinks: [],
-            addOnLinksOfSelectedAddOnTypeLink: [],
             selectedAddOnTypeLink: null
         }
     }
@@ -45,7 +44,6 @@ class AddOnSelector extends React.Component {
             if(nextProps.variant!=this.props.variant) this.setState({
                 variantCategory: null,
                 addOnTypeLinks: [],
-                addOnLinksOfSelectedAddOnTypeLink: [],
                 selectedAddOnTypeLink: null
             });
             if(nextProps.variant.variant_category_id!=null)
@@ -53,7 +51,6 @@ class AddOnSelector extends React.Component {
             this.setState({variantCategory: nextProps.variantCategories[nextProps.variant.variant_category_id]}, this.fetchAddOnTypeLinks);
         }
         if(this.state.variantCategory!=null) this.fetchAddOnTypeLinks(nextProps.addOnTypeLinks);
-        if(this.state.selectedAddOnTypeLink!=null) this.fetchAddOnLinks();
     };
 
     fetchAddOnTypeLinks = (nextPropsAddOnTypeLinks) => {
@@ -67,43 +64,28 @@ class AddOnSelector extends React.Component {
             .map(addOnTypeLinkId => addOnTypeLinks[addOnTypeLinkId])
             .filter(Boolean);
         if(requiredAddOnTypeLinks.length>0 && this.state.selectedAddOnTypeLink == null)
-            this.setState({selectedAddOnTypeLink: requiredAddOnTypeLinks[0]}, this.fetchAddOnLinks);
+            this.setState({selectedAddOnTypeLink: requiredAddOnTypeLinks[0]});
         this.setState({addOnTypeLinks: requiredAddOnTypeLinks});
+        this.fetchAddOnTypes(requiredAddOnTypeLinks);
     };
 
-    fetchAddOnLinks = () => {
-        this.state.selectedAddOnTypeLink.add_on_link_ids.map(addOnLinkId => this.props.dispatch(fetchAddOnLink(addOnLinkId)));
-        this.setState({addOnLinksOfSelectedAddOnTypeLink:
-            this.state.selectedAddOnTypeLink.add_on_link_ids
-                .map(addOnLinkId => this.props.addOnLinks[addOnLinkId])
-                .filter(Boolean)});
-    };
+    fetchAddOnTypes = (addOnTypeLinks) => { addOnTypeLinks.map(addOnTypeLink => this.props.dispatch(fetchAddOnType(addOnTypeLink.add_on_type_id))); };
 
     render() {
         return (
             <View style={s.parent}>
-                <ScrollView style={s.tabBar} horizontal={true} showsHorizontalScrollIndicator={false} >
-                    { this.state.addOnTypeLinks.map(addOnTypeLink => {
-                        return (
-                            <AddOnTypeLink key={addOnTypeLink.id}
-                                           selected={this.state.selectedAddOnTypeLink && addOnTypeLink.id === this.state.selectedAddOnTypeLink.id}
-                                           selectAddOnTypeLink={(addOnTypeLink) => this.setState({selectedAddOnTypeLink: addOnTypeLink}, this.fetchAddOnLinks)}
-                                           addOnTypeLink={addOnTypeLink} />
-                        )
-                    }) }
-                </ScrollView>
-                {
-                    this.state.selectedAddOnTypeLink &&
-                    <View style={s.addOnLinkListView}>
-                        {this.state.selectedAddOnTypeLink &&
-                        this.state.addOnLinksOfSelectedAddOnTypeLink.map(addOnLink => {
-                            return (
-                                <AddOnLink key={addOnLink.id}
-                                           addOnLink={addOnLink}/>
+                <ScrollableTabView style={s.tabs}>
+                    {
+                        this.state.addOnTypeLinks.map((addOnTypeLink, index) => {
+                            return(
+                                <AddOnLinkList
+                                    key={addOnTypeLink.id}
+                                    tabLabel={this.props.addOnTypes[addOnTypeLink.add_on_type_id]?this.props.addOnTypes[addOnTypeLink.add_on_type_id].name:"Loading.... ("+ (index+1) +")"}
+                                    addOnTypeLink={addOnTypeLink} />
                             )
-                        })}
-                    </View>
-                }
+                        })
+                    }
+                </ScrollableTabView>
             </View>
         );
 
