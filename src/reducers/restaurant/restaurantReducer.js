@@ -1,13 +1,21 @@
 export default (state = {
     restaurants: {},
-    inProgress: false,
-    error: null
+    inProgress: [],
+    error: {}
 }, action) => {
-    const newState = {...state};
     switch(action.type) {
-        case "FETCH_RESTAURANT_IN_PROGRESS": newState.inProgress = true; break;
-        case "FETCH_RESTAURANT_FULFILLED": newState.restaurants = {...newState.restaurants, [action.payload.id]: action.payload}; newState.error = null; newState.inProgress = false; break;
-        case "FETCH_RESTAURANT_FAILED": newState.error = action.payload; newState.inProgress = false; break;
+        case "FETCH_RESTAURANT_IN_PROGRESS":
+            return {...state,
+                inProgress: [...state.inProgress, action.id]};
+        case "FETCH_RESTAURANT_FULFILLED":
+            return {...state,
+                inProgress: state.inProgress.filter(id => id!=action.id),
+                restaurants: {...state.restaurants, [action.payload.id]: action.payload},
+                error: {...state.error, [action.payload.id]: null}};
+        case "FETCH_RESTAURANT_FAILED":
+            return {...state,
+                inProgress: state.inProgress.filter(id => id!=action.id),
+                error: {...state.error, [action.id]: action.payload}};
     }
-    return newState;
+    return state;
 }

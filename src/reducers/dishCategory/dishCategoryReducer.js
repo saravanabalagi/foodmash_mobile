@@ -1,17 +1,25 @@
 export default (state = {
     dishCategories: {},
-    inProgress: false,
-    error: null
+    inProgress: [],
+    error: {}
 }, action) => {
-    const newState = {...state};
     switch(action.type) {
-        case "FETCH_DISH_CATEGORIES_IN_PROGRESS": newState.inProgress = true; break;
-        case "FETCH_DISH_CATEGORIES_FULFILLED": action.payload.map(dishCategory => newState.dishCategories[dishCategory.id] = dishCategory); newState.error = null; newState.inProgress = false; break;
-        case "FETCH_DISH_CATEGORIES_FAILED": newState.error = action.payload; newState.inProgress = false; break;
-
-        case "FETCH_DISH_CATEGORY_IN_PROGRESS": newState.inProgress = true; break;
-        case "FETCH_DISH_CATEGORY_FULFILLED": newState.dishCategories = {...newState.dishCategories, [action.payload.id]: action.payload}; newState.error = null; newState.inProgress = false; break;
-        case "FETCH_DISH_CATEGORY_FAILED": newState.error = action.payload; newState.inProgress = false; break;
+        case "FETCH_DISH_CATEGORY_IN_PROGRESS":
+            return {...state,
+                inProgress: [...state.inProgress, action.id]};
+        case "FETCH_DISH_CATEGORY_FULFILLED":
+            return {...state,
+                inProgress: state.inProgress.filter(id => id!=action.id),
+                dishCategories: {...state.dishCategories, [action.payload.id]: action.payload},
+                error: {...state.error, [action.payload.id]: null}};
+        case "FETCH_DISH_CATEGORIES_FULFILLED":
+            return {...state,
+                inProgress: state.inProgress.filter(id => id!=action.id),
+                error: {...state.error, [action.id]: null}};
+        case "FETCH_DISH_CATEGORY_FAILED":
+            return {...state,
+                inProgress: state.inProgress.filter(id => id!=action.id),
+                error: {...state.error, [action.id]: action.payload}};
     }
-    return newState;
+    return state;
 }

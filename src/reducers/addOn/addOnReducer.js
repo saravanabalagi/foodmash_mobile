@@ -1,13 +1,21 @@
 export default (state = {
     addOns: {},
-    inProgress: false,
-    error: null
+    inProgress: [],
+    error: {}
 }, action) => {
-    const newState = {...state};
     switch(action.type) {
-        case "FETCH_ADD_ON_IN_PROGRESS": newState.inProgress = true; break;
-        case "FETCH_ADD_ON_FULFILLED": newState.addOns = {...newState.addOns, [action.payload.id]: action.payload}; newState.error = null; newState.inProgress = false; break;
-        case "FETCH_ADD_ON_FAILED": newState.error = action.payload; newState.inProgress = false; break;
+        case "FETCH_ADD_ON_IN_PROGRESS":
+            return {...state,
+                inProgress: [...state.inProgress, action.id]};
+        case "FETCH_ADD_ON_FULFILLED":
+            return {...state,
+                inProgress: state.inProgress.filter(id => id!=action.id),
+                addOns: {...state.addOns, [action.payload.id]: action.payload},
+                error: {...state.error, [action.payload.id]: null}};
+        case "FETCH_ADD_ON_FAILED":
+            return {...state,
+                inProgress: state.inProgress.filter(id => id!=action.id),
+                error: {...state.error, [action.id]: action.payload}};
     }
-    return newState;
+    return state;
 }

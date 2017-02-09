@@ -1,13 +1,21 @@
 export default (state = {
     addOnTypeLinks: {},
-    inProgress: false,
-    error: null
+    inProgress: [],
+    error: {}
 }, action) => {
-    const newState = {...state};
     switch(action.type) {
-        case "FETCH_ADD_ON_TYPE_LINK_IN_PROGRESS": newState.inProgress = true; break;
-        case "FETCH_ADD_ON_TYPE_LINK_FULFILLED": newState.addOnTypeLinks = {...newState.addOnTypeLinks, [action.payload.id]: action.payload}; newState.error = null; newState.inProgress = false; break;
-        case "FETCH_ADD_ON_TYPE_LINK_FAILED": newState.error = action.payload; newState.inProgress = false; break;
+        case "FETCH_ADD_ON_TYPE_LINK_IN_PROGRESS":
+            return {...state,
+                inProgress: [...state.inProgress, action.id]};
+        case "FETCH_ADD_ON_TYPE_LINK_FULFILLED":
+            return {...state,
+                inProgress: state.inProgress.filter(id => id!=action.id),
+                addOnTypeLinks: {...state.addOnTypeLinks, [action.payload.id]: action.payload},
+                error: {...state.error, [action.payload.id]: null}};
+        case "FETCH_ADD_ON_TYPE_LINK_FAILED":
+            return {...state,
+                inProgress: state.inProgress.filter(id => id!=action.id),
+                error: {...state.error, [action.id]: action.payload}};
     }
-    return newState;
+    return state;
 }
