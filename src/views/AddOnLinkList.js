@@ -20,9 +20,13 @@ class AddOnLinkList extends React.Component {
 
     constructor(props) {
         super(props);
+        this.state = {
+            addOnLinkIds: []
+        }
     }
 
     componentWillMount = () => { this.props.addOnTypeLink.add_on_link_ids.map(addOnLinkId => this.props.dispatch(fetchAddOnLink(addOnLinkId))); };
+
 
     render() {
         return (
@@ -31,6 +35,8 @@ class AddOnLinkList extends React.Component {
                     this.props.addOnLinks.map(addOnLink => {
                         return (
                             <AddOnLink key={addOnLink.id}
+                                       selected={this.props.selectedAddOnLinkIds.includes(addOnLink.id)}
+                                       toggleSelect={()=>this.props.toggleSelectAddOnLink(addOnLink)}
                                        addOnLink={addOnLink}/>
                         )
                     })

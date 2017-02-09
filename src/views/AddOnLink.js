@@ -3,10 +3,10 @@ import {
     Text,
     View,
     StyleSheet,
-    TouchableHighlight
+    TouchableOpacity
 } from 'react-native';
 
-
+import Icon from 'react-native-vector-icons/FontAwesome';
 import {fetchAddOn} from '../reducers/addOn/addOnActions';
 import {connect} from 'react-redux';
 
@@ -26,9 +26,12 @@ class AddOnLink extends React.Component {
 
     render() {
         return (
-            <View style={s.parent}>
-                <Text>{this.props.addOn? this.props.addOn.name: "Loading..."} ({this.props.addOnLink.price}) </Text>
-            </View>
+            <TouchableOpacity onPress={()=>this.props.toggleSelect()}>
+                <View style={s.parent}>
+                    <Icon style={s.checkbox} name={this.props.selected?"check-square-o":"square-o"} size={20} color={"#000a74"}/>
+                    <Text>{this.props.addOn? this.props.addOn.name: "Loading..."} (₹{this.props.addOnLink.price}) </Text>
+                </View>
+            </TouchableOpacity>
         );
 
     }
@@ -37,6 +40,11 @@ class AddOnLink extends React.Component {
 
 const s = StyleSheet.create({
     parent: {
+        flexDirection: 'row',
+        alignItems: 'center'
+    },
+    checkbox: {
+        width: 25
     }
 });
 

@@ -81,6 +81,8 @@ class AddOnSelector extends React.Component {
                             this.state.addOnTypeLinks.map((addOnTypeLink, index) => {
                                 return (
                                     <AddOnLinkList
+                                        selectedAddOnLinkIds={this.props.selectedAddOnLinkIds}
+                                        toggleSelectAddOnLink={this.props.toggleSelectAddOnLink}
                                         key={addOnTypeLink.id}
                                         tabLabel={this.props.addOnTypes[addOnTypeLink.add_on_type_id] ? this.props.addOnTypes[addOnTypeLink.add_on_type_id].name : "Loading.... (" + (index + 1) + ")"}
                                         addOnTypeLink={addOnTypeLink}/>
@@ -97,6 +99,11 @@ class AddOnSelector extends React.Component {
 }
 
 const s = StyleSheet.create({
+    tabs: {
+        marginLeft: 20,
+        marginRight: 20,
+        marginTop: 10
+    },
     addOnLinkListView: {
         padding: 20
     },

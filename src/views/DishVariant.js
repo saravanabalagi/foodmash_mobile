@@ -3,11 +3,12 @@ import {
     Text,
     View,
     StyleSheet,
-    TouchableHighlight
+    TouchableOpacity
 } from 'react-native'
 
 import {connect} from 'react-redux';
 import {fetchVariant} from '../reducers/variant/variantActions';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 @connect((store, props) => {
     return {
@@ -25,18 +26,17 @@ class DishVariant extends React.Component {
 
     render() {
         return (
-            <View key={this.props.dishVariant.id} style={s.variant}>
-                <Text> Variant: {this.props.variant && this.props.variant.display_name}</Text>
-                <Text> Rs. {this.props.dishVariant.price} </Text>
-                <View style={{flexDirection: 'row'}}>
-                    <TouchableHighlight
-                        onPress={() => this.props.selectVariant(this.props.dishVariant)}
-                        underlayColor={'#000'}
-                        style={s.button} >
-                        <Text>Select</Text>
-                    </TouchableHighlight>
+            <TouchableOpacity
+                onPress={() => this.props.selectVariant(this.props.dishVariant)}
+                style={s.parent} >
+                <View style={s.touchable}>
+                    <Icon style={s.checkbox} name={this.props.selected?"check-square-o":"square-o"} size={23} color={"#000a74"}/>
+                    <View style={s.touchableRight}>
+                        <Text style={s.title}> {this.props.variant? this.props.variant.display_name : "Loading..."}</Text>
+                        <Text style={s.price}> ₹ {this.props.dishVariant.price} </Text>
+                    </View>
                 </View>
-            </View>
+            </TouchableOpacity>
         );
 
     }
@@ -45,13 +45,24 @@ class DishVariant extends React.Component {
 
 const s = StyleSheet.create({
     parent: {
-        padding: 20
+        paddingLeft: 10,
+        paddingRight: 20,
+        paddingTop: 3,
+        paddingBottom: 3,
     },
-    button: {
-        padding: 10,
-        backgroundColor: '#CC8',
-        margin: 10
-    }
+    touchable: {
+        flexDirection: 'row',
+        alignItems: 'center'
+    },
+    touchableLeft: {
+        flexDirection: 'row',
+        alignItems: 'center'
+    },
+    checkbox: {
+        width: 30
+    },
+    price: { fontSize: 12 },
+    title: { fontSize: 15 }
 });
 
 export default DishVariant;

@@ -4,7 +4,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 class TabIcon extends Component {
     render() {
-        const color = this.props.selected ? 'red' : 'black';
+        const color = this.props.selected ? '#F37521' : 'black';
         return (
             <View style={{alignItems: 'center'}}>
                 { this.props.tabIcon !=null &&
@@ -13,7 +13,7 @@ class TabIcon extends Component {
                     size={24}
                     color={color}
                 /> }
-                <Text style={{color: color}}>{this.props.title}</Text>
+                <Text style={{color: color, fontSize: 12, marginTop: 5}}>{this.props.title}</Text>
             </View>
         );
     }
