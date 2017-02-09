@@ -74,18 +74,21 @@ class AddOnSelector extends React.Component {
     render() {
         return (
             <View style={s.parent}>
-                <ScrollableTabView style={s.tabs}>
-                    {
-                        this.state.addOnTypeLinks.map((addOnTypeLink, index) => {
-                            return(
-                                <AddOnLinkList
-                                    key={addOnTypeLink.id}
-                                    tabLabel={this.props.addOnTypes[addOnTypeLink.add_on_type_id]?this.props.addOnTypes[addOnTypeLink.add_on_type_id].name:"Loading.... ("+ (index+1) +")"}
-                                    addOnTypeLink={addOnTypeLink} />
-                            )
-                        })
-                    }
-                </ScrollableTabView>
+                {
+                    this.state.addOnTypeLinks.length>0 &&
+                    <ScrollableTabView style={s.tabs}>
+                        {
+                            this.state.addOnTypeLinks.map((addOnTypeLink, index) => {
+                                return (
+                                    <AddOnLinkList
+                                        key={addOnTypeLink.id}
+                                        tabLabel={this.props.addOnTypes[addOnTypeLink.add_on_type_id] ? this.props.addOnTypes[addOnTypeLink.add_on_type_id].name : "Loading.... (" + (index + 1) + ")"}
+                                        addOnTypeLink={addOnTypeLink}/>
+                                )
+                            })
+                        }
+                    </ScrollableTabView>
+                }
             </View>
         );
 
