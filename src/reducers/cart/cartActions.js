@@ -27,6 +27,7 @@ export function submitCart() {
 
 export function plusOneDishVariantToCart(dishVariant) { return (dispatch) => { dispatch({type: "PLUS_ONE_DISH_VARIANT", dishVariant: dishVariant}); }; }
 export function minusOneDishVariantToCart(dishVariant) { return (dispatch) => { dispatch({type: "MINUS_ONE_DISH_VARIANT", dishVariant: dishVariant}); }; }
+export function minusOneDishVariantLenientToCart(dishVariant) { return (dispatch) => { dispatch({type: "MINUS_ONE_DISH_VARIANT_LENIENT", dishVariant: dishVariant}); }; }
 
 export function purchaseCart() {
     const url = '/cart/purchase/cod';

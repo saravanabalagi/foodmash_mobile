@@ -35,8 +35,8 @@ export default class Cart extends Component {
         this.state = {}
     }
 
-    handleAddToCart = (variantId) => { this.props.dispatch(plusOneDishVariantToCart({id: variantId, ordered:{}})) };
-    handleRemoveFromCart = (variantId) => { this.props.dispatch(minusOneDishVariantToCart({id: variantId, ordered:{}})) };
+    handleAddToCart = (cartDishVariant) => { this.props.dispatch(plusOneDishVariantToCart(cartDishVariant)); };
+    handleRemoveFromCart = (cartDishVariant) => { this.props.dispatch(minusOneDishVariantToCart(cartDishVariant)); };
 
     getDishVariant = (dishVariantId) => { return this.props.dishVariants[dishVariantId] };
     getDish = (dishVariantId) => { return this.getDishVariant(dishVariantId)? this.props.dishes[this.getDishVariant(dishVariantId).dish_id] : null };
@@ -47,9 +47,9 @@ export default class Cart extends Component {
             <ScrollView style={s.parent}>
                 <View>
                     { this.props.inProgress && <Text> inProgress </Text> }
-                    { this.props.cartDishVariants.map(dishVariant => {
+                    { this.props.cartDishVariants.map((dishVariant,index) => {
                         return <CartDishVariant
-                            key={dishVariant.id}
+                            key={index}
                             addToCart={this.handleAddToCart}
                             removeFromCart={this.handleRemoveFromCart}
                             cartDishVariant={dishVariant}

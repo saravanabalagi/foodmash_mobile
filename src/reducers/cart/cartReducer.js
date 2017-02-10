@@ -35,6 +35,9 @@ export default (state = {
                 if(filtered[0].quantity == 1) newState.dishVariants = newState.dishVariants.filter(dishVariant => !checkEqualityOfDishVariantsExceptQuantity(dishVariant, action.dishVariant));
                 else if(filtered[0].quantity > 1) newState.dishVariants = newState.dishVariants.map(dishVariant => checkEqualityOfDishVariantsExceptQuantity(dishVariant, action.dishVariant)? changeQuantityToDishVariant(dishVariant,action,-1) :dishVariant );
             break;
+        case "MINUS_ONE_DISH_VARIANT_LENIENT":
+            newState.dishVariants = newState.dishVariants.reduceRight((found => (dishVariants, dishVariant) => (!found && dishVariant.id===action.dishVariant.id? (found=true,(dishVariant.quantity>1)?dishVariants.unshift({...dishVariant, quantity: dishVariant.quantity-1}):true) : dishVariants.unshift(dishVariant),dishVariants))(false),[]);
+            break;
 
         case "RESET_CART": newState.dishVariants = []; newState.combos = []; newState.inProgress = false;
                             newState.values = {id: null, total: null, sub_total: null, vat: null, delivery: null};
@@ -63,12 +66,12 @@ let checkEqualityOfDishVariantsExceptQuantity = (d1, d2) => {
     if(!d1.ordered.hasOwnProperty('note') && d2.ordered.hasOwnProperty('note')) return false;
     if(d1.ordered.hasOwnProperty('note') && d2.ordered.hasOwnProperty('note'))
         if(d1.ordered['note'] != d2.ordered['note']) return false;
-    if(d1.ordered.hasOwnProperty('add_ons') && !d2.ordered.hasOwnProperty('add_ons')) return false;
-    if(!d1.ordered.hasOwnProperty('add_ons') && d2.ordered.hasOwnProperty('add_ons')) return false;
-    if(d1.ordered.hasOwnProperty('add_ons') && d2.ordered.hasOwnProperty('add_ons')) {
-        if(d1.ordered['add_ons'].length != d2.ordered['add_ons'].length) return false;
-        const a1 = d1.ordered['add_ons'].slice(0).sort();
-        const a2 = d2.ordered['add_ons'].slice(0).sort();
+    if(d1.ordered.hasOwnProperty('addOnLinks') && !d2.ordered.hasOwnProperty('addOnLinks')) return false;
+    if(!d1.ordered.hasOwnProperty('addOnLinks') && d2.ordered.hasOwnProperty('addOnLinks')) return false;
+    if(d1.ordered.hasOwnProperty('addOnLinks') && d2.ordered.hasOwnProperty('addOnLinks')) {
+        if(d1.ordered['addOnLinks'].length != d2.ordered['addOnLinks'].length) return false;
+        const a1 = d1.ordered['addOnLinks'].slice(0).sort();
+        const a2 = d2.ordered['addOnLinks'].slice(0).sort();
         if(a1.length==a2.length && a1.every((v,i)=> v === a2[i]) == false) return false;
     }
     return true;

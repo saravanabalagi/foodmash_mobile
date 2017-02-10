@@ -22,13 +22,13 @@ class CartDishVariant extends React.Component {
                 <Text> Ordered: {JSON.stringify(this.props.cartDishVariant.ordered)} </Text>
                 <View style={{flexDirection: 'row'}}>
                     <TouchableHighlight
-                        onPress={() => this.props.addToCart(this.props.dishVariant.id)}
+                        onPress={() => this.props.addToCart(this.props.cartDishVariant)}
                         underlayColor={'#000'}
                         style={s.addToCart} >
                         <Text>Add to Cart</Text>
                     </TouchableHighlight>
                     <TouchableHighlight
-                        onPress={() => this.props.removeFromCart(this.props.dishVariant.id)}
+                        onPress={() => this.props.removeFromCart(this.props.cartDishVariant)}
                         underlayColor={'#000'}
                         style={s.addToCart} >
                         <Text>Remove from Cart</Text>
