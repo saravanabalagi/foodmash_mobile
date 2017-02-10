@@ -15,11 +15,11 @@ import AddOnSelector from '../views/AddOnSelector';
 
 import {fetchDishVariant} from '../reducers/dishVariant/dishVariantActions';
 import {fetchRestaurant} from '../reducers/restaurant/restaurantActions';
-import {plusOneDishVariantToCart, minusOneDishVariantToCart, getDishQuantity} from '../reducers/cart/cartActions';
+import {plusOneDishVariantToCart, minusOneDishVariantLenientToCart, getDishQuantity} from '../reducers/cart/cartActions';
 
 @connect((store,props) => {
     return {
-        dishVariants: props.dish.dish_variant_ids.map(dishVariantId => store.dishVariant.dishVariants[dishVariantId]).filter(Boolean),
+        dishVariants: props.dish.dish_variant_ids.map(dishVariantId => store.dishVariant.dishVariants[dishVariantId]).filter(Boolean).sort((a,b)=>a.price-b.price),
         quantityInCart: getDishQuantity(props.dish.id) || 0
     }
 })
@@ -31,20 +31,20 @@ export default class Dish extends Component {
         super(props);
         this.state = {
             selectedDishVariant: this.props.dishVariants[0],
-            selectedAddOnLinkIds: []
+            selectedAddOnLinks: []
         }
     }
 
     componentWillMount = () => { this.props.dispatch(fetchRestaurant(this.props.dish.restaurant_id)); this.props.dish.dish_variant_ids.map(dishVariantId => this.props.dispatch(fetchDishVariant(dishVariantId))); };
     componentWillReceiveProps = (nextProps) => { if(this.state.selectedDishVariant == null && nextProps.dishVariants != null) this.setState({selectedDishVariant: nextProps.dishVariants[0]}); };
 
-    addToCart = () => { this.props.dispatch(plusOneDishVariantToCart({id: this.state.selectedDishVariant.id, ordered:{}})) };
-    removeFromCart = () => { this.props.dispatch(minusOneDishVariantToCart({id: this.state.selectedDishVariant.id, ordered:{}})) };
+    addToCart = () => { this.props.dispatch(plusOneDishVariantToCart({id: this.state.selectedDishVariant.id, ordered:{addOnLinks:this.state.selectedAddOnLinks.map(addOnLink => addOnLink.id)}})) };
+    removeFromCart = () => { this.props.dispatch(minusOneDishVariantLenientToCart({id: this.state.selectedDishVariant.id, ordered:{addOnLinks:this.state.selectedAddOnLinks.map(addOnLink => addOnLink.id)}})) };
 
     toggleSelectAddOnLink = (addOnLink) => {
-        if(!this.state.selectedAddOnLinkIds.includes(addOnLink.id))
-            this.setState({selectedAddOnLinkIds: [...this.state.selectedAddOnLinkIds, addOnLink.id]});
-        else this.setState({selectedAddOnLinkIds: this.state.selectedAddOnLinkIds.filter(id=> id!=addOnLink.id)});
+        if(!this.state.selectedAddOnLinks.includes(addOnLink))
+            this.setState({selectedAddOnLinks: [...this.state.selectedAddOnLinks, addOnLink]});
+        else this.setState({selectedAddOnLinks: this.state.selectedAddOnLinks.filter(el=> el.id!=addOnLink.id)});
     };
 
     render() {
@@ -54,7 +54,7 @@ export default class Dish extends Component {
                     <View style={s.titleRow}>
                         <Text style={s.title}> { this.props.dish.name } </Text>
                         <View style={s.actions}>
-                            <Text>₹ {this.props.dishVariants.reduce((min,i)=>(i.price<min)?i.price:min,99999)}</Text>
+                            <Text style={s.price}>₹ {(this.state.selectedDishVariant)?this.state.selectedAddOnLinks.reduce((price, addOnLink)=> price+parseFloat(addOnLink.price),parseFloat(this.state.selectedDishVariant.price)):"Loading..."}</Text>
                             {
                                 this.props.quantityInCart>0 &&
                                 <View style={s.actions}>
@@ -66,11 +66,18 @@ export default class Dish extends Component {
                                     <Text style={s.quantity}> {this.props.quantityInCart} </Text>
                                 </View>
                             }
-                            <TouchableOpacity
-                                onPress={this.addToCart}
-                                style={s.button} >
-                                <Icon name={"plus-circle"} size={20} color={"#F37521"}/>
-                            </TouchableOpacity>
+                            {
+                                (this.props.selected || this.props.dishVariants.length === 1) &&
+                                <TouchableOpacity
+                                    onPress={this.addToCart}
+                                    style={s.button}>
+                                    <Icon name={"plus-circle"} size={20} color={"#F37521"}/>
+                                </TouchableOpacity>
+                            }
+                            {
+                                !this.props.selected && this.props.dishVariants.length > 1 &&
+                                <Icon style={s.button} name={"chevron-circle-down"} size={20} color={"#F37521"}/>
+                            }
                         </View>
                     </View>
                 </TouchableOpacity>
@@ -86,7 +93,7 @@ export default class Dish extends Component {
                                         <DishVariant key={dishVariant.id}
                                                      dishVariant={dishVariant}
                                                      selected={dishVariant == this.state.selectedDishVariant}
-                                                     selectVariant={(dishVariant) => this.setState({selectedDishVariant: dishVariant})}/>
+                                                     selectVariant={(dishVariant) => this.setState({selectedDishVariant: dishVariant, selectedAddOnLinks: []})}/>
                                     )
                                 }) }
                             </ScrollView>
@@ -96,7 +103,7 @@ export default class Dish extends Component {
                             {
                                 this.state.selectedDishVariant &&
                                 <AddOnSelector
-                                    selectedAddOnLinkIds={this.state.selectedAddOnLinkIds}
+                                    selectedAddOnLinkIds={this.state.selectedAddOnLinks.map(addOnLink=>addOnLink.id)}
                                     toggleSelectAddOnLink={(addOnLink)=>this.toggleSelectAddOnLink(addOnLink)}
                                     dishVariant={this.state.selectedDishVariant} />
                             }
@@ -132,6 +139,9 @@ const s = StyleSheet.create({
         paddingRight: 10,
         paddingTop: 5,
         paddingBottom: 5,
+    },
+    price: {
+        padding: 6
     },
     quantity: {
         fontSize: 18

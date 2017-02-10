@@ -29,7 +29,7 @@ class AddOnLink extends React.Component {
             <TouchableOpacity onPress={()=>this.props.toggleSelect()}>
                 <View style={s.parent}>
                     <Icon style={s.checkbox} name={this.props.selected?"check-square-o":"square-o"} size={20} color={"#000a74"}/>
-                    <Text>{this.props.addOn? this.props.addOn.name: "Loading..."} (₹{this.props.addOnLink.price}) </Text>
+                    <Text>{this.props.addOn? this.props.addOn.name: "Loading..."} (₹{parseFloat(this.props.addOnLink.price)}) </Text>
                 </View>
             </TouchableOpacity>
         );

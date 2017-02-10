@@ -33,7 +33,7 @@ class DishVariant extends React.Component {
                     <Icon style={s.checkbox} name={this.props.selected?"check-square-o":"square-o"} size={23} color={"#000a74"}/>
                     <View style={s.touchableRight}>
                         <Text style={s.title}> {this.props.variant? this.props.variant.display_name : "Loading..."}</Text>
-                        <Text style={s.price}> ₹ {this.props.dishVariant.price} </Text>
+                        <Text style={s.price}> ₹ {parseFloat(this.props.dishVariant.price)} </Text>
                     </View>
                 </View>
             </TouchableOpacity>
