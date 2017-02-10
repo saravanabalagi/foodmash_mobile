@@ -7,7 +7,7 @@ import {
     TouchableHighlight
 } from 'react-native'
 
-import AddOnLinkList from '../views/AddOnLinkList';
+import AddOnLinkList from './AddOnLinkList';
 import {connect} from 'react-redux';
 
 import {fetchVariant} from '../reducers/variant/variantActions';

@@ -10,8 +10,8 @@ import {
 import {connect} from 'react-redux';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
-import DishVariant from '../views/DishVariant';
-import AddOnSelector from '../views/AddOnSelector';
+import DishVariant from './DishVariant';
+import AddOnSelector from './AddOnSelector';
 
 import {fetchDishVariant} from '../reducers/dishVariant/dishVariantActions';
 import {fetchRestaurant} from '../reducers/restaurant/restaurantActions';

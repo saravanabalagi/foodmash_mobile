@@ -8,7 +8,7 @@ import {
     StyleSheet
 } from 'react-native';
 
-import Dish from '../views/Dish';
+import Dish from './Dish';
 import Loading from '../views/Loading';
 
 import {connect} from 'react-redux';

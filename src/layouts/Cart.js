@@ -14,7 +14,7 @@ import Loading from '../views/Loading';
 import {plusOneDishVariantToCart, minusOneDishVariantToCart} from '../reducers/cart/cartActions'
 import {getTotal, getTotalItems, submitCart} from '../reducers/cart/cartActions'
 
-import CartDishVariant from '../views/CartDishVariant';
+import CartDishVariant from '../containers/CartDishVariant';
 
 @connect((store) => {
     return {
