@@ -9,6 +9,7 @@ import {
 
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {connect} from 'react-redux';
+import Loading from '../views/Loading';
 
 import {plusOneDishVariantToCart, minusOneDishVariantToCart} from '../reducers/cart/cartActions'
 import {getTotal, getTotalItems, submitCart} from '../reducers/cart/cartActions'
@@ -46,9 +47,9 @@ export default class Cart extends Component {
     render() {
         return (
             <View style={s.parent}>
+                { this.props.inProgress && <Loading/> }
                 <ScrollView style={s.scrollableArea}>
                     <View>
-                        { this.props.inProgress && <Text> inProgress </Text> }
                         { this.props.cartDishVariants.map((cartDishVariant,index) => {
                             return <CartDishVariant
                                 key={index}
