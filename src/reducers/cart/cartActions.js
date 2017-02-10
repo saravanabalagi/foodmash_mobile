@@ -48,8 +48,9 @@ export function purchaseCart() {
 export function getTotal() {
     let cartDishVariants = store.getState().cart.dishVariants;
     let dishVariants = store.getState().dishVariant.dishVariants;
-    return cartDishVariants.reduce((total, dishVariant)=>{
-        return total + dishVariants[dishVariant.id].price*dishVariant.quantity;
+    let addOnLinks = store.getState().addOnLink.addOnLinks;
+    return cartDishVariants.reduce((total, cartDishVariant)=>{
+        return total + cartDishVariant.ordered.addOnLinks.reduce((price, addOnLinkId)=> price+parseFloat(addOnLinks[addOnLinkId].price),parseFloat(dishVariants[cartDishVariant.id].price))*cartDishVariant.quantity;
     },0);
 }
 

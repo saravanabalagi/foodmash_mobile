@@ -4,11 +4,12 @@ import {
     Text,
     StyleSheet,
     ScrollView,
-    TouchableHighlight
+    TouchableOpacity
 } from 'react-native';
 
-import {Actions} from 'react-native-router-flux';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import {connect} from 'react-redux';
+
 import {plusOneDishVariantToCart, minusOneDishVariantToCart} from '../reducers/cart/cartActions'
 import {getTotal, getTotalItems, submitCart} from '../reducers/cart/cartActions'
 
@@ -44,30 +45,45 @@ export default class Cart extends Component {
 
     render() {
         return (
-            <ScrollView style={s.parent}>
-                <View>
-                    { this.props.inProgress && <Text> inProgress </Text> }
-                    { this.props.cartDishVariants.map((dishVariant,index) => {
-                        return <CartDishVariant
-                            key={index}
-                            addToCart={this.handleAddToCart}
-                            removeFromCart={this.handleRemoveFromCart}
-                            cartDishVariant={dishVariant}
-                            dishVariant={this.getDishVariant(dishVariant.id)}
-                            dish={this.getDish(dishVariant.id)}
-                            restaurant={this.getRestaurant(dishVariant.id)}/>
-                    }) }
-                    <Text> Total: { this.props.total } </Text>
-                    <Text> Items: { this.props.totalItems } </Text>
-                    {
-                        this.props.cartDishVariants.length>0 &&
-                        <TouchableHighlight style={s.button} onPress={()=>this.props.dispatch(submitCart())}>
-                            <Text>Proceed</Text>
-                        </TouchableHighlight>
-                    }
-                    { this.props.error != null && !this.props.inProgress && <Text> {this.props.error.toString()} </Text> }
-                </View>
-            </ScrollView>
+            <View style={s.parent}>
+                <ScrollView style={s.scrollableArea}>
+                    <View>
+                        { this.props.inProgress && <Text> inProgress </Text> }
+                        { this.props.cartDishVariants.map((cartDishVariant,index) => {
+                            return <CartDishVariant
+                                key={index}
+                                addToCart={()=>this.handleAddToCart(cartDishVariant)}
+                                removeFromCart={()=>this.handleRemoveFromCart(cartDishVariant)}
+                                cartDishVariant={cartDishVariant}
+                                dishVariant={this.getDishVariant(cartDishVariant.id)}
+                                dish={this.getDish(cartDishVariant.id)}
+                                restaurant={this.getRestaurant(cartDishVariant.id)}/>
+                        }) }
+                    </View>
+                </ScrollView>
+                {
+                    this.props.cartDishVariants.length>0 &&
+                    <TouchableOpacity
+                        style={s.touchableBottomBar}
+                        onPress={()=>this.props.dispatch(submitCart())}>
+                        <View style={s.proceedButton}>
+                            <View style={s.totalWrapper}>
+                                <Text style={s.total}> ₹ { this.props.total } </Text>
+                                <Text style={s.totalItems}> { this.props.totalItems } items </Text>
+                            </View>
+                            <View style={s.line} />
+                            <View style={s.buttonRight}>
+                                <View style={s.proceedWrapper}>
+                                    <Text style={s.prooeed}> Proceed </Text>
+                                    <Text style={s.toPay}> TO PAY </Text>
+                                </View>
+                                <Icon name={"chevron-circle-right"} size={20} color={"#F37521"}/>
+                            </View>
+                        </View>
+                    </TouchableOpacity>
+                }
+                { this.props.error != null && !this.props.inProgress && <Text> {this.props.error.toString()} </Text> }
+            </View>
         );
     }
 
@@ -75,19 +91,44 @@ export default class Cart extends Component {
 
 const s = StyleSheet.create({
     parent: {
-        padding: 10,
+        flex: 1,
         marginBottom: 80
     },
-    variant: {
-        padding: 10,
-        marginLeft: 5,
-        marginRight: 5,
-        marginBottom: 5,
-        backgroundColor: '#ccf'
+    scrollableArea: {
+        flex: 1,
+        padding: 10
     },
-    button: {
-        padding: 10,
-        backgroundColor: '#C88',
-        margin: 10
+    touchableBottomBar: {
+        height: 70,
+        marginLeft: 10,
+        marginRight: 10,
+        marginTop: 10,
+        borderTopColor: '#666',
+        borderTopWidth: 1
+    },
+    proceedButton: {
+        flexDirection: 'row',
+        flex: 1,
+        alignItems: 'center'
+    },
+    buttonRight: {
+        flex: 3,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    totalWrapper: {
+        flex: 2,
+        alignItems: 'center'
+    },
+    proceedWrapper: { paddingRight: 10 },
+    proceed: { fontSize: 17 },
+    toPay: { fontSize: 16 },
+    total: { fontSize: 17 },
+    totalItems: { fontSize: 13 },
+    line: {
+        width: 1,
+        height: 50,
+        backgroundColor: '#666'
     }
 });
