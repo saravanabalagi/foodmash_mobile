@@ -70,7 +70,7 @@ export default class Cart extends Component {
                         <View style={s.proceedButton}>
                             <View style={s.totalWrapper}>
                                 <Text style={s.total}> ₹ { this.props.total } </Text>
-                                <Text style={s.totalItems}> { this.props.totalItems } items </Text>
+                                <Text style={s.totalItems}> { this.props.totalItems } {this.props.totalItems>1?"items":"item"} </Text>
                             </View>
                             <View style={s.line} />
                             <View style={s.buttonRight}>
