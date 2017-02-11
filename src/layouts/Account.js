@@ -8,6 +8,7 @@ import {
 
 import UserDetails from '../containers/UserDetails';
 import LoginForm from '../containers/LoginForm';
+import OrderList from '../containers/OrderList';
 
 import {Actions} from 'react-native-router-flux';
 import {connect} from 'react-redux';
@@ -32,6 +33,7 @@ export default class ViewAccount extends Component {
             <View style={s.parent}>
                 { !this.props.signedIn && <LoginForm /> }
                 { this.props.signedIn && <UserDetails /> }
+                { this.props.signedIn && <OrderList /> }
             </View>
         );
     }
@@ -40,6 +42,7 @@ export default class ViewAccount extends Component {
 
 const s = StyleSheet.create({
     parent: {
-        flex: 1
+        flex: 1,
+        marginBottom: 80
     }
 });

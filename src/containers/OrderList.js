@@ -3,13 +3,14 @@ import {
     Text,
     View,
     TextInput,
-    TouchableHighlight,
+    ScrollView,
     StyleSheet
 } from 'react-native'
+
 import {connect} from 'react-redux';
-import {Actions} from 'react-native-router-flux';
 import {fetchOrders} from '../reducers/order/orderActions';
 import Order from '../views/Order';
+import Loading from '../views/Loading';
 
 @connect((store) => {
     return {
@@ -23,22 +24,31 @@ class OrderList extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            selectedOrder: null
+        };
     }
 
     componentDidMount = () => { this.props.dispatch(fetchOrders()) };
+    selectOrder = (order) => { if(this.state.selectedOrder==null || this.state.selectedOrder.id!==order.id) this.setState({selectedOrder: order}); else this.setState({selectedOrder: null}); };
 
     render() {
         return (
-            <View style={s.parent}>
-                { this.props.inProgress && <Text> inProgress </Text> }
-                {
-                    this.props.orders.map((order) => {
-                        return <Order key={order.id} order={order} />
-                    })
-                }
-                { this.props.error != null && !this.props.inProgress && <Text> {this.props.error.toString()} </Text> }
-            </View>
+            <ScrollView>
+                <View style={s.parent}>
+                    { this.props.inProgress && <Loading/> }
+                    {
+                        this.props.orders.map((order) => {
+                            return <Order
+                                selected={this.state.selectedOrder && order.id===this.state.selectedOrder.id}
+                                select={()=>this.selectOrder(order)}
+                                key={order.id}
+                                order={order} />
+                        })
+                    }
+                    { this.props.error != null && !this.props.inProgress && <Text> {this.props.error.toString()} </Text> }
+                </View>
+            </ScrollView>
         );
 
     }
@@ -46,7 +56,9 @@ class OrderList extends React.Component {
 }
 
 const s = StyleSheet.create({
-
+    parent: {
+        marginTop: 10
+    }
 });
 
 export default OrderList;

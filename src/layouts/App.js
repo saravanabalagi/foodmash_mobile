@@ -7,12 +7,10 @@ import {
 } from 'react-native';
 
 import {Scene, Router, Actions, ActionConst, Reducer} from 'react-native-router-flux';
-import ViewAccount from './ViewAccount';
+import Account from './Account';
 import Cart from './Cart';
 import Checkout from './Checkout';
 import LoginForm from '../containers/LoginForm';
-import ViewOrders from './ViewOrders';
-import ViewOrderDetails from './ViewOrderDetails';
 import TabIcon from '../views/TabIcon';
 import DishCategoryList from '../containers/DishCategoryList';
 
@@ -34,12 +32,12 @@ export default class App extends Component {
                        component={LoginForm}
                        key="login"/>
                 <Scene key="app" tabs={true} tabBarStyle={s.mainTabs}>
-                    <Scene title="Mash"
+                    <Scene title="Menu"
                            icon={TabIcon}
-                           tabIcon="cutlery"
-                           key="mash"
+                           tabIcon="restaurant-menu"
+                           key="menu"
                            hideNavBar={true}>
-                        <Scene title="Mash"
+                        <Scene title="Menu"
                                component={DishCategoryList}
                                key="dishCategory"
                                hideNavBar={true}/>
@@ -57,27 +55,13 @@ export default class App extends Component {
                                hideTabBar={true}
                                key="checkout"/>
                     </Scene>
-                    <Scene title="Orders"
-                           icon={TabIcon}
-                           tabIcon="truck"
-                           type={ActionConst.REFRESH}
-                           hideNavBar={true}
-                           key="orders">
-                        <Scene title="Orders"
-                               component={ViewOrders}
-                               key="orderList"/>
-                        <Scene title="Order Details"
-                               component={ViewOrderDetails}
-                               hideTabBar={true}
-                               key="viewOrderDetails"/>
-                    </Scene>
                     <Scene title="Account"
                            icon={TabIcon}
-                           tabIcon="user"
+                           tabIcon="account-circle"
                            hideNavBar={true}
                            key="account">
                         <Scene title="Profile"
-                               component={ViewAccount}
+                               component={Account}
                                key="profile"/>
                     </Scene>
                 </Scene>
