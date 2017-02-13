@@ -48,20 +48,31 @@ export default class Cart extends Component {
         return (
             <View style={s.parent}>
                 { this.props.inProgress && <Loading/> }
-                <ScrollView style={s.scrollableArea}>
-                    <View>
-                        { this.props.cartDishVariants.map((cartDishVariant,index) => {
-                            return <CartDishVariant
-                                key={index}
-                                addToCart={()=>this.handleAddToCart(cartDishVariant)}
-                                removeFromCart={()=>this.handleRemoveFromCart(cartDishVariant)}
-                                cartDishVariant={cartDishVariant}
-                                dishVariant={this.getDishVariant(cartDishVariant.id)}
-                                dish={this.getDish(cartDishVariant.id)}
-                                restaurant={this.getRestaurant(cartDishVariant.id)}/>
-                        }) }
+                {
+                    this.props.cartDishVariants.length===0 &&
+                    <View style={s.noItemsInCart}>
+                        <Icon name={"frown-o"} size={100} color={"#e16800"}/>
+                        <Text style={s.cartIsEmpty}>Your cart is empty</Text>
+                        <Text style={s.shouldntBe}>but it shouldn't be</Text>
                     </View>
-                </ScrollView>
+                }
+                {
+                    this.props.cartDishVariants.length>0 &&
+                    <ScrollView style={s.scrollableArea}>
+                        <View>
+                            { this.props.cartDishVariants.map((cartDishVariant,index) => {
+                                return <CartDishVariant
+                                    key={index}
+                                    addToCart={()=>this.handleAddToCart(cartDishVariant)}
+                                    removeFromCart={()=>this.handleRemoveFromCart(cartDishVariant)}
+                                    cartDishVariant={cartDishVariant}
+                                    dishVariant={this.getDishVariant(cartDishVariant.id)}
+                                    dish={this.getDish(cartDishVariant.id)}
+                                    restaurant={this.getRestaurant(cartDishVariant.id)}/>
+                            }) }
+                        </View>
+                    </ScrollView>
+                }
                 {
                     this.props.cartDishVariants.length>0 &&
                     <TouchableOpacity
@@ -131,5 +142,18 @@ const s = StyleSheet.create({
         width: 1,
         height: 50,
         backgroundColor: '#666'
+    },
+    noItemsInCart: {
+        alignItems: 'center',
+        flex: 1,
+        justifyContent: 'center'
+    },
+    cartIsEmpty: {
+        fontSize: 15,
+        marginTop: 20
+    },
+    shouldntBe: {
+        fontSize: 17,
+        padding: 5
     }
 });
