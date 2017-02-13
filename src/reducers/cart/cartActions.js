@@ -19,7 +19,7 @@ export function submitCart() {
     const cart = store.getState().cart;
     return (dispatch) => {
         dispatch({type: "SUBMIT_CART_IN_PROGRESS"});
-        axios.post(url, { dish_variants: cart.orderItems})
+        axios.post(url, { order_items: cart.orderItems})
             .then((response) => { dispatch({ type: "SUBMIT_CART_FULFILLED", payload: response.data }); Actions.checkout(); })
             .catch((error) => { dispatch({ type: "SUBMIT_CART_FAILED", payload: error }); });
     };
@@ -39,7 +39,7 @@ export function purchaseCart() {
                                     //TODO: clear cart stack and bring it back to inCart
                                     dispatch(fetchOrdersAndfetchOrder(cart.values.id));
                                     Actions.pop();
-                                    Actions.orders();
+                                    Actions.account();
                                     dispatch({type: "RESET_CART"}); })
             .catch((error) => { dispatch({ type: "PURCHASE_CART_FAILED", payload: error }); });
     };
