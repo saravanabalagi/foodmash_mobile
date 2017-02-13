@@ -10,7 +10,6 @@ import {Actions} from 'react-native-router-flux';
 import {connect} from 'react-redux';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import Loading from '../views/Loading';
 
 import {fetchUser} from '../reducers/user/userActions';
 
@@ -37,7 +36,6 @@ export default class UserDetails extends Component {
     render() {
         return (
             <View style={s.parent}>
-                { this.props.inProgress && <Loading/> }
                 <View style={s.userDetailsWrapper}>
                     <Icon style={s.icon} name={"contacts"} size={75} color={"#F37521"}/>
                     <View style={s.rightPane}>
