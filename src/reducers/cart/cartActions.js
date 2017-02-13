@@ -67,11 +67,3 @@ export function getDishQuantity(id) {
         return (dishVariants[dishVariant.id].dish_id === id)? quantity+dishVariant.quantity : quantity;
     }, 0);
 }
-
-
-// export function addComboToCart(combo) {
-//     return (dispatch) => {
-//         dispatch({type: "ADD_DISH_VARIANT_TO_CART", combo: combo});
-//     };
-// }
-

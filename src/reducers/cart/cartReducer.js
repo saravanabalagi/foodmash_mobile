@@ -1,6 +1,5 @@
 export default (state = {
     dishVariants: [],
-    combos: [],
     inProgress: false,
     values: {
         id: null,
@@ -16,7 +15,6 @@ export default (state = {
         case "FETCH_CART_IN_PROGRESS": newState.inProgress = true; break;
         case "FETCH_CART_FULFILLED":
             if(action.payload.hasOwnProperty('dishVariants')) newState.dishVariants = action.payload['dishVariants'];
-            if(action.payload.hasOwnProperty('combos')) newState.combos = action.payload['combos'];
             newState.error = null; newState.inProgress = false; break;
         case "FETCH_CART_FAILED": newState.error = action.payload; newState.inProgress = false; break;
 
@@ -39,7 +37,7 @@ export default (state = {
             newState.dishVariants = newState.dishVariants.reduceRight((found => (dishVariants, dishVariant) => (!found && dishVariant.id===action.dishVariant.id? (found=true,(dishVariant.quantity>1)?dishVariants.unshift({...dishVariant, quantity: dishVariant.quantity-1}):true) : dishVariants.unshift(dishVariant),dishVariants))(false),[]);
             break;
 
-        case "RESET_CART": newState.dishVariants = []; newState.combos = []; newState.inProgress = false;
+        case "RESET_CART": newState.dishVariants = []; newState.inProgress = false;
                             newState.values = {id: null, total: null, sub_total: null, vat: null, delivery: null};
                             newState.error = null; break;
     }

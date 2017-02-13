@@ -2,7 +2,6 @@ import {combineReducers} from 'redux'
 
 import cartReducer from './cart/cartReducer';
 import cityReducer from './city/cityReducer';
-import comboReducer from './combo/comboReducer';
 import dishCategoryReducer from './dishCategory/dishCategoryReducer';
 import dishReducer from './dish/dishReducer';
 import dishVariantReducer from './dishVariant/dishVariantReducer';
@@ -21,7 +20,6 @@ import userReducer from './user/userReducer';
 export default combineReducers({
     cart: cartReducer,
     city: cityReducer,
-    combo: comboReducer,
     dishCategory: dishCategoryReducer,
     dish: dishReducer,
     dishVariant: dishVariantReducer,
