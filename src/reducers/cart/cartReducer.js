@@ -1,5 +1,5 @@
 export default (state = {
-    dishVariants: [],
+    orderItems: [],
     inProgress: false,
     values: {
         id: null,
@@ -13,8 +13,7 @@ export default (state = {
     const newState = {...state};
     switch(action.type) {
         case "FETCH_CART_IN_PROGRESS": newState.inProgress = true; break;
-        case "FETCH_CART_FULFILLED":
-            if(action.payload.hasOwnProperty('dishVariants')) newState.dishVariants = action.payload['dishVariants'];
+        case "FETCH_CART_FULFILLED": newState.orderItems = action.payload['order_items'];
             newState.error = null; newState.inProgress = false; break;
         case "FETCH_CART_FAILED": newState.error = action.payload; newState.inProgress = false; break;
 
@@ -23,21 +22,21 @@ export default (state = {
         case "SUBMIT_CART_FAILED": newState.error = action.payload; newState.inProgress = false; break;
 
         case "PLUS_ONE_DISH_VARIANT":
-            let found = newState.dishVariants.filter(dishVariant => checkEqualityOfDishVariantsExceptQuantity(dishVariant, action.dishVariant)).length;
-            if(found==0) { action.dishVariant.quantity = 1; newState.dishVariants = [...newState.dishVariants, action.dishVariant]; }
-            else if(found==1) newState.dishVariants = newState.dishVariants.map(dishVariant => checkEqualityOfDishVariantsExceptQuantity(dishVariant, action.dishVariant)? changeQuantityToDishVariant(dishVariant,action,1) :dishVariant );
+            let found = newState.orderItems.filter(orderItem => checkEqualityOfOrderItemsExceptQuantity(orderItem, action.orderItem)).length;
+            if(found==0) { action.orderItem.quantity = 1; newState.orderItems = [...newState.orderItems, action.orderItem]; }
+            else if(found==1) newState.orderItems = newState.orderItems.map(orderItem => checkEqualityOfOrderItemsExceptQuantity(orderItem, action.orderItem)? changeQuantityToOrderItem(orderItem,action,1) :orderItem );
             break;
         case "MINUS_ONE_DISH_VARIANT":
-            let filtered = newState.dishVariants.filter(dishVariant => checkEqualityOfDishVariantsExceptQuantity(dishVariant, action.dishVariant));
+            let filtered = newState.orderItems.filter(orderItem => checkEqualityOfOrderItemsExceptQuantity(orderItem, action.orderItem));
             if(filtered.length == 1)
-                if(filtered[0].quantity == 1) newState.dishVariants = newState.dishVariants.filter(dishVariant => !checkEqualityOfDishVariantsExceptQuantity(dishVariant, action.dishVariant));
-                else if(filtered[0].quantity > 1) newState.dishVariants = newState.dishVariants.map(dishVariant => checkEqualityOfDishVariantsExceptQuantity(dishVariant, action.dishVariant)? changeQuantityToDishVariant(dishVariant,action,-1) :dishVariant );
+                if(filtered[0].quantity == 1) newState.orderItems = newState.orderItems.filter(orderItem => !checkEqualityOfOrderItemsExceptQuantity(orderItem, action.orderItem));
+                else if(filtered[0].quantity > 1) newState.orderItems = newState.orderItems.map(orderItem => checkEqualityOfOrderItemsExceptQuantity(orderItem, action.orderItem)? changeQuantityToOrderItem(orderItem,action,-1) :orderItem );
             break;
         case "MINUS_ONE_DISH_VARIANT_LENIENT":
-            newState.dishVariants = newState.dishVariants.reduceRight((found => (dishVariants, dishVariant) => (!found && dishVariant.id===action.dishVariant.id? (found=true,(dishVariant.quantity>1)?dishVariants.unshift({...dishVariant, quantity: dishVariant.quantity-1}):true) : dishVariants.unshift(dishVariant),dishVariants))(false),[]);
+            newState.orderItems = newState.orderItems.reduceRight((found => (orderItems, orderItem) => (!found && orderItem.dish_variant_id===action.orderItem.dish_variant_id? (found=true,(orderItem.quantity>1)?orderItems.unshift({...orderItem, quantity: orderItem.quantity-1}):true) : orderItems.unshift(orderItem),orderItems))(false),[]);
             break;
 
-        case "RESET_CART": newState.dishVariants = []; newState.inProgress = false;
+        case "RESET_CART": newState.orderItems = []; newState.inProgress = false;
                             newState.values = {id: null, total: null, sub_total: null, vat: null, delivery: null};
                             newState.error = null; break;
     }
@@ -45,32 +44,16 @@ export default (state = {
     return newState;
 }
 
-let changeQuantityToDishVariant = (state={}, action, change) => {
+let changeQuantityToOrderItem = (state={}, action, change) => {
     const newState = {...state};
     if(newState.quantity === undefined) newState.quantity = 0;
     newState.quantity += change;
     return newState;
 };
 
-let checkEqualityOfDishVariants = (d1, d2) => {
-    if(checkEqualityOfDishVariantsExceptQuantity(d1,d2) == false) return false;
-    else if(d1.quantity != d2.quantity) return false;
-    return true;
-};
-
-let checkEqualityOfDishVariantsExceptQuantity = (d1, d2) => {
-    if(d1.id != d2.id) return false;
-    if(d1.ordered.hasOwnProperty('note') && !d2.ordered.hasOwnProperty('note')) return false;
-    if(!d1.ordered.hasOwnProperty('note') && d2.ordered.hasOwnProperty('note')) return false;
-    if(d1.ordered.hasOwnProperty('note') && d2.ordered.hasOwnProperty('note'))
-        if(d1.ordered['note'] != d2.ordered['note']) return false;
-    if(d1.ordered.hasOwnProperty('addOnLinks') && !d2.ordered.hasOwnProperty('addOnLinks')) return false;
-    if(!d1.ordered.hasOwnProperty('addOnLinks') && d2.ordered.hasOwnProperty('addOnLinks')) return false;
-    if(d1.ordered.hasOwnProperty('addOnLinks') && d2.ordered.hasOwnProperty('addOnLinks')) {
-        if(d1.ordered['addOnLinks'].length != d2.ordered['addOnLinks'].length) return false;
-        const a1 = d1.ordered['addOnLinks'].slice(0).sort();
-        const a2 = d2.ordered['addOnLinks'].slice(0).sort();
-        if(a1.length==a2.length && a1.every((v,i)=> v === a2[i]) == false) return false;
-    }
-    return true;
+let checkEqualityOfOrderItems = (d1, d2) => { return checkEqualityOfOrderItemsExceptQuantity(d1,d2) && d1.quantity===d2.quantity; };
+let checkEqualityOfOrderItemsExceptQuantity = (d1, d2) => {
+    if(d1.dish_variant_id != d2.dish_variant_id) return false;
+    if(d1.note != d2.note) return false;
+    return d1.add_on_link_ids.length === d2.add_on_link_ids.length && d2.add_on_link_ids.every(id=>d1.add_on_link_ids.includes(id));
 };

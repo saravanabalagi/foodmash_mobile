@@ -15,7 +15,6 @@ class Order extends React.Component {
     }
 
     getIconForStatus = (status) => {
-        console.log(status);
         switch (status) {
             case "Processing": return "spinner";
             case "Ready": return "bell";

@@ -19,15 +19,15 @@ export function submitCart() {
     const cart = store.getState().cart;
     return (dispatch) => {
         dispatch({type: "SUBMIT_CART_IN_PROGRESS"});
-        axios.post(url, { dish_variants: cart.dishVariants})
+        axios.post(url, { dish_variants: cart.orderItems})
             .then((response) => { dispatch({ type: "SUBMIT_CART_FULFILLED", payload: response.data }); Actions.checkout(); })
             .catch((error) => { dispatch({ type: "SUBMIT_CART_FAILED", payload: error }); });
     };
 }
 
-export function plusOneDishVariantToCart(dishVariant) { return (dispatch) => { dispatch({type: "PLUS_ONE_DISH_VARIANT", dishVariant: dishVariant}); }; }
-export function minusOneDishVariantToCart(dishVariant) { return (dispatch) => { dispatch({type: "MINUS_ONE_DISH_VARIANT", dishVariant: dishVariant}); }; }
-export function minusOneDishVariantLenientToCart(dishVariant) { return (dispatch) => { dispatch({type: "MINUS_ONE_DISH_VARIANT_LENIENT", dishVariant: dishVariant}); }; }
+export function plusOneDishVariantToCart(orderItem) { return (dispatch) => { dispatch({type: "PLUS_ONE_DISH_VARIANT", orderItem: orderItem}); }; }
+export function minusOneDishVariantToCart(orderItem) { return (dispatch) => { dispatch({type: "MINUS_ONE_DISH_VARIANT", orderItem: orderItem}); }; }
+export function minusOneDishVariantLenientToCart(orderItem) { return (dispatch) => { dispatch({type: "MINUS_ONE_DISH_VARIANT_LENIENT", orderItem: orderItem}); }; }
 
 export function purchaseCart() {
     const url = '/cart/purchase/cod';
@@ -46,24 +46,24 @@ export function purchaseCart() {
 }
 
 export function getTotal() {
-    let cartDishVariants = store.getState().cart.dishVariants;
+    let orderItems = store.getState().cart.orderItems;
     let dishVariants = store.getState().dishVariant.dishVariants;
     let addOnLinks = store.getState().addOnLink.addOnLinks;
-    return cartDishVariants.reduce((total, cartDishVariant)=>{
-        return total + cartDishVariant.ordered.addOnLinks.reduce((price, addOnLinkId)=> price+parseFloat(addOnLinks[addOnLinkId].price),parseFloat(dishVariants[cartDishVariant.id].price))*cartDishVariant.quantity;
+    return orderItems.reduce((total, orderItem)=>{
+        return total + orderItem.add_on_link_ids.reduce((price, addOnLinkId)=> price+parseFloat(addOnLinks[addOnLinkId].price),parseFloat(dishVariants[orderItem.dish_variant_id].price))*orderItem.quantity;
     },0);
 }
 
 export function getTotalItems() {
-    return store.getState().cart.dishVariants.reduce((total, dish_variant)=>{
-        return total +  dish_variant.quantity;
+    return store.getState().cart.orderItems.reduce((total, orderItem)=>{
+        return total +  orderItem.quantity;
     },0);
 }
 
 export function getDishQuantity(id) {
-    let cartDishVariants = store.getState().cart.dishVariants;
+    let orderItems = store.getState().cart.orderItems;
     let dishVariants = store.getState().dishVariant.dishVariants;
-    return cartDishVariants.reduce((quantity, dishVariant) => {
-        return (dishVariants[dishVariant.id].dish_id === id)? quantity+dishVariant.quantity : quantity;
+    return orderItems.reduce((quantity, orderItem) => {
+        return (dishVariants[orderItem.dish_variant_id].dish_id === id)? quantity+orderItem.quantity : quantity;
     }, 0);
 }

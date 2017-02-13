@@ -14,12 +14,12 @@ import Loading from '../views/Loading';
 import {plusOneDishVariantToCart, minusOneDishVariantToCart} from '../reducers/cart/cartActions'
 import {getTotal, getTotalItems, submitCart} from '../reducers/cart/cartActions'
 
-import CartDishVariant from '../containers/CartDishVariant';
+import OrderItem from '../containers/OrderItem';
 
 @connect((store) => {
     return {
         signedIn: store.session.jwt!=null,
-        cartDishVariants: store.cart.dishVariants,
+        orderItems: store.cart.orderItems,
         dishVariants: store.dishVariant.dishVariants,
         dishes: store.dish.dishes,
         restaurants: store.restaurant.restaurants,
@@ -37,8 +37,8 @@ export default class Cart extends Component {
         this.state = {}
     }
 
-    handleAddToCart = (cartDishVariant) => { this.props.dispatch(plusOneDishVariantToCart(cartDishVariant)); };
-    handleRemoveFromCart = (cartDishVariant) => { this.props.dispatch(minusOneDishVariantToCart(cartDishVariant)); };
+    handleAddToCart = (orderItem) => { this.props.dispatch(plusOneDishVariantToCart(orderItem)); };
+    handleRemoveFromCart = (orderItem) => { this.props.dispatch(minusOneDishVariantToCart(orderItem)); };
 
     getDishVariant = (dishVariantId) => { return this.props.dishVariants[dishVariantId] };
     getDish = (dishVariantId) => { return this.getDishVariant(dishVariantId)? this.props.dishes[this.getDishVariant(dishVariantId).dish_id] : null };
@@ -49,7 +49,7 @@ export default class Cart extends Component {
             <View style={s.parent}>
                 { this.props.inProgress && <Loading/> }
                 {
-                    this.props.cartDishVariants.length===0 &&
+                    this.props.orderItems.length===0 &&
                     <View style={s.noItemsInCart}>
                         <Icon name={"frown-o"} size={100} color={"#e16800"}/>
                         <Text style={s.cartIsEmpty}>Your cart is empty</Text>
@@ -57,24 +57,25 @@ export default class Cart extends Component {
                     </View>
                 }
                 {
-                    this.props.cartDishVariants.length>0 &&
+                    this.props.orderItems.length>0 &&
                     <ScrollView style={s.scrollableArea}>
                         <View>
-                            { this.props.cartDishVariants.map((cartDishVariant,index) => {
-                                return <CartDishVariant
+                            { this.props.orderItems.map((orderItem, index) => {
+                                console.log("Order Item: ",orderItem);
+                                return <OrderItem
                                     key={index}
-                                    addToCart={()=>this.handleAddToCart(cartDishVariant)}
-                                    removeFromCart={()=>this.handleRemoveFromCart(cartDishVariant)}
-                                    cartDishVariant={cartDishVariant}
-                                    dishVariant={this.getDishVariant(cartDishVariant.id)}
-                                    dish={this.getDish(cartDishVariant.id)}
-                                    restaurant={this.getRestaurant(cartDishVariant.id)}/>
+                                    addToCart={()=>this.handleAddToCart(orderItem)}
+                                    removeFromCart={()=>this.handleRemoveFromCart(orderItem)}
+                                    orderItem={orderItem}
+                                    dishVariant={this.getDishVariant(orderItem.dish_variant_id)}
+                                    dish={this.getDish(orderItem.dish_variant_id)}
+                                    restaurant={this.getRestaurant(orderItem.dish_variant_id)}/>
                             }) }
                         </View>
                     </ScrollView>
                 }
                 {
-                    this.props.cartDishVariants.length>0 &&
+                    this.props.orderItems.length>0 &&
                     <TouchableOpacity
                         style={s.touchableBottomBar}
                         onPress={()=>this.props.dispatch(submitCart())}>

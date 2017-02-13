@@ -12,11 +12,11 @@ import {connect} from 'react-redux';
 @connect((store,props) => {
     return {
         addOns: store.addOn.addOns,
-        addOnLinks: props.cartDishVariant.ordered.addOnLinks.map(addOnLinkId => store.addOnLink.addOnLinks[addOnLinkId]).filter(Boolean)
+        addOnLinks: props.orderItem.add_on_link_ids.map(addOnLinkId => store.addOnLink.addOnLinks[addOnLinkId]).filter(Boolean)
     }
 })
 
-class CartDishVariant extends React.Component {
+class OrderItem extends React.Component {
 
     constructor(props) {
         super(props);
@@ -43,14 +43,14 @@ class CartDishVariant extends React.Component {
                     }
                 </View>
                 <View style={s.rightPane}>
-                    <Text style={s.price}>₹ {this.props.addOnLinks.reduce((price, addOnLink)=> price+parseFloat(addOnLink.price),parseFloat(this.props.dishVariant.price))*parseInt(this.props.cartDishVariant.quantity)}</Text>
+                    <Text style={s.price}>₹ {this.props.addOnLinks.reduce((price, addOnLink)=> price+parseFloat(addOnLink.price),parseFloat(this.props.dishVariant.price))*parseInt(this.props.orderItem.quantity)}</Text>
                     <View style={s.actions}>
                         <TouchableOpacity
                             onPress={this.props.removeFromCart}
                             style={s.button} >
                             <Icon name={"minus-circle"} size={20} color={"#F37521"}/>
                         </TouchableOpacity>
-                        <Text style={s.quantity}> {this.props.cartDishVariant.quantity} </Text>
+                        <Text style={s.quantity}> {this.props.orderItem.quantity} </Text>
                         <TouchableOpacity
                             onPress={this.props.addToCart}
                             style={s.button} >
@@ -106,4 +106,4 @@ const s = StyleSheet.create({
     }
 });
 
-export default CartDishVariant;
+export default OrderItem;
