@@ -24,7 +24,7 @@ export default class Checkout extends Component {
         this.state = {}
     }
 
-    countItems = () => { return this.props.orderItems.reduce((sum, dish_variant)=>{ return sum + dish_variant.quantity},0); };
+    countItems = () => { return this.props.dishVariants.reduce((sum, dish_variant)=>{ return sum + dish_variant.quantity},0); };
 
     render() {
         return (
