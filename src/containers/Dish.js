@@ -20,6 +20,7 @@ import {plusOneDishVariantToCart, minusOneDishVariantLenientToCart, getDishQuant
 @connect((store,props) => {
     return {
         dishVariants: props.dish.dish_variant_ids.map(dishVariantId => store.dishVariant.dishVariants[dishVariantId]).filter(Boolean).sort((a, b)=>a.price-b.price),
+        addOnTypeLinks: store.addOnTypeLink.addOnTypeLinks,
         quantityInCart: getDishQuantity(props.dish.id) || 0
     }
 })
@@ -42,8 +43,12 @@ export default class Dish extends Component {
     removeFromCart = () => { this.props.dispatch(minusOneDishVariantLenientToCart({dish_variant_id: this.state.selectedDishVariant.id, note:null, add_on_link_ids:this.state.selectedAddOnLinks.map(addOnLink => addOnLink.id)})) };
 
     toggleSelectAddOnLink = (addOnLink) => {
-        if(!this.state.selectedAddOnLinks.includes(addOnLink))
-            this.setState({selectedAddOnLinks: [...this.state.selectedAddOnLinks, addOnLink]});
+        if(!this.state.selectedAddOnLinks.includes(addOnLink)) {
+            let newSelectedAddOnLinks = [...this.state.selectedAddOnLinks, addOnLink];
+            let addOnTypeLinkMax = this.props.addOnTypeLinks[addOnLink.add_on_type_link_id].max;
+            if(addOnTypeLinkMax!=null) newSelectedAddOnLinks = newSelectedAddOnLinks.reduceRight((count => (array,e) => (((e.add_on_type_link_id===addOnLink.add_on_type_link_id)? (count<addOnTypeLinkMax?(count++,array.unshift(e)):count++) : array.unshift(e)),array))(0),[]);
+            this.setState({selectedAddOnLinks: newSelectedAddOnLinks});
+        }
         else this.setState({selectedAddOnLinks: this.state.selectedAddOnLinks.filter(el=> el.id!=addOnLink.id)});
     };
 
