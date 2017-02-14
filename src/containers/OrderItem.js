@@ -33,7 +33,9 @@ class OrderItem extends React.Component {
                             {
                                 this.props.addOnLinks.map(addOnLink => {
                                     return(
-                                        <View key={addOnLink.id}>
+                                        <View style={s.addOnLink}
+                                            key={addOnLink.id}>
+                                            <Icon style={s.addOnLinkBullet} name={"circle"} size={5} color={"#F37521"}/>
                                             <Text>{this.props.addOns[addOnLink.add_on_id].name}</Text>
                                         </View>
                                     )
@@ -93,8 +95,8 @@ const s = StyleSheet.create({
         padding: 5
     },
     addOns: {
-        paddingLeft: 20,
-        paddingTop: 5
+        paddingLeft: 10,
+        paddingTop: 10
     },
     rightPane: {
         flexDirection: 'row',
@@ -103,6 +105,14 @@ const s = StyleSheet.create({
     actions: {
         flexDirection: 'row',
         alignItems: 'center'
+    },
+    addOnLink: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 5
+    },
+    addOnLinkBullet: {
+        marginRight: 10
     }
 });
 
