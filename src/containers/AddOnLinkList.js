@@ -20,9 +20,6 @@ class AddOnLinkList extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-            addOnLinkIds: []
-        }
     }
 
     componentWillMount = () => { this.props.addOnTypeLink.add_on_link_ids.map(addOnLinkId => this.props.dispatch(fetchAddOnLink(addOnLinkId))); };
