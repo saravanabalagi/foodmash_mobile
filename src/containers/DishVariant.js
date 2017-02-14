@@ -46,9 +46,9 @@ class DishVariant extends React.Component {
 const s = StyleSheet.create({
     parent: {
         paddingLeft: 10,
-        paddingRight: 20,
-        paddingTop: 3,
-        paddingBottom: 3,
+        paddingRight: 10,
+        paddingTop: 7,
+        paddingBottom: 7,
     },
     touchable: {
         flexDirection: 'row',

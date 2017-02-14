@@ -85,18 +85,32 @@ export default class Dish extends Component {
                     this.props.selected &&
                     <View>
                         { this.props.dishVariants.length > 1 &&
-                            <ScrollView
-                                horizontal={true}
-                                style={s.dishVariantSelector}>
-                                {this.props.dishVariants.map(dishVariant => {
-                                    return (
-                                        <DishVariant key={dishVariant.id}
-                                                     dishVariant={dishVariant}
-                                                     selected={dishVariant == this.state.selectedDishVariant}
-                                                     selectVariant={(dishVariant) => this.setState({selectedDishVariant: dishVariant, selectedAddOnLinks: []})}/>
-                                    )
-                                }) }
-                            </ScrollView>
+                            <View style={s.dishVariantSelector}>
+                                <View style={s.dishVariantSelectorLeft}>
+                                {
+                                    this.props.dishVariants.filter((e,index)=>index%2===0).map(dishVariant => {
+                                        return (
+                                            <DishVariant key={dishVariant.id}
+                                                         dishVariant={dishVariant}
+                                                         selected={dishVariant == this.state.selectedDishVariant}
+                                                         selectVariant={(dishVariant) => this.setState({selectedDishVariant: dishVariant, selectedAddOnLinks: []})}/>
+                                        )
+                                    })
+                                }
+                                </View>
+                                <View style={s.dishVariantSelectorRight}>
+                                {
+                                    this.props.dishVariants.filter((e,index)=>index%2!==0).map(dishVariant => {
+                                        return (
+                                            <DishVariant key={dishVariant.id}
+                                                         dishVariant={dishVariant}
+                                                         selected={dishVariant == this.state.selectedDishVariant}
+                                                         selectVariant={(dishVariant) => this.setState({selectedDishVariant: dishVariant, selectedAddOnLinks: []})}/>
+                                        )
+                                    })
+                                }
+                                </View>
+                            </View>
                         }
                         { this.props.dish.error == null && !this.props.dish.inProgress &&
                         <View>
@@ -147,8 +161,11 @@ const s = StyleSheet.create({
         fontSize: 18
     },
     dishVariantSelector: {
+        flexDirection: 'row',
         marginLeft: 20,
         marginRight: 20,
         marginTop: 10
-    }
+    },
+    dishVariantSelectorLeft: { flex: 1 },
+    dishVariantSelectorRight: { flex: 1 }
 });
