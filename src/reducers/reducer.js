@@ -12,6 +12,8 @@ import addOnReducer from './addOn/addOnReducer';
 import addOnLinkReducer from './addOnLink/addOnLinkReducer';
 import addOnTypeReducer from './addOnType/addOnTypeReducer';
 import addOnTypeLinkReducer from './addOnTypeLink/addOnTypeLinkReducer';
+import orderStatusReducer from './orderStatus/orderStatusReducer';
+import paymentMethodReducer from './paymentMethod/paymentMethodReducer';
 import locationReducer from './location/locationReducer';
 import orderReducer from './order/orderReducer';
 import sessionReducer from './session/sessionReducer';
@@ -30,6 +32,8 @@ export default combineReducers({
     addOnLink: addOnLinkReducer,
     addOnType: addOnTypeReducer,
     addOnTypeLink: addOnTypeLinkReducer,
+    orderStatus: orderStatusReducer,
+    paymentMethod: paymentMethodReducer,
     location: locationReducer,
     order: orderReducer,
     session: sessionReducer,

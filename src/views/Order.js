@@ -6,7 +6,18 @@ import {
     TouchableOpacity
 } from 'react-native';
 
+import {connect} from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import {fetchPaymentMethod} from '../reducers/paymentMethod/paymentMethodActions';
+import {fetchOrderStatus} from '../reducers/orderStatus/orderStatusActions';
+
+@connect((store,props) => {
+    return {
+        orderStatus: store.orderStatus.orderStatuses[props.order.order_status_id],
+        paymentMethod: store.paymentMethod.paymentMethods[props.order.payment_method_id]
+    };
+})
+
 
 class Order extends React.Component {
 
@@ -22,7 +33,12 @@ class Order extends React.Component {
             case "Completed": return "check";
             case "Cancelled": return "times";
         }
-        return "spinner";
+        return "question-circle";
+    };
+
+    componentWillMount = () => {
+        this.props.dispatch(fetchOrderStatus(this.props.order.order_status_id));
+        this.props.dispatch(fetchPaymentMethod(this.props.order.payment_method_id));
     };
 
     render() {
@@ -31,7 +47,7 @@ class Order extends React.Component {
                 <TouchableOpacity onPress={this.props.select}>
                     <View style={s.shortView}>
                         <View style={s.leftPane}>
-                            <View style={s.icon}><Icon name={this.getIconForStatus(this.props.order.order_status.name)} size={15} color={"#007402"}/></View>
+                            <View style={s.icon}><Icon name={this.getIconForStatus(this.props.orderStatus?this.props.orderStatus.name:"")} size={15} color={"#007402"}/></View>
                             <Text style={s.date}>{ new Date(this.props.order.ordered_at).toLocaleDateString('en-US', { day: '2-digit', month: 'short' }) }</Text>
                             <Text style={s.time}>({ new Date(this.props.order.ordered_at).toLocaleTimeString('en-US', { hour: '2-digit', minute:'2-digit', hour12: true }) })</Text>
                         </View>
@@ -45,6 +61,7 @@ class Order extends React.Component {
                 {
                     this.props.selected &&
                     <View style={s.extended}>
+                        <Text> {this.props.paymentMethod.name} </Text>
                         <View style={s.billing}>
                             <View style={s.billingParticulars}>
                                 <Text style={s.billingText}>Sub Total </Text>
