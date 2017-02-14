@@ -38,7 +38,7 @@ class OrderList extends React.Component {
             <View style={s.parent}>
                 { this.props.inProgress && <Loading/> }
                 {
-                    this.props.orders.length === 0 &&
+                    !this.props.inProgress && this.props.orders.length === 0 &&
                     <View style={s.noOrdersLayout}>
                         <Icon name={"exclamation-triangle"} size={100} color={"#e16800"}/>
                         <Text style={s.ordersEmpty}>You haven't ordered yet</Text>
