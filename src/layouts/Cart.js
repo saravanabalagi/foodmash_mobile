@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import {connect} from 'react-redux';
 import Loading from '../views/Loading';
 
@@ -47,6 +48,12 @@ export default class Cart extends Component {
     render() {
         return (
             <View style={s.parent}>
+                <View style={s.titleBar}>
+                    <View style={s.titleWrapper}>
+                        <MaterialIcon style={s.cartIcon} name={"shopping-cart"} size={20} color={"#e16800"}/>
+                        <Text style={s.title}>Cart</Text>
+                    </View>
+                </View>
                 { this.props.inProgress && <Loading/> }
                 {
                     this.props.orderItems.length===0 &&
@@ -107,6 +114,19 @@ const s = StyleSheet.create({
         flex: 1,
         marginBottom: 80
     },
+    titleBar: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 20,
+        backgroundColor: '#EEE',
+    },
+    titleWrapper: {
+        flexDirection: 'row',
+        alignItems: 'center'
+    },
+    title: { fontSize: 20 },
+    cartIcon: { marginRight: 5 },
     scrollableArea: {
         flex: 1,
         padding: 10
