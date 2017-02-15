@@ -12,7 +12,9 @@ import {connect} from 'react-redux';
 @connect((store,props) => {
     return {
         addOns: store.addOn.addOns,
-        addOnLinks: props.orderItem.add_on_link_ids.map(addOnLinkId => store.addOnLink.addOnLinks[addOnLinkId]).filter(Boolean)
+        addOnLinks: props.orderItem.add_on_link_ids.map(addOnLinkId => store.addOnLink.addOnLinks[addOnLinkId]).filter(Boolean),
+        addOnTypeLinks: store.addOnTypeLink.addOnTypeLinks,
+        addOnTypes: store.addOnType.addOnTypes
     }
 })
 
@@ -28,7 +30,7 @@ class OrderItem extends React.Component {
                 <View style={s.leftPane}>
                     <Text style={s.title}>{this.props.dish.name} </Text>
                     {
-                        this.props.addOnLinks.length>0 &&
+                        this.props.addOnLinks.length>0 && this.props.addOnLinks.length<4 &&
                         <View style={s.addOns}>
                             {
                                 this.props.addOnLinks.map(addOnLink => {
@@ -37,6 +39,32 @@ class OrderItem extends React.Component {
                                             key={addOnLink.id}>
                                             <Icon style={s.addOnLinkBullet} name={"circle"} size={5} color={"#F37521"}/>
                                             <Text>{this.props.addOns[addOnLink.add_on_id].name}</Text>
+                                        </View>
+                                    )
+                                })
+                            }
+                        </View>
+                    }
+                    {
+                        this.props.addOnLinks.length>=4 &&
+                        <View style={s.addOns}>
+                            {
+                                this.props.addOnLinks.reduce((array,e)=>(array.includes(e.add_on_type_link_id)?null:array.push(e.add_on_type_link_id),array),[]).map(addOnTypeLinkId => {
+                                    let addOnTypeLink = this.props.addOnTypeLinks[addOnTypeLinkId];
+                                    return(
+                                        <View key={addOnTypeLinkId}>
+                                            <Text style={s.addOnType}>{this.props.addOnTypes[addOnTypeLink.add_on_type_id].name}</Text>
+                                            {
+                                                this.props.addOnLinks.filter(e=>e.add_on_type_link_id===addOnTypeLinkId).map(addOnLink => {
+                                                    return(
+                                                        <View style={s.addOnLink}
+                                                              key={addOnLink.id}>
+                                                            <Icon style={s.addOnLinkBullet} name={"circle"} size={5} color={"#F37521"}/>
+                                                            <Text>{this.props.addOns[addOnLink.add_on_id].name}</Text>
+                                                        </View>
+                                                    )
+                                                })
+                                            }
                                         </View>
                                     )
                                 })
@@ -113,6 +141,10 @@ const s = StyleSheet.create({
     },
     addOnLinkBullet: {
         marginRight: 10
+    },
+    addOnType: {
+        paddingTop: 5,
+        paddingBottom: 10,
     }
 });
 
