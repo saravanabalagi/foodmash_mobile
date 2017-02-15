@@ -62,7 +62,7 @@ class Order extends React.Component {
                         </View>
                         <View style={s.rightPane}>
                             <Text>{ this.props.order.order_items.length } {this.props.order.order_items.length>1?"items":"item"}   | </Text>
-                            <Text style={s.shortViewPrice}>₹ { parseFloat(this.props.order.total).toFixed(2) }</Text>
+                            <Text onLayout={(e)=>{this.props.updatePriceWidth(e.nativeEvent.layout.width)}} style={[s.shortViewPrice, this.getShortViewPriceWidth()]}>₹ { parseFloat(this.props.order.total).toFixed(2) }</Text>
                             <Icon style={s.button} name={(this.props.selected)?"chevron-circle-up":"chevron-circle-down"} size={20} color={"#F37521"}/>
                         </View>
                     </View>
@@ -137,6 +137,11 @@ class Order extends React.Component {
         return ({backgroundColor: backgroundColor});
     };
 
+    getShortViewPriceWidth = () => {
+        if(this.props.priceWidth) return ({width: this.props.priceWidth});
+        else return ({});
+    }
+
 }
 
 const s = StyleSheet.create({
@@ -150,7 +155,7 @@ const s = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center'
     },
-    shortViewPrice: { padding: 6 },
+    shortViewPrice: { padding: 6, textAlign: 'right' },
     leftPane: {
         flexDirection: 'row',
         alignItems: 'center'

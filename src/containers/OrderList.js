@@ -26,12 +26,14 @@ class OrderList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            selectedOrder: null
+            selectedOrder: null,
+            priceWidth: 0
         };
     }
 
     componentDidMount = () => { this.props.dispatch(fetchOrders()) };
     selectOrder = (order) => { if(this.state.selectedOrder==null || this.state.selectedOrder.id!==order.id) this.setState({selectedOrder: order}); else this.setState({selectedOrder: null}); };
+    updatePriceWidth = (width) => { this.state.priceWidth<width && this.setState({priceWidth: width}); };
 
     render() {
         return (
@@ -52,6 +54,8 @@ class OrderList extends React.Component {
                             {
                                     this.props.orders.map((order) => {
                                     return <Order
+                                        priceWidth={this.state.priceWidth}
+                                        updatePriceWidth={this.updatePriceWidth}
                                         selected={this.state.selectedOrder && order.id === this.state.selectedOrder.id}
                                         select={() => this.selectOrder(order)}
                                         key={order.id}
