@@ -3,17 +3,22 @@ import {
     View,
     Text,
     StyleSheet,
-    TouchableHighlight
+    TouchableOpacity
 } from 'react-native';
 
 import {Actions} from 'react-native-router-flux';
 import {connect} from 'react-redux';
 import {purchaseCart} from '../reducers/cart/cartActions'
 
+import Loading from '../views/Loading';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
+
 @connect((store) => {
     return {
         dishVariants: store.cart.orderItems,
-        values: store.cart.values
+        values: store.cart.values,
+        inProgress: store.cart.inProgress
     }
 })
 
@@ -29,6 +34,15 @@ export default class Checkout extends Component {
     render() {
         return (
             <View style={s.parent}>
+                <View style={s.titleBar}>
+                    <TouchableOpacity onPress={Actions.pop}><Icon style={s.backIcon} name={"chevron-left"} size={20} color={"#000a74"}/></TouchableOpacity>
+                    <View style={s.titleWrapper}>
+                        <MaterialIcon style={s.checkoutIcon} name={"verified-user"} size={20} color={"#e16800"}/>
+                        <Text style={s.title}>Checkout</Text>
+                    </View>
+                    <View style={{width:60}}/>
+                </View>
+                { this.props.inProgress && <Loading/> }
                 <Text>No. of items: { this.countItems() } </Text>
                 <Text>Subtotal: { this.props.values.sub_total } </Text>
                 <Text>Aggregation Charges: { this.props.values.delivery } </Text>
@@ -36,16 +50,11 @@ export default class Checkout extends Component {
                 <Text>Total: { this.props.values.total } </Text>
                 <Text>Mode of Payment: Cash on Delivery </Text>
                 <View style={{flexDirection: 'row'}}>
-                    <TouchableHighlight
-                        style={s.button}
-                        onPress={Actions.pop}>
-                        <Text>Cancel</Text>
-                    </TouchableHighlight>
-                    <TouchableHighlight
+                    <TouchableOpacity
                         style={s.button}
                         onPress={()=> this.props.dispatch(purchaseCart())}>
                         <Text>Pay now</Text>
-                    </TouchableHighlight>
+                    </TouchableOpacity>
                 </View>
             </View>
         );
@@ -55,13 +64,26 @@ export default class Checkout extends Component {
 
 const s = StyleSheet.create({
     parent: {
-        flex: 1,
-        padding: 30
+        flex: 1
     },
     button: {
         flex: 1,
         padding: 10,
         backgroundColor: '#C88',
         margin: 10
-    }
+    },
+    titleBar: {
+        height: 70,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        backgroundColor: '#EEE',
+    },
+    titleWrapper: {
+        flexDirection: 'row',
+        alignItems: 'center'
+    },
+    title: { fontSize: 20 },
+    checkoutIcon: { marginRight:5 },
+    backIcon: { padding: 20 },
 });

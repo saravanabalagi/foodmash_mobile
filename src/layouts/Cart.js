@@ -118,7 +118,7 @@ const s = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        padding: 20,
+        height: 70,
         backgroundColor: '#EEE',
     },
     titleWrapper: {

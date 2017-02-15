@@ -52,7 +52,6 @@ export default class App extends Component {
                                key="inCart"/>
                         <Scene title="Checkout"
                                component={Checkout}
-                               hideTabBar={true}
                                key="checkout"/>
                     </Scene>
                     <Scene title="Account"
