@@ -25,13 +25,22 @@ class Order extends React.Component {
         super(props);
     }
 
-    getIconForStatus = (status) => {
+    getIconForOrderStatus = (status) => {
         switch (status) {
             case "Processing": return "spinner";
             case "Ready": return "bell";
             case "Purchased": return "inr";
             case "Completed": return "check";
             case "Cancelled": return "times";
+        }
+        return "question-circle";
+    };
+
+    getIconForPaymentMethod = (method) => {
+        switch (method) {
+            case "COD": return "money";
+            case "Netbanking": return "globe";
+            case "Card": return "credit-card";
         }
         return "question-circle";
     };
@@ -47,7 +56,7 @@ class Order extends React.Component {
                 <TouchableOpacity onPress={this.props.select}>
                     <View style={s.shortView}>
                         <View style={s.leftPane}>
-                            <View style={s.icon}><Icon name={this.getIconForStatus(this.props.orderStatus?this.props.orderStatus.name:"")} size={15} color={"#007402"}/></View>
+                            <View style={s.icon}><Icon name={this.getIconForOrderStatus(this.props.orderStatus?this.props.orderStatus.name:"")} size={15} color={"#007402"}/></View>
                             <Text style={s.date}>{ new Date(this.props.order.ordered_at).toLocaleDateString('en-US', { day: '2-digit', month: 'short' }) }</Text>
                             <Text style={s.time}>({ new Date(this.props.order.ordered_at).toLocaleTimeString('en-US', { hour: '2-digit', minute:'2-digit', hour12: true }) })</Text>
                         </View>
@@ -61,28 +70,53 @@ class Order extends React.Component {
                 {
                     this.props.selected &&
                     <View style={s.extended}>
-                        <Text> {this.props.paymentMethod.name} </Text>
+                        <View style={s.status}>
+                            <View style={s.orderStatus}>
+                                <Icon style={s.statusIcon} name={this.getIconForOrderStatus(this.props.orderStatus?this.props.orderStatus.name:"")} size={20} color={"#F37521"}/>
+                                <Text> {this.props.orderStatus?this.props.orderStatus.name:"Loading"} </Text>
+                            </View>
+                            <View style={s.paymentMethod}>
+                                <Icon style={s.statusIcon} name={this.getIconForPaymentMethod(this.props.paymentMethod?this.props.paymentMethod.name:"")} size={20} color={"#F37521"}/>
+                                <Text> {this.props.paymentMethod.name} </Text>
+                            </View>
+                        </View>
+                        <View style={s.orderStatusProgress}>
+                            <View style={[s.orderStatusProgressBar, this.getOrderStatusProgressBarStyle(0)]}/>
+                            <View style={[s.orderStatusProgressBar, this.getOrderStatusProgressBarStyle(1)]}/>
+                            <View style={[s.orderStatusProgressBar, this.getOrderStatusProgressBarStyle(2)]}/>
+                            <View style={[s.orderStatusProgressBar, this.getOrderStatusProgressBarStyle(3)]}/>
+                        </View>
                         <View style={s.billing}>
-                            <View style={s.billingParticulars}>
-                                <Text style={s.billingText}>Sub Total </Text>
-                                <Text style={s.billingText}>Delivery </Text>
-                                <Text style={s.billingText}>VAT (2%) </Text>
+                            <View style={s.billingRow}>
+                                <Text style={s.billingText}>Sub Total</Text>
+                                <View style={s.priceWrapper}>
+                                    <Text style={s.rupeeSymbol}>₹ </Text>
+                                    <Text style={s.price}>{ parseFloat(this.props.order.sub_total).toFixed(2) }</Text>
+                                </View>
+                            </View>
+                            <View style={s.billingRow}>
+                                <Text style={s.billingText}>Delivery</Text>
+                                <View style={s.priceWrapper}>
+                                    <Text style={s.rupeeSymbol}>₹ </Text>
+                                    <Text style={s.price}>{ parseFloat(this.props.order.delivery).toFixed(2) }</Text>
+                                </View>
+                            </View>
+                            <View style={s.billingRow}>
+                                <Text style={s.billingText}>VAT (2%)</Text>
+                                <View style={s.priceWrapper}>
+                                    <Text style={s.rupeeSymbol}>₹ </Text>
+                                    <Text style={s.price}>{ parseFloat(this.props.order.vat).toFixed(2) }</Text>
+                                </View>
+                            </View>
+                            <View style={s.billingTextSeparator}/>
+                            <View style={s.billingRow}>
                                 <Text style={s.billingText}>Total </Text>
-                            </View>
-                            <View style={s.billingPricesWrapper}>
-                                <View>
-                                    <Text style={s.billingText}>₹ </Text>
-                                    <Text style={s.billingText}>₹ </Text>
-                                    <Text style={s.billingText}>₹ </Text>
-                                    <Text style={s.billingText}>₹ </Text>
-                                </View>
-                                <View style={s.billingPrices}>
-                                    <Text style={s.billingText}>{ parseFloat(this.props.order.sub_total).toFixed(2) }</Text>
-                                    <Text style={s.billingText}>{ parseFloat(this.props.order.delivery).toFixed(2) }</Text>
-                                    <Text style={s.billingText}>{ parseFloat(this.props.order.vat).toFixed(2) }</Text>
-                                    <Text style={s.billingText}>{ parseFloat(this.props.order.total).toFixed(2) }</Text>
+                                <View style={s.priceWrapper}>
+                                    <Text style={s.rupeeSymbol}>₹ </Text>
+                                    <Text style={s.price}>{ parseFloat(this.props.order.total).toFixed(2) }</Text>
                                 </View>
                             </View>
+                            <View style={s.billingTextSeparator}/>
                         </View>
                     </View>
                 }
@@ -90,6 +124,18 @@ class Order extends React.Component {
         );
 
     }
+
+    getOrderStatusProgressBarStyle = (index) => {
+        let backgroundColor = '#E6E6E6';
+        switch (index) {
+            case 0: if(this.props.orderStatus.name == "Purchased") backgroundColor = "#00a803";
+            case 1: if(this.props.orderStatus.name == "Processing") backgroundColor = "#00a803";
+            case 2: if(this.props.orderStatus.name == "Ready") backgroundColor = "#00a803";
+            case 3: if(this.props.orderStatus.name == "Completed") backgroundColor = "#00a803";
+        }
+        if(this.props.orderStatus.name == "Cancelled") backgroundColor = "#e10000";
+        return ({backgroundColor: backgroundColor});
+    };
 
 }
 
@@ -116,23 +162,39 @@ const s = StyleSheet.create({
         alignItems: 'center'
     },
     extended: {
-        paddingLeft: 20,
-        paddingRight: 20,
+        marginTop: 5,
+        paddingLeft: 25,
+        paddingRight: 25,
         marginBottom: 5
     },
-    billing: {
+    status: { flexDirection: 'row', padding: 10 },
+    statusIcon: { marginRight: 5 },
+    orderStatus: { flex: 1, flexDirection: 'row', justifyContent: 'center' },
+    paymentMethod: { flex: 1, flexDirection: 'row', justifyContent: 'center' },
+    orderStatusProgress: { flexDirection: 'row', marginTop: 5, marginBottom: 10 },
+    orderStatusProgressBar: {
+        flex: 1,
+        height: 4,
+        margin: 2,
+        borderRadius: 5
+    },
+    billing: {},
+    billingRow: {
         flexDirection: 'row',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        paddingLeft: 10,
+        paddingRight: 10,
+        paddingTop: 5,
+        paddingBottom: 5,
     },
-    billingPricesWrapper: {
-        flexDirection: 'row'
-    },
-    billingPrices: {
-        paddingLeft: 5,
-        alignItems: 'flex-end'
-    },
-    billingParticulars: {
-
+    priceWrapper: { flexDirection: 'row'},
+    price: {},
+    billingTextSeparator: {
+        marginTop: 5,
+        marginBottom: 5,
+        flex: 1,
+        height: 1,
+        backgroundColor: '#333'
     },
     button: {
         paddingLeft: 10,
@@ -147,9 +209,6 @@ const s = StyleSheet.create({
         paddingRight: 10,
         paddingTop: 5,
         paddingBottom: 5,
-    },
-    billingText: {
-        paddingTop: 10
     }
 });
 
