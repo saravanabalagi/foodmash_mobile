@@ -40,8 +40,8 @@ export default class UserDetails extends Component {
                     <Icon style={s.icon} name={"contacts"} size={75} color={"#F37521"}/>
                     <View style={s.rightPane}>
                         <Text style={s.name} numberOfLines={1}>{this.props.name?this.props.name:"Name"} </Text>
-                        <Text style={s.email}>{this.props.email?this.props.email:"me@email.com"} </Text>
-                        <Text style={s.mobile}>+91 {this.props.mobile?(this.props.mobile.substring(0,5) + " " + this.props.mobile.substring(5)):"99999 99999"} </Text>
+                        <Text style={s.email} numberOfLines={1}>{this.props.email?this.props.email:"me@email.com"}</Text>
+                        <Text style={s.mobile} numberOfLines={1}>+91 {this.props.mobile?(this.props.mobile.substring(0,5) + " " + this.props.mobile.substring(5)):"99999 99999"} </Text>
                     </View>
                 </View>
                 { this.props.error != null && !this.props.inProgress && <Text> {this.props.error.toString()} </Text> }
