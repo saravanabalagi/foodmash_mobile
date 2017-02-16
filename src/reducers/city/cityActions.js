@@ -1,24 +1,27 @@
 import axios from 'axios';
-import {fetchLocations} from '../location/locationActions';
+import store from '../../store';
 
 export function fetchCities() {
     const url = '/cities';
     return (dispatch) => {
-        dispatch({type: "FETCH_CITIES_IN_PROGRESS"});
+        if(store.getState().city.inProgress.includes(0)) return;
+        dispatch({type: "FETCH_CITY_IN_PROGRESS", id: 0});
         axios.get(url)
             .then((response) => {
-                dispatch({ type: "FETCH_CITIES_FULFILLED", payload: response.data});
-                if (response.data.length > 0) dispatch(selectCityAndFetchLocations(response.data[0].id));
-            })
-            .catch((error) => { dispatch({ type: "FETCH_CITIES_FAILED", payload: error }); });
+                dispatch({type: "FETCH_CITIES_FULFILLED", id: 0});
+                response.data.forEach(city => dispatch({type: "FETCH_CITY_FULFILLED", payload: city, id: city.id})); })
+            .catch((error) => { dispatch({ type: "FETCH_CITY_FAILED", payload: error, id: 0}); });
     };
 }
 
-export function selectCityAndFetchLocations(city_id) {
-    const url = '/cities/' + city_id.toString();
+export function fetchCity(id) {
+    const url = '/cities/' + id.toString();
     return (dispatch) => {
-        dispatch({type: "SELECT_CITY", payload: city_id});
-        dispatch({type: "FETCHING_LOCATIONS_FOR_CITY", payload: city_id});
-        dispatch(fetchLocations(city_id));
-    }
+        if(store.getState().city.cities[id] != null
+            || store.getState().city.inProgress.includes(id)) return;
+        dispatch({type: "FETCH_CITY_IN_PROGRESS", id: id});
+        axios.get(url)
+            .then((response) => { dispatch({ type: "FETCH_CITY_FULFILLED", payload: response.data, id: id }); })
+            .catch((error) => { dispatch({ type: "FETCH_CITY_FAILED", payload: error, id: id }); });
+    };
 }

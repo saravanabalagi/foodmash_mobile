@@ -13,7 +13,7 @@ import Checkout from './Checkout';
 import Order from '../containers/Order';
 import LoginForm from '../containers/LoginForm';
 import TabIcon from '../views/TabIcon';
-import DishCategoryList from '../containers/DishCategoryList';
+import Browse from './Browse';
 
 const reducerCreate = (params) => {
     const defaultReducer = Reducer(params);
@@ -38,9 +38,9 @@ export default class App extends Component {
                            tabIcon="restaurant-menu"
                            key="menu"
                            hideNavBar={true}>
-                        <Scene title="Menu"
-                               component={DishCategoryList}
-                               key="dishCategory"
+                        <Scene title="Browse"
+                               component={Browse}
+                               key="browse"
                                hideNavBar={true}/>
                     </Scene>
                     <Scene title="Cart"
