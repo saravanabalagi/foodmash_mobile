@@ -9,6 +9,7 @@ import {
 
 import {connect} from 'react-redux';
 import {Actions} from 'react-native-router-flux';
+import moment from 'moment';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
 import OrderItem from './OrderItem';
@@ -47,6 +48,27 @@ class Order extends React.Component {
                     </View>
                     <View style={{width:60}}/>
                 </View>
+                <View style={s.orderDetails}>
+                    <View style={s.orderDetailsLeft}>
+                        <Text>ORDER ID</Text>
+                        <Text style={s.orderId}>#{this.props.order.id}</Text>
+                    </View>
+                    <View style={s.orderDetailsRight}>
+                    <Text style={s.date}>{ moment(new Date(this.props.order.ordered_at)).format('ll') }</Text>
+                    <Text style={s.time}>{ moment(new Date(this.props.order.ordered_at)).format('LT') }</Text>
+                    </View>
+                </View>
+                <ScrollView style={s.orderItems}>
+                    <View>
+                    {
+                        this.props.order.order_items.map(orderItem => {
+                            return <OrderItem
+                                key={orderItem.id}
+                                orderItem={orderItem}/>
+                        })
+                    }
+                    </View>
+                </ScrollView>
                 <View style={s.status}>
                     <View style={s.orderStatus}>
                         <Icon style={s.statusIcon} name={this.props.getIconForOrderStatus(this.props.orderStatus?this.props.orderStatus.name:"")} size={20} color={"#F37521"}/>
@@ -63,17 +85,6 @@ class Order extends React.Component {
                     <View style={[s.orderStatusProgressBar, this.getOrderStatusProgressBarStyle(2)]}/>
                     <View style={[s.orderStatusProgressBar, this.getOrderStatusProgressBarStyle(3)]}/>
                 </View>
-                <ScrollView style={s.orderItems}>
-                    <View>
-                    {
-                        this.props.order.order_items.map(orderItem => {
-                            return <OrderItem
-                                key={orderItem.id}
-                                orderItem={orderItem}/>
-                        })
-                    }
-                    </View>
-                </ScrollView>
                 <View style={s.billing}>
                     <View style={s.billingLeft}>
                         <View style={s.billingRow}>
@@ -142,6 +153,30 @@ const s = StyleSheet.create({
     },
     title: { fontSize: 20 },
     orderIcon: { marginRight: 5 },
+    orderDetails: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        borderBottomWidth: 1,
+        borderBottomColor: '#666',
+        margin: [0,15,10,15]
+    },
+    orderDetailsLeft: {
+        flex: 2,
+        padding: 15,
+        alignItems: 'center'
+    },
+    orderDetailsRight: {
+        flex: 3,
+        padding: 15,
+        alignItems: 'center'
+    },
+    orderId: { fontSize: 20 },
+    date: { fontSize: 17 },
+    time: { fontSize: 12 },
+    orderItems: {
+        flex: 1,
+        padding: [0,10],
+    },
     status: {
         flexDirection: 'row',
         padding: 20
@@ -167,16 +202,10 @@ const s = StyleSheet.create({
         margin: 2,
         borderRadius: 5
     },
-    orderItems: {
-        flex: 1,
-        padding: 10
-    },
     billing: {
         flexDirection: 'row',
         alignItems: 'center',
-        borderTopColor: '#666',
-        borderTopWidth: 1,
-        margin: [10,10,0,10]
+        margin: [0,10,5,10]
     },
     billingRow: {
         flexDirection: 'row',

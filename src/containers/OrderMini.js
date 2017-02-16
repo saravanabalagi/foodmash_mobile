@@ -8,6 +8,7 @@ import {
 
 import {connect} from 'react-redux';
 import {Actions} from 'react-native-router-flux';
+import moment from 'moment';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Order from './Order';
@@ -67,8 +68,8 @@ class OrderMini extends React.Component {
                     <View style={s.shortView}>
                         <View style={s.leftPane}>
                             <View style={s.icon}><Icon name={this.getIconForOrderStatus(this.props.orderStatus?this.props.orderStatus.name:"")} size={15} color={"#007402"}/></View>
-                            <Text style={s.date}>{ new Date(this.props.order.ordered_at).toLocaleDateString('en-US', { day: '2-digit', month: 'short' }) }</Text>
-                            <Text style={s.time}>({ new Date(this.props.order.ordered_at).toLocaleTimeString('en-US', { hour: '2-digit', minute:'2-digit', hour12: true }) })</Text>
+                            <Text style={s.date}>{ moment(new Date(this.props.order.ordered_at)).format('MMM DD') }</Text>
+                            <Text style={s.time}>({ moment(new Date(this.props.order.ordered_at)).format('LT') })</Text>
                         </View>
                         <View style={s.rightPane}>
                             <Text>{ this.props.order.order_items.length } {this.props.order.order_items.length>1?"items":"item"}   | </Text>
