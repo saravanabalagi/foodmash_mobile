@@ -4,7 +4,8 @@ import {
     View,
     TextInput,
     ScrollView,
-    StyleSheet
+    StyleSheet,
+    RefreshControl
 } from 'react-native'
 
 import {connect} from 'react-redux';
@@ -15,7 +16,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 @connect((store) => {
     return {
-        orders: store.order.orders,
+        orders: store.order.orders.sort((a,b)=>new Date(b.ordered_at)-new Date(a.ordered_at)),
         inProgress: store.order.inProgress,
         error: store.order.error
     };
@@ -26,12 +27,24 @@ class OrderList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            priceWidth: 0
+            priceWidth: 0,
+            refreshing: false
         };
     }
 
     componentWillMount = () => { this.props.dispatch(fetchOrders()) };
     updatePriceWidth = (width) => { this.state.priceWidth<width && this.setState({priceWidth: width}); };
+
+    componentWillReceiveProps = (nextProps) => {
+        if(this.state.refreshing
+            && this.props.inProgress
+            && nextProps.inProgress == false)
+            this.setState({refreshing: false});
+    };
+    refreshOrders = () => {
+        this.setState({refreshing: true});
+        this.props.dispatch(fetchOrders());
+    };
 
     render() {
         return (
@@ -47,7 +60,10 @@ class OrderList extends React.Component {
                 }
                 {
                     this.props.orders.length>0 &&
-                    <ScrollView style={s.scrollableArea}>
+                    <ScrollView style={s.scrollableArea}
+                                refreshControl={<RefreshControl
+                                    refreshing={this.state.refreshing}
+                                    onRefresh={this.refreshOrders}/>}>
                         <View>
                             {
                                     this.props.orders.map((order) => {

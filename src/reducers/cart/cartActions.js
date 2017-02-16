@@ -1,7 +1,7 @@
 import axios from 'axios';
 import store from '../../store';
 
-import {Actions} from 'react-native-router-flux';
+import {ActionConst, Actions} from 'react-native-router-flux';
 import {fetchOrders} from '../order/orderActions';
 
 export function fetchCart() {
@@ -38,9 +38,9 @@ export function purchaseCart() {
             .then((response) => { dispatch({ type: "PURCHASE_CART_FULFILLED", payload: response.data });
                                     //TODO: clear cart stack and bring it back to inCart
                                     dispatch(fetchOrders());
-                                    Actions.pop();
-                                    Actions.account();
-                                    dispatch({type: "RESET_CART"}); })
+        Actions.pop();
+        Actions.profile(ActionConst.JUMP);
+        dispatch({type: "RESET_CART"}); })
             .catch((error) => { dispatch({ type: "PURCHASE_CART_FAILED", payload: error }); });
     };
 }
