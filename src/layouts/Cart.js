@@ -12,8 +12,8 @@ import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import {connect} from 'react-redux';
 import Loading from '../views/Loading';
 
-import {plusOneDishVariantToCart, minusOneDishVariantToCart} from '../reducers/cart/cartActions'
-import {getTotal, getTotalItems, submitCart} from '../reducers/cart/cartActions'
+import {plusOneDishVariantToCart, minusOneDishVariantToCart} from '../reducers/cart/cartActions';
+import {getTotal, getTotalItems, submitCart} from '../reducers/cart/cartActions';
 
 import CartItem from '../containers/CartItem';
 
@@ -40,10 +40,6 @@ export default class Cart extends Component {
 
     handleAddToCart = (orderItem) => { this.props.dispatch(plusOneDishVariantToCart(orderItem)); };
     handleRemoveFromCart = (orderItem) => { this.props.dispatch(minusOneDishVariantToCart(orderItem)); };
-
-    getDishVariant = (dishVariantId) => { return this.props.dishVariants[dishVariantId] };
-    getDish = (dishVariantId) => { return this.getDishVariant(dishVariantId)? this.props.dishes[this.getDishVariant(dishVariantId).dish_id] : null };
-    getRestaurant = (dishVariantId) => { return this.getDish(dishVariantId)? this.props.restaurants[this.getDish(dishVariantId).restaurant_id] : null };
 
     render() {
         return (
@@ -72,10 +68,7 @@ export default class Cart extends Component {
                                     key={index}
                                     addToCart={()=>this.handleAddToCart(orderItem)}
                                     removeFromCart={()=>this.handleRemoveFromCart(orderItem)}
-                                    orderItem={orderItem}
-                                    dishVariant={this.getDishVariant(orderItem.dish_variant_id)}
-                                    dish={this.getDish(orderItem.dish_variant_id)}
-                                    restaurant={this.getRestaurant(orderItem.dish_variant_id)}/>
+                                    orderItem={orderItem}/>
                             }) }
                         </View>
                     </ScrollView>
