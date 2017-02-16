@@ -15,7 +15,7 @@ import Loading from '../views/Loading';
 import {plusOneDishVariantToCart, minusOneDishVariantToCart} from '../reducers/cart/cartActions'
 import {getTotal, getTotalItems, submitCart} from '../reducers/cart/cartActions'
 
-import OrderItem from '../containers/OrderItem';
+import CartItem from '../containers/CartItem';
 
 @connect((store) => {
     return {
@@ -68,8 +68,7 @@ export default class Cart extends Component {
                     <ScrollView style={s.scrollableArea}>
                         <View>
                             { this.props.orderItems.map((orderItem, index) => {
-                                console.log("Order Item: ",orderItem);
-                                return <OrderItem
+                                return <CartItem
                                     key={index}
                                     addToCart={()=>this.handleAddToCart(orderItem)}
                                     removeFromCart={()=>this.handleRemoveFromCart(orderItem)}

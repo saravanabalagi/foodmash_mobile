@@ -10,6 +10,7 @@ import {Scene, Router, Actions, ActionConst, Reducer} from 'react-native-router-
 import Account from './Account';
 import Cart from './Cart';
 import Checkout from './Checkout';
+import Order from '../containers/Order';
 import LoginForm from '../containers/LoginForm';
 import TabIcon from '../views/TabIcon';
 import DishCategoryList from '../containers/DishCategoryList';
@@ -62,6 +63,9 @@ export default class App extends Component {
                         <Scene title="Profile"
                                component={Account}
                                key="profile"/>
+                        <Scene title="Order"
+                               component={Order}
+                               key="order"/>
                     </Scene>
                 </Scene>
             </Router>

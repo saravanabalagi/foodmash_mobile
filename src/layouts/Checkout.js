@@ -35,7 +35,7 @@ export default class Checkout extends Component {
         return (
             <View style={s.parent}>
                 <View style={s.titleBar}>
-                    <TouchableOpacity onPress={Actions.pop}><Icon style={s.backIcon} name={"chevron-left"} size={20} color={"#000a74"}/></TouchableOpacity>
+                    <TouchableOpacity onPress={Actions.pop}><Icon style={s.backIcon} name={"angle-left"} size={25} color={"#000a74"}/></TouchableOpacity>
                     <View style={s.titleWrapper}>
                         <MaterialIcon style={s.checkoutIcon} name={"verified-user"} size={20} color={"#e16800"}/>
                         <Text style={s.title}>Checkout</Text>
