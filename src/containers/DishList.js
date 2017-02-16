@@ -3,7 +3,7 @@ import {
     Text,
     View,
     TextInput,
-    ScrollView,
+    ListView,
     TouchableHighlight,
     StyleSheet
 } from 'react-native';
@@ -26,8 +26,9 @@ class DishList extends React.Component {
 
     constructor(props) {
         super(props);
+        this.ds = new ListView.DataSource({rowHasChanged: (a,b)=>a!==b});
         this.state = {
-            selectedDish: null
+            selectedDish: null,
         }
     }
 
@@ -36,20 +37,19 @@ class DishList extends React.Component {
 
     render() {
         return (
-            <ScrollView>
-                <View style={s.parent}>
-                    { this.props.inProgress.length>0 && <Loading /> }
-                    { this.props.dishes &&
-                        this.props.dishes.map((dish) => {
-                            return <Dish dish={dish}
-                                        key={dish.id}
-                                        toggleSelect={()=>this.toggleSelectDish(dish)}
-                                        selected={dish==this.state.selectedDish}/>
-                        })
-                    }
-                    { this.props.error != null && !this.props.inProgress && <Text> {this.props.error.toString()} </Text> }
-                </View>
-            </ScrollView>
+            <View style={s.parent}>
+                { this.props.inProgress.length>0 && <Loading /> }
+                <ListView dataSource={this.ds.cloneWithRows(this.props.dishes)}
+                          enableEmptySections={true}
+                          renderRow={(dish) => {
+                        return <Dish dish={dish}
+                                     key={dish.id}
+                                     toggleSelect={()=>this.toggleSelectDish(dish)}
+                                     selected={dish==this.state.selectedDish}/>
+                    }}>
+                </ListView>
+                { this.props.error != null && !this.props.inProgress && <Text> {this.props.error.toString()} </Text> }
+            </View>
         );
 
     }

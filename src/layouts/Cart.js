@@ -3,7 +3,7 @@ import {
     View,
     Text,
     StyleSheet,
-    ScrollView,
+    ListView,
     TouchableOpacity
 } from 'react-native';
 
@@ -35,6 +35,7 @@ export default class Cart extends Component {
 
     constructor(props) {
         super(props);
+        this.ds = new ListView.DataSource({rowHasChanged: (a,b)=>a!==b});
         this.state = {}
     }
 
@@ -61,17 +62,17 @@ export default class Cart extends Component {
                 }
                 {
                     this.props.orderItems.length>0 &&
-                    <ScrollView style={s.scrollableArea}>
-                        <View>
-                            { this.props.orderItems.map((orderItem, index) => {
+                    <ListView style={s.scrollableArea}
+                              dataSource={this.ds.cloneWithRows(this.props.orderItems)}
+                              enableEmptySections={true}
+                              renderRow={(orderItem, index) => {
                                 return <CartItem
                                     key={index}
                                     addToCart={()=>this.handleAddToCart(orderItem)}
                                     removeFromCart={()=>this.handleRemoveFromCart(orderItem)}
                                     orderItem={orderItem}/>
-                            }) }
-                        </View>
-                    </ScrollView>
+                            }}>
+                    </ListView>
                 }
                 {
                     this.props.orderItems.length>0 &&

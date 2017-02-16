@@ -3,7 +3,7 @@ import {
     Text,
     View,
     TextInput,
-    ScrollView,
+    ListView,
     StyleSheet,
     RefreshControl
 } from 'react-native'
@@ -26,6 +26,7 @@ class OrderList extends React.Component {
 
     constructor(props) {
         super(props);
+        this.ds = new ListView.DataSource({rowHasChanged: (a,b)=>a!==b});
         this.state = {
             priceWidth: 0,
             refreshing: false
@@ -41,10 +42,8 @@ class OrderList extends React.Component {
             && nextProps.inProgress == false)
             this.setState({refreshing: false});
     };
-    refreshOrders = () => {
-        this.setState({refreshing: true});
-        this.props.dispatch(fetchOrders());
-    };
+
+    refreshOrders = () => { this.setState({refreshing: true, priceWidth: 0},()=>{this.props.dispatch(fetchOrders());}); };
 
     render() {
         return (
@@ -60,22 +59,20 @@ class OrderList extends React.Component {
                 }
                 {
                     this.props.orders.length>0 &&
-                    <ScrollView style={s.scrollableArea}
+                    <ListView dataSource={this.ds.cloneWithRows(this.props.orders)}
+                              enableEmptySections={true}
+                              style={s.scrollableArea}
                                 refreshControl={<RefreshControl
                                     refreshing={this.state.refreshing}
-                                    onRefresh={this.refreshOrders}/>}>
-                        <View>
-                            {
-                                    this.props.orders.map((order) => {
-                                    return <OrderMini
-                                        priceWidth={this.state.priceWidth}
-                                        updatePriceWidth={this.updatePriceWidth}
-                                        key={order.id}
-                                        order={order}/>
-                                })
-                            }
-                        </View>
-                    </ScrollView>
+                                    onRefresh={this.refreshOrders}/>}
+                              renderRow={(order) => {
+                                  return <OrderMini
+                                      priceWidth={this.state.priceWidth}
+                                      updatePriceWidth={this.updatePriceWidth}
+                                      key={order.id}
+                                      order={order}/>
+                              }}>
+                    </ListView>
                 }
                 { this.props.error != null && !this.props.inProgress && <Text> {this.props.error.toString()} </Text> }
             </View>

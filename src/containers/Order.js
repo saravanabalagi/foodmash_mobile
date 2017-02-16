@@ -3,7 +3,7 @@ import {
     Text,
     View,
     StyleSheet,
-    ScrollView,
+    ListView,
     TouchableOpacity
 } from 'react-native';
 
@@ -30,6 +30,7 @@ class Order extends React.Component {
 
     constructor(props) {
         super(props);
+        this.ds = new ListView.DataSource({rowHasChanged: (a,b)=>a!==b});
     }
 
     componentWillMount = () => {
@@ -58,17 +59,14 @@ class Order extends React.Component {
                     <Text style={s.time}>{ moment(new Date(this.props.order.ordered_at)).format('LT') }</Text>
                     </View>
                 </View>
-                <ScrollView style={s.orderItems}>
-                    <View>
-                    {
-                        this.props.order.order_items.map(orderItem => {
+                <ListView style={s.orderItems}
+                          dataSource={this.ds.cloneWithRows(this.props.order.order_items)}
+                          enableEmptySections={true}
+                          renderRow={orderItem => {
                             return <OrderItem
                                 key={orderItem.id}
-                                orderItem={orderItem}/>
-                        })
-                    }
-                    </View>
-                </ScrollView>
+                                orderItem={orderItem}/>}}>
+                </ListView>
                 <View style={s.status}>
                     <View style={s.orderStatus}>
                         <Icon style={s.statusIcon} name={this.props.getIconForOrderStatus(this.props.orderStatus?this.props.orderStatus.name:"")} size={20} color={"#F37521"}/>

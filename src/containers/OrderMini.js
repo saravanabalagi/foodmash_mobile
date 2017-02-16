@@ -28,6 +28,9 @@ class OrderMini extends React.Component {
 
     constructor(props) {
         super(props);
+        this.state={
+            priceLayoutRendered: false
+        }
     }
 
     getIconForOrderStatus = (status) => {
@@ -73,7 +76,7 @@ class OrderMini extends React.Component {
                         </View>
                         <View style={s.rightPane}>
                             <Text>{ this.props.order.order_items.length } {this.props.order.order_items.length>1?"items":"item"}   | </Text>
-                            <Text onLayout={(e)=>{this.props.updatePriceWidth(e.nativeEvent.layout.width)}} style={[s.shortViewPrice, this.getShortViewPriceWidth()]}>₹ { parseFloat(this.props.order.total).toFixed(2) }</Text>
+                            <Text onLayout={(e)=>{this.props.updatePriceWidth(e.nativeEvent.layout.width); if(!this.state.priceLayoutRendered) this.setState({priceLayoutRendered: true});}} style={[s.shortViewPrice, this.getShortViewPriceWidth()]}>₹ { parseFloat(this.props.order.total).toFixed(2) }</Text>
                             <Icon style={s.button} name={"chevron-circle-right"} size={20} color={"#F37521"}/>
                         </View>
                     </View>
@@ -84,7 +87,7 @@ class OrderMini extends React.Component {
     }
 
     getShortViewPriceWidth = () => {
-        if(this.props.priceWidth) return ({width: this.props.priceWidth});
+        if(this.props.priceWidth && this.state.priceLayoutRendered) return ({width: this.props.priceWidth});
         else return ({});
     }
 
