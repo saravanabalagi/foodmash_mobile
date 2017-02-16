@@ -18,7 +18,6 @@ import {fetchUser} from '../reducers/user/userActions';
         name: store.user.name,
         email: store.user.email,
         mobile: store.user.mobile,
-        location: store.location.locations[store.user.locationId],
         inProgress: store.user.inProgress,
         error: store.user.error
     }

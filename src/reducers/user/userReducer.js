@@ -1,21 +1,33 @@
 export default (state = {
     inProgress: false,
     name: null,
-    mobile: null,
     email: null,
-    locationId: null,
+    mobile: null,
+    location_id: null,
     error: null
 },action) => {
-    const newState = {...state};
     switch(action.type) {
-        case "FETCH_USER_IN_PROGRESS": newState.inProgress = true; break;
+        case "FETCH_USER_IN_PROGRESS":
+            return {...state,
+                inProgress: true};
         case "FETCH_USER_FULFILLED":
-            newState.name = action.payload.name;
-            newState.mobile = action.payload.mobile;
-            newState.email = action.payload.email;
-            newState.locationId = action.payload.location_id;
-            newState.error = null; newState.inProgress = false; break;
-        case "FETCH_USER_FAILED": newState.error = action.payload; newState.inProgress = false; break;
+            return {...state,
+                name: action.payload.hasOwnProperty('name')?action.payload.name:null,
+                email: action.payload.hasOwnProperty('email')?action.payload.email:null,
+                mobile: action.payload.hasOwnProperty('mobile')?action.payload.mobile:null,
+                location_id: action.payload.hasOwnProperty('location_id')?action.payload.location_id:null,
+                inProgress: false,
+                error: null};
+        case "FETCH_USER_FAILED":
+            return {...state,
+                error: action.payload,
+                inProgress: false};
+        case "SELECT_LOCATION_FULFILLED":
+            return {...state,
+                location_id: action.id};
+        case "SELECT_LOCATION_FAILED":
+            return {...state,
+                error: action.payload};
     }
-    return newState;
+    return state;
 };
