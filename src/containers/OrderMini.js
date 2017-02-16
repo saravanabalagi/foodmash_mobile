@@ -78,10 +78,6 @@ class OrderMini extends React.Component {
                         </View>
                     </View>
                 </TouchableOpacity>
-                {
-                    this.props.selected &&
-                    <Order />
-                }
             </View>
         );
 
