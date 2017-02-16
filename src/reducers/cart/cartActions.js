@@ -50,7 +50,7 @@ export function getTotal() {
     let dishVariants = store.getState().dishVariant.dishVariants;
     let addOnLinks = store.getState().addOnLink.addOnLinks;
     return orderItems.reduce((total, orderItem)=>{
-        return total + orderItem.add_on_link_ids.reduce((price, addOnLinkId)=> price+addOnLinks[addOnLinkId]?parseFloat(addOnLinks[addOnLinkId].price):0,dishVariants[orderItem.dish_variant_id]?parseFloat(dishVariants[orderItem.dish_variant_id].price):0)*orderItem.quantity;
+        return total + orderItem.add_on_link_ids.reduce((price, addOnLinkId)=> price+(addOnLinks[addOnLinkId]?parseFloat(addOnLinks[addOnLinkId].price):0),(dishVariants[orderItem.dish_variant_id]?parseFloat(dishVariants[orderItem.dish_variant_id].price):0))*orderItem.quantity;
     },0);
 }
 
