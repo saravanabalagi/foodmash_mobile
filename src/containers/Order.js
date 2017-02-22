@@ -71,6 +71,7 @@ class Order extends React.Component {
             switch(orderStatus.name) {
                 case "Ready": return "bell";
                 case "Completed": return "check-circle";
+                case "Rejected": return "times-circle";
             }
         else return null;
     };
@@ -112,8 +113,9 @@ class Order extends React.Component {
                                           </View>
                                           { this.getPickupCode(restaurant_order) && <Text style={s.pickupCode}>{this.getPickupCode(restaurant_order)}</Text>}
                                           { !this.getPickupCode(restaurant_order) && <Text style={s.pickupCode}>Loading</Text>}
-                                          { this.getRestaurantStatusIcon(restaurant_order)=="bell" && <Icon style={s.restaurantStatusIcon} name={"bell"} size={20} color={"#e16800"}/>}
+                                          { this.getRestaurantStatusIcon(restaurant_order)=="bell" && <Icon style={s.restaurantStatusIcon} name={this.getRestaurantStatusIcon(restaurant_order)} size={20} color={"#e16800"}/>}
                                           { this.getRestaurantStatusIcon(restaurant_order)=="check-circle" && <Icon style={s.restaurantStatusIcon} name={"check-circle"} size={20} color={"#00a803"}/>}
+                                          { this.getRestaurantStatusIcon(restaurant_order)=="times-circle" && <Icon style={s.restaurantStatusIcon} name={"times-circle"} size={20} color={"#e10000"}/>}
                                       </View>
                                       <View>
                                       {restaurant_order.order_items.map(orderItem => {
@@ -253,7 +255,7 @@ const s = StyleSheet.create({
         borderRadius: 5,
         marginTop: 4
     },
-    restaurantStatusIcon: { padding: [0,0,0,10] },
+    restaurantStatusIcon: { padding: [5,0,0,10] },
     status: {
         flexDirection: 'row',
         padding: 20
