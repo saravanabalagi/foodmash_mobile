@@ -20,6 +20,7 @@ import {fetchRestaurant} from '../reducers/restaurant/restaurantActions';
 
 @connect((store,props) => {
     return {
+        orderStatuses: store.orderStatus.orderStatuses,
         dishVariants: store.dishVariant.dishVariants,
         dishes: store.dish.dishes,
         restaurants: store.restaurant.restaurants,
@@ -37,7 +38,41 @@ class Order extends React.Component {
     componentWillMount = () => {
         this.props.dispatch(fetchOrderStatus(this.props.order.order_status_id));
         this.props.dispatch(fetchPaymentMethod(this.props.order.payment_method_id));
-        this.props.order.restaurant_orders.forEach(restaurantOrder=>this.props.dispatch(fetchRestaurant(restaurantOrder.restaurant_id)))
+        this.props.order.restaurant_orders.forEach(restaurantOrder=> {
+            this.props.dispatch(fetchRestaurant(restaurantOrder.restaurant_id));
+            this.props.dispatch(fetchOrderStatus(restaurantOrder.order_status_id));
+        });
+    };
+
+    componentWillReceiveProps = (nextProps) => {
+        if(this.props.order!==nextProps.order)
+            nextProps.order.restaurant_orders.forEach(restaurantOrder=> {
+                this.props.dispatch(fetchRestaurant(restaurantOrder.restaurant_id));
+                this.props.dispatch(fetchOrderStatus(restaurantOrder.order_status_id));
+            });
+    };
+
+    getPickupCode = (restaurantOrder) => {
+        let orderStatus = this.props.orderStatuses[restaurantOrder.order_status_id];
+        if(orderStatus)
+            switch(orderStatus.name) {
+                case "Purchased": return "WAITING";
+                case "Rejected": return "REJECTED";
+                case "Accepted":
+                case "Completed":
+                case "Ready": return restaurantOrder.pickup_code;
+            }
+        else return null;
+    };
+
+    getRestaurantStatusIcon = (restaurantOrder) => {
+        let orderStatus = this.props.orderStatuses[restaurantOrder.order_status_id];
+        if(orderStatus)
+            switch(orderStatus.name) {
+                case "Ready": return "bell";
+                case "Completed": return "check-circle";
+            }
+        else return null;
     };
 
     render() {
@@ -69,10 +104,16 @@ class Order extends React.Component {
                               return (
                                   <View key={restaurant_order.restaurant_id}>
                                       <View style={s.restaurantWrapper}>
-                                          <Icon name={"angle-right"} size={20} color={"#e16800"}/>
-                                          <Text style={s.restaurantName}>{this.props.restaurants[restaurant_order.restaurant_id]
-                                                        ? this.props.restaurants[restaurant_order.restaurant_id].name
-                                                        : "Loading"}</Text>
+                                          <View style={s.restaurantNameWrapper}>
+                                              <Icon name={"angle-right"} size={20} color={"#e16800"}/>
+                                              <Text style={s.restaurantName}>{this.props.restaurants[restaurant_order.restaurant_id]
+                                                            ? this.props.restaurants[restaurant_order.restaurant_id].name
+                                                            : "Loading"}</Text>
+                                          </View>
+                                          { this.getPickupCode(restaurant_order) && <Text style={s.pickupCode}>{this.getPickupCode(restaurant_order)}</Text>}
+                                          { !this.getPickupCode(restaurant_order) && <Text style={s.pickupCode}>Loading</Text>}
+                                          { this.getRestaurantStatusIcon(restaurant_order)=="bell" && <Icon style={s.restaurantStatusIcon} name={"bell"} size={20} color={"#e16800"}/>}
+                                          { this.getRestaurantStatusIcon(restaurant_order)=="check-circle" && <Icon style={s.restaurantStatusIcon} name={"check-circle"} size={20} color={"#00a803"}/>}
                                       </View>
                                       <View>
                                       {restaurant_order.order_items.map(orderItem => {
@@ -188,7 +229,15 @@ const s = StyleSheet.create({
     orderId: { fontSize: 20 },
     date: { fontSize: 17 },
     time: { fontSize: 12 },
+    orderItems: {
+        flex: 1,
+        padding: [0, 10],
+    },
     restaurantWrapper: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    restaurantNameWrapper: {
         flexDirection: 'row',
         alignItems: 'center'
     },
@@ -196,10 +245,15 @@ const s = StyleSheet.create({
         padding: 10,
         fontSize: 20,
     },
-    orderItems: {
-        flex: 1,
-        padding: [0,10],
+    pickupCode: {
+        padding: [5,10],
+        backgroundColor: '#F0F0F0',
+        borderColor: '#BBB',
+        borderWidth: 1,
+        borderRadius: 5,
+        marginTop: 4
     },
+    restaurantStatusIcon: { padding: [0,0,0,10] },
     status: {
         flexDirection: 'row',
         padding: 20
