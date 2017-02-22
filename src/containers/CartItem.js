@@ -26,8 +26,7 @@ import {fetchRestaurant} from '../reducers/restaurant/restaurantActions';
         addOnTypes: store.addOnType.addOnTypes,
         variants: store.variant.variants,
         dishVariants: store.dishVariant.dishVariants,
-        dishes: store.dish.dishes,
-        restaurants: store.restaurant.restaurants
+        dishes: store.dish.dishes
     }
 })
 
@@ -46,10 +45,8 @@ class CartItem extends React.Component {
         let dishVariant = nextProps.dishVariants[this.props.orderItem.dish_variant_id];
         let variant = (dishVariant)?nextProps.variants[dishVariant.variant_id]:null;
         let dish = (dishVariant)?nextProps.dishes[dishVariant.dish_id]:null;
-        let restaurant = (dish)?nextProps.restaurants[dish.restaurant_id]:null;
         if(dishVariant && variant==null) this.props.dispatch(fetchVariant(dishVariant.variant_id));
         if(dishVariant && dish==null) this.props.dispatch(fetchDish(dishVariant.dish_id));
-        if(dishVariant && dish && restaurant==null) this.props.dispatch(fetchRestaurant(dish.restaurant_id));
 
         if(nextProps.addOnLinks.length === this.props.orderItem.add_on_link_ids.length) {
             let addOnTypeLinkIds = nextProps.addOnLinks.reduce((array,e)=>(array.includes(e.add_on_type_link_id)?null:array.push(e.add_on_type_link_id),array),[]);
@@ -70,7 +67,6 @@ class CartItem extends React.Component {
     getDishVariant = (dishVariantId) => { return this.props.dishVariants[dishVariantId] };
     getVariant = (dishVariantId) => { return this.getDishVariant(dishVariantId)? this.props.variants[this.getDishVariant(dishVariantId).variant_id] : null };
     getDish = (dishVariantId) => { return this.getDishVariant(dishVariantId)? this.props.dishes[this.getDishVariant(dishVariantId).dish_id] : null };
-    getRestaurant = (dishVariantId) => { return this.getDish(dishVariantId)? this.props.restaurants[this.getDish(dishVariantId).restaurant_id] : null };
 
     render() {
         return (

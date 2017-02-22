@@ -33,6 +33,8 @@ class OrderMini extends React.Component {
         }
     }
 
+    getNoOfItems = () => { return this.props.order.restaurant_orders.reduce((items, restaurantOrder)=>items+restaurantOrder.order_items.length,0); }
+
     getIconForOrderStatus = (status) => {
         switch (status) {
             case "Processing": return "spinner";
@@ -75,7 +77,7 @@ class OrderMini extends React.Component {
                             <Text style={s.time}>({ moment(new Date(this.props.order.ordered_at)).format('LT') })</Text>
                         </View>
                         <View style={s.rightPane}>
-                            <Text>{ this.props.order.order_items.length } {this.props.order.order_items.length>1?"items":"item"}   | </Text>
+                            <Text>{ this.getNoOfItems() } {this.getNoOfItems()>1?"items":"item"}   | </Text>
                             <Text onLayout={(e)=>{this.props.updatePriceWidth(e.nativeEvent.layout.width); if(!this.state.priceLayoutRendered) this.setState({priceLayoutRendered: true});}} style={[s.shortViewPrice, this.getShortViewPriceWidth()]}>₹ { parseFloat(this.props.order.total).toFixed(2) }</Text>
                             <Icon style={s.button} name={"chevron-circle-right"} size={20} color={"#F37521"}/>
                         </View>

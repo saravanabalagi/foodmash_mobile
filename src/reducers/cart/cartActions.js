@@ -17,17 +17,19 @@ export function fetchCart() {
 export function submitCart() {
     const url = '/cart';
     const cart = store.getState().cart;
+    let postContent = { restaurant_orders: Object.values(cart.restaurant_orders)};
+    console.log(postContent);
     return (dispatch) => {
         dispatch({type: "SUBMIT_CART_IN_PROGRESS"});
-        axios.post(url, { order_items: cart.orderItems})
+        axios.post(url, postContent)
             .then((response) => { dispatch({ type: "SUBMIT_CART_FULFILLED", payload: response.data }); Actions.checkout(); })
             .catch((error) => { dispatch({ type: "SUBMIT_CART_FAILED", payload: error }); });
     };
 }
 
-export function plusOneDishVariantToCart(orderItem) { return (dispatch) => { dispatch({type: "PLUS_ONE_DISH_VARIANT", orderItem: orderItem}); }; }
-export function minusOneDishVariantToCart(orderItem) { return (dispatch) => { dispatch({type: "MINUS_ONE_DISH_VARIANT", orderItem: orderItem}); }; }
-export function minusOneDishVariantLenientToCart(orderItem) { return (dispatch) => { dispatch({type: "MINUS_ONE_DISH_VARIANT_LENIENT", orderItem: orderItem}); }; }
+export function plusOneDishVariantToCart(orderItem, restaurantId) { return (dispatch) => { dispatch({type: "PLUS_ONE_DISH_VARIANT", orderItem: orderItem, restaurantId: restaurantId}); }; }
+export function minusOneDishVariantToCart(orderItem, restaurantId) { return (dispatch) => { dispatch({type: "MINUS_ONE_DISH_VARIANT", orderItem: orderItem, restaurantId: restaurantId}); }; }
+export function minusOneDishVariantLenientToCart(orderItem, restaurantId) { return (dispatch) => { dispatch({type: "MINUS_ONE_DISH_VARIANT_LENIENT", orderItem: orderItem, restaurantId: restaurantId}); }; }
 
 export function purchaseCart() {
     const url = '/cart/purchase/cod';
@@ -46,7 +48,8 @@ export function purchaseCart() {
 }
 
 export function getTotal() {
-    let orderItems = store.getState().cart.orderItems;
+    let orderItems = Object.values(store.getState().cart.restaurant_orders)
+                        .reduce((orderItems, restaurantOrder)=>[...orderItems,...restaurantOrder.order_items],[]);
     let dishVariants = store.getState().dishVariant.dishVariants;
     let addOnLinks = store.getState().addOnLink.addOnLinks;
     return orderItems.reduce((total, orderItem)=>{
@@ -55,13 +58,16 @@ export function getTotal() {
 }
 
 export function getTotalItems() {
-    return store.getState().cart.orderItems.reduce((total, orderItem)=>{
+    return Object.values(store.getState().cart.restaurant_orders)
+        .reduce((orderItems, restaurantOrder)=>[...orderItems,...restaurantOrder.order_items],[])
+        .reduce((total, orderItem)=>{
         return total +  orderItem.quantity;
     },0);
 }
 
 export function getDishQuantity(id) {
-    let orderItems = store.getState().cart.orderItems;
+    let orderItems = Object.values(store.getState().cart.restaurant_orders)
+                        .reduce((orderItems, restaurantOrder)=>[...orderItems,...restaurantOrder.order_items],[]);
     let dishVariants = store.getState().dishVariant.dishVariants;
     return orderItems.reduce((quantity, orderItem) => {
         return (dishVariants[orderItem.dish_variant_id] && dishVariants[orderItem.dish_variant_id].dish_id === id)? quantity+orderItem.quantity : quantity;

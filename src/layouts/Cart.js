@@ -14,15 +14,14 @@ import Loading from '../views/Loading';
 
 import {plusOneDishVariantToCart, minusOneDishVariantToCart} from '../reducers/cart/cartActions';
 import {getTotal, getTotalItems, submitCart} from '../reducers/cart/cartActions';
+import {fetchRestaurant} from '../reducers/restaurant/restaurantActions';
 
 import CartItem from '../containers/CartItem';
 
 @connect((store) => {
     return {
         signedIn: store.session.jwt!=null,
-        orderItems: store.cart.orderItems,
-        dishVariants: store.dishVariant.dishVariants,
-        dishes: store.dish.dishes,
+        restaurantOrders: Object.values(store.cart.restaurant_orders),
         restaurants: store.restaurant.restaurants,
         inProgress: store.cart.inProgress,
         error: store.cart.error,
@@ -39,8 +38,10 @@ export default class Cart extends Component {
         this.state = {}
     }
 
-    handleAddToCart = (orderItem) => { this.props.dispatch(plusOneDishVariantToCart(orderItem)); };
-    handleRemoveFromCart = (orderItem) => { this.props.dispatch(minusOneDishVariantToCart(orderItem)); };
+    componentWillMount = () => { this.props.restaurantOrders.forEach(restaurantOrder=>this.props.dispatch(fetchRestaurant(restaurantOrder.restaurant_id))); };
+
+    handleAddToCart = (orderItem, restaurantId) => { this.props.dispatch(plusOneDishVariantToCart(orderItem, restaurantId)); };
+    handleRemoveFromCart = (orderItem, restaurantId) => { this.props.dispatch(minusOneDishVariantToCart(orderItem, restaurantId)); };
 
     render() {
         return (
@@ -53,7 +54,7 @@ export default class Cart extends Component {
                 </View>
                 { this.props.inProgress && <Loading/> }
                 {
-                    this.props.orderItems.length===0 &&
+                    this.props.restaurantOrders.length===0 &&
                     <View style={s.noItemsInCart}>
                         <Icon name={"frown-o"} size={100} color={"#e16800"}/>
                         <Text style={s.cartIsEmpty}>Your cart is empty</Text>
@@ -61,21 +62,37 @@ export default class Cart extends Component {
                     </View>
                 }
                 {
-                    this.props.orderItems.length>0 &&
+                    this.props.restaurantOrders.length>0 &&
                     <ListView style={s.scrollableArea}
-                              dataSource={this.ds.cloneWithRows(this.props.orderItems)}
+                              dataSource={this.ds.cloneWithRows(this.props.restaurantOrders)}
                               enableEmptySections={true}
-                              renderRow={(orderItem, index) => {
-                                return <CartItem
-                                    key={index}
-                                    addToCart={()=>this.handleAddToCart(orderItem)}
-                                    removeFromCart={()=>this.handleRemoveFromCart(orderItem)}
-                                    orderItem={orderItem}/>
-                            }}>
+                              renderRow={restaurantOrder=>{
+                                  return (
+                                      <View key={restaurantOrder.restaurant_id}>
+                                          <View style={s.restaurantWrapper}>
+                                              <Icon name={"angle-right"} size={20} color={"#e16800"}/>
+                                              <Text style={s.restaurantName}>{this.props.restaurants[restaurantOrder.restaurant_id]
+                                                        ?this.props.restaurants[restaurantOrder.restaurant_id].name
+                                                        :"Loading"}</Text>
+                                          </View>
+                                          <View>
+                                          {
+                                              restaurantOrder.order_items.map((orderItem, index) => {
+                                                  return <CartItem
+                                                      key={index}
+                                                      addToCart={()=>this.handleAddToCart(orderItem, restaurantOrder.restaurant_id)}
+                                                      removeFromCart={()=>this.handleRemoveFromCart(orderItem, restaurantOrder.restaurant_id)}
+                                                      orderItem={orderItem}/>
+                                              })
+                                          }
+                                          </View>
+                                      </View>
+                                  )
+                              } }>
                     </ListView>
                 }
                 {
-                    this.props.orderItems.length>0 &&
+                    this.props.restaurantOrders.length>0 &&
                     <TouchableOpacity
                         style={s.touchableBottomBar}
                         onPress={()=>this.props.dispatch(submitCart())}>
@@ -123,6 +140,14 @@ const s = StyleSheet.create({
     scrollableArea: {
         flex: 1,
         padding: 10
+    },
+    restaurantWrapper: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    restaurantName: {
+        padding: 10,
+        fontSize: 20
     },
     touchableBottomBar: {
         height: 70,

@@ -8,7 +8,7 @@ import {
 
 import {Actions} from 'react-native-router-flux';
 import {connect} from 'react-redux';
-import {purchaseCart} from '../reducers/cart/cartActions'
+import {purchaseCart, getTotalItems} from '../reducers/cart/cartActions'
 
 import Loading from '../views/Loading';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -16,7 +16,6 @@ import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 
 @connect((store) => {
     return {
-        dishVariants: store.cart.orderItems,
         values: store.cart.values,
         inProgress: store.cart.inProgress
     }
@@ -28,8 +27,6 @@ export default class Checkout extends Component {
         super(props);
         this.state = {}
     }
-
-    countItems = () => { return this.props.dishVariants.reduce((sum, dish_variant)=>{ return sum + dish_variant.quantity},0); };
 
     render() {
         return (
@@ -43,7 +40,7 @@ export default class Checkout extends Component {
                     <View style={{width:60}}/>
                 </View>
                 { this.props.inProgress && <Loading/> }
-                <Text>No. of items: { this.countItems() } </Text>
+                <Text>No. of items: { getTotalItems() || 0 } </Text>
                 <Text>Subtotal: { this.props.values.sub_total } </Text>
                 <Text>Aggregation Charges: { this.props.values.delivery } </Text>
                 <Text>VAT: { this.props.values.vat } </Text>

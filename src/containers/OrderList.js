@@ -16,7 +16,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 @connect((store) => {
     return {
-        orders: store.order.orders.sort((a,b)=>new Date(b.ordered_at)-new Date(a.ordered_at)),
+        orders: Object.values(store.order.orders).sort((a,b)=>new Date(b.ordered_at)-new Date(a.ordered_at)),
         inProgress: store.order.inProgress,
         error: store.order.error
     };
@@ -48,9 +48,9 @@ class OrderList extends React.Component {
     render() {
         return (
             <View style={s.parent}>
-                { this.props.inProgress && <Loading/> }
+                { this.props.inProgress.length>0 && <Loading/> }
                 {
-                    !this.props.inProgress && this.props.orders.length === 0 &&
+                    !this.props.inProgress.length>0 && this.props.orders.length === 0 &&
                     <View style={s.noOrdersLayout}>
                         <Icon name={"exclamation-triangle"} size={100} color={"#e16800"}/>
                         <Text style={s.ordersEmpty}>You haven't ordered yet</Text>

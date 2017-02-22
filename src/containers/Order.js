@@ -16,6 +16,7 @@ import OrderItem from './OrderItem';
 
 import {fetchPaymentMethod} from '../reducers/paymentMethod/paymentMethodActions';
 import {fetchOrderStatus} from '../reducers/orderStatus/orderStatusActions';
+import {fetchRestaurant} from '../reducers/restaurant/restaurantActions';
 
 @connect((store,props) => {
     return {
@@ -36,6 +37,7 @@ class Order extends React.Component {
     componentWillMount = () => {
         this.props.dispatch(fetchOrderStatus(this.props.order.order_status_id));
         this.props.dispatch(fetchPaymentMethod(this.props.order.payment_method_id));
+        this.props.order.restaurant_orders.forEach(restaurantOrder=>this.props.dispatch(fetchRestaurant(restaurantOrder.restaurant_id)))
     };
 
     render() {
@@ -60,12 +62,27 @@ class Order extends React.Component {
                     </View>
                 </View>
                 <ListView style={s.orderItems}
-                          dataSource={this.ds.cloneWithRows(this.props.order.order_items)}
+                          dataSource={this.ds.cloneWithRows(this.props.order.restaurant_orders)}
                           enableEmptySections={true}
-                          renderRow={orderItem => {
-                            return <OrderItem
-                                key={orderItem.id}
-                                orderItem={orderItem}/>}}>
+                          showsVerticalScrollIndicator={true}
+                          renderRow={restaurant_order=>{
+                              return (
+                                  <View key={restaurant_order.restaurant_id}>
+                                      <View style={s.restaurantWrapper}>
+                                          <Icon name={"angle-right"} size={20} color={"#e16800"}/>
+                                          <Text style={s.restaurantName}>{this.props.restaurants[restaurant_order.restaurant_id]
+                                                        ? this.props.restaurants[restaurant_order.restaurant_id].name
+                                                        : "Loading"}</Text>
+                                      </View>
+                                      <View>
+                                      {restaurant_order.order_items.map(orderItem => {
+                                          return <OrderItem
+                                              key={orderItem.id}
+                                              orderItem={orderItem}/>})}
+                                      </View>
+                                  </View>
+                              )
+                          }}>
                 </ListView>
                 <View style={s.status}>
                     <View style={s.orderStatus}>
@@ -156,7 +173,7 @@ const s = StyleSheet.create({
         alignItems: 'center',
         borderBottomWidth: 1,
         borderBottomColor: '#666',
-        margin: [0,15,10,15]
+        margin: [0,15]
     },
     orderDetailsLeft: {
         flex: 2,
@@ -171,6 +188,14 @@ const s = StyleSheet.create({
     orderId: { fontSize: 20 },
     date: { fontSize: 17 },
     time: { fontSize: 12 },
+    restaurantWrapper: {
+        flexDirection: 'row',
+        alignItems: 'center'
+    },
+    restaurantName: {
+        padding: 10,
+        fontSize: 20,
+    },
     orderItems: {
         flex: 1,
         padding: [0,10],

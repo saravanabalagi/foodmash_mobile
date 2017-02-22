@@ -39,8 +39,8 @@ export default class Dish extends Component {
     componentWillMount = () => { this.props.dispatch(fetchRestaurant(this.props.dish.restaurant_id)); this.props.dish.dish_variant_ids.map(dishVariantId => this.props.dispatch(fetchDishVariant(dishVariantId))); };
     componentWillReceiveProps = (nextProps) => { if(this.state.selectedDishVariant == null && nextProps.dishVariants != null || nextProps.dishVariants.length > this.props.dishVariants.length) this.setState({selectedDishVariant: nextProps.dishVariants[0]}); };
 
-    addToCart = () => { this.props.dispatch(plusOneDishVariantToCart({dish_variant_id: this.state.selectedDishVariant.id, note:null, add_on_link_ids:this.state.selectedAddOnLinks.map(addOnLink => addOnLink.id)})) };
-    removeFromCart = () => { this.props.dispatch(minusOneDishVariantLenientToCart({dish_variant_id: this.state.selectedDishVariant.id, note:null, add_on_link_ids:this.state.selectedAddOnLinks.map(addOnLink => addOnLink.id)})) };
+    addToCart = () => { this.props.dispatch(plusOneDishVariantToCart({dish_variant_id: this.state.selectedDishVariant.id, note:null, add_on_link_ids:this.state.selectedAddOnLinks.map(addOnLink => addOnLink.id)}, this.props.dish.restaurant_id)) };
+    removeFromCart = () => { this.props.dispatch(minusOneDishVariantLenientToCart({dish_variant_id: this.state.selectedDishVariant.id, note:null, add_on_link_ids:this.state.selectedAddOnLinks.map(addOnLink => addOnLink.id)}, this.props.dish.restaurant_id)) };
 
     toggleSelectAddOnLink = (addOnLink) => {
         if(!this.state.selectedAddOnLinks.includes(addOnLink)) {
