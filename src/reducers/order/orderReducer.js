@@ -1,24 +1,25 @@
 export default (state = {
-    orders: [],
-    inProgress: false,
-    error: null
+    orders: {},
+    inProgress: [],
+    error: {}
 }, action) => {
-    const newState = {...state};
     switch(action.type) {
-        case "FETCH_ORDERS_IN_PROGRESS": newState.inProgress = true; break;
-        case "FETCH_ORDERS_FULFILLED": newState.orders = action.payload; newState.error = null; newState.inProgress = false; break;
-        case "FETCH_ORDERS_FAILED": newState.error = action.payload; newState.inProgress = false; break;
+        case "FETCH_ORDER_IN_PROGRESS":
+            return {...state,
+                inProgress: [...state.inProgress, action.id]};
+        case "FETCH_ORDER_FULFILLED":
+            return {...state,
+                inProgress: state.inProgress.filter(id => id!=action.id),
+                orders: {...state.orders, [action.payload.id]: action.payload},
+                error: {...state.error, [action.payload.id]: null}};
+        case "FETCH_ORDERS_FULFILLED":
+            return {...state,
+                inProgress: state.inProgress.filter(id => id!=action.id),
+                error: {...state.error, [action.id]: null}};
+        case "FETCH_ORDER_FAILED":
+            return {...state,
+                inProgress: state.inProgress.filter(id => id!=action.id),
+                error: {...state.error, [action.id]: action.payload}};
     }
-    if(action.id != null) newState.orders = newState.orders.map(order => order.id === action.id? manageOrder(order,action): order);
-    return newState;
+    return state;
 }
-
-let manageOrder = (state={}, action) => {
-    const newState = {...state};
-    switch(action.type) {
-        case "FETCH_ORDER_IN_PROGRESS": newState.inProgress = true; break;
-        case "FETCH_ORDER_FULFILLED": const brandNewState = action.payload; brandNewState.error = null; brandNewState.inProgress = false; return brandNewState;
-        case "FETCH_ORDER_FAILED": newState.error = action.payload; newState.inProgress = false; break;
-    }
-    return newState
-};
