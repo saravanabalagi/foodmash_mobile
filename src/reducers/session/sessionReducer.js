@@ -5,15 +5,32 @@ export default (state = {
     oauth: null,
     provider: null
 }, action) => {
-    const newState = {...state};
     switch(action.type) {
-        case "FETCH_JWT_IN_PROGRESS": newState.inProgress = true; break;
-        case "FETCH_JWT_FULFILLED": newState.jwt = action.payload; newState.error = null; newState.inProgress = false; break;
-        case "FETCH_JWT_FAILED": newState.jwt = null; newState.error = action.payload; newState.inProgress = false; break;
+        case "FETCH_JWT_IN_PROGRESS":
+            return {...state,
+                inProgress: true };
+        case "FETCH_JWT_FULFILLED":
+            return {...state,
+                jwt: action.payload,
+                error: null,
+                inProgress: false };
+        case "FETCH_JWT_FAILED":
+            return {...state,
+                jwt: null,
+                error: action.payload,
+                inProgress: false };
 
-        case "SIGNUP_USER_IN_PROGRESS": newState.inProgress = true; break;
-        case "SIGNUP_USER_FULFILLED": newState.error = null; newState.inProgress = false; break;
-        case "SIGNUP_USER_FAILED": newState.error = action.payload; newState.inProgress = false; break;
+        case "SIGNUP_USER_IN_PROGRESS":
+            return {...state,
+                inProgress: true };
+        case "SIGNUP_USER_FULFILLED":
+            return {...state,
+                error: null,
+                inProgress: false };
+        case "SIGNUP_USER_FAILED":
+            return {...state,
+                error: action.payload,
+                inProgress: false };
     }
-    return newState;
+    return state;
 }
