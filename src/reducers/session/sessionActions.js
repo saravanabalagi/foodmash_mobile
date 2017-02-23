@@ -4,6 +4,7 @@ import store from '../../store';
 export function fetchJwt(credentials) {
     const url = '/auth';
     return (dispatch) => {
+        if(store.getState().session.inProgress) return;
         dispatch({type: "FETCH_JWT_IN_PROGRESS"});
         axios.post(url,{ auth: {email: credentials.email, password: credentials.password}})
             .then((response) => { dispatch({ type: "FETCH_JWT_FULFILLED", payload: response.data.jwt}); })
@@ -15,6 +16,7 @@ export function signupUser(userDetails) {
     const url = '/users/create';
     return (dispatch) => {
         dispatch({type: "SIGNUP_USER_IN_PROGRESS"});
+        if(store.getState().session.inProgress) return;
         let session = store.getState().session;
         let json = {};
         json.name = userDetails.name;
