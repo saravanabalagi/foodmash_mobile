@@ -3,6 +3,7 @@ export default (state = {
     name: null,
     email: null,
     mobile: null,
+    roles: [],
     location_id: null,
     error: null
 },action) => {
@@ -16,6 +17,7 @@ export default (state = {
                 email: action.payload.hasOwnProperty('email')?action.payload.email:null,
                 mobile: action.payload.hasOwnProperty('mobile')?action.payload.mobile:null,
                 location_id: action.payload.hasOwnProperty('location_id')?action.payload.location_id:null,
+                roles: action.payload.hasOwnProperty('roles')?action.payload.roles:[],
                 inProgress: false,
                 error: null};
         case "FETCH_USER_FAILED":
