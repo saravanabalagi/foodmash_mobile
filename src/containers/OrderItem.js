@@ -75,7 +75,7 @@ class OrderItem extends React.Component {
                         {(this.getVariant(this.props.orderItem.dish_variant_id)
                             && (this.getDish(this.props.orderItem.dish_variant_id)
                                 && (this.getDish(this.props.orderItem.dish_variant_id).dish_variant_ids.length!=1)))
-                                    ?this.getVariant(this.props.orderItem.dish_variant_id).name+" ":""}
+                                    ?this.getVariant(this.props.orderItem.dish_variant_id).display_name+" ":""}
                         {this.getDish(this.props.orderItem.dish_variant_id)
                             ?this.getDish(this.props.orderItem.dish_variant_id).name:"Loading"}
                         {this.props.orderItem.quantity>1?" x "+this.props.orderItem.quantity:""}

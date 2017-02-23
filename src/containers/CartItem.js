@@ -26,7 +26,7 @@ import {fetchRestaurant} from '../reducers/restaurant/restaurantActions';
         addOnTypes: store.addOnType.addOnTypes,
         variants: store.variant.variants,
         dishVariants: store.dishVariant.dishVariants,
-        dishes: store.dish.dishes
+        dishes: store.dish.dishes,
     }
 })
 
@@ -76,7 +76,7 @@ class CartItem extends React.Component {
                         {(this.getVariant(this.props.orderItem.dish_variant_id)
                         && (this.getDish(this.props.orderItem.dish_variant_id)
                         && (this.getDish(this.props.orderItem.dish_variant_id).dish_variant_ids.length!=1)))
-                            ?this.getVariant(this.props.orderItem.dish_variant_id).name+" ":""}
+                            ?this.getVariant(this.props.orderItem.dish_variant_id).display_name+" ":""}
                         {this.getDish(this.props.orderItem.dish_variant_id)
                             ?this.getDish(this.props.orderItem.dish_variant_id).name:"Loading"}
                     </Text>
