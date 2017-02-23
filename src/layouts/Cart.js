@@ -104,7 +104,7 @@ export default class Cart extends Component {
                             <View style={s.line} />
                             <View style={s.buttonRight}>
                                 <View style={s.proceedWrapper}>
-                                    <Text style={s.prooeed}> Proceed </Text>
+                                    <Text style={s.proceed}> Proceed </Text>
                                     <Text style={s.toPay}> TO PAY </Text>
                                 </View>
                                 <Icon name={"chevron-circle-right"} size={20} color={"#F37521"}/>
@@ -154,7 +154,7 @@ const s = StyleSheet.create({
         marginLeft: 10,
         marginRight: 10,
         marginTop: 10,
-        borderTopColor: '#666',
+        borderTopColor: '#BBB',
         borderTopWidth: 1
     },
     proceedButton: {
@@ -173,14 +173,14 @@ const s = StyleSheet.create({
         alignItems: 'center'
     },
     proceedWrapper: { paddingRight: 10 },
-    proceed: { fontSize: 17 },
+    proceed: { fontSize: 14 },
     toPay: { fontSize: 16 },
     total: { fontSize: 17 },
     totalItems: { fontSize: 13 },
     line: {
         width: 1,
         height: 50,
-        backgroundColor: '#666'
+        backgroundColor: '#BBB'
     },
     noItemsInCart: {
         alignItems: 'center',

@@ -179,7 +179,7 @@ class Order extends React.Component {
     }
 
     getOrderStatusProgressBarStyle = (index) => {
-        let backgroundColor = '#E6E6E6';
+        let backgroundColor = '#EEE';
         switch (index) {
             case 0: if(this.props.orderStatus.name == "Purchased") backgroundColor = "#00a803";
             case 1: if(this.props.orderStatus.name == "Processing") backgroundColor = "#00a803";
@@ -215,7 +215,7 @@ const s = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         borderBottomWidth: 1,
-        borderBottomColor: '#666',
+        borderBottomColor: '#CCC',
         margin: [0,15]
     },
     orderDetailsLeft: {
@@ -258,7 +258,10 @@ const s = StyleSheet.create({
     restaurantStatusIcon: { padding: [5,0,0,10] },
     status: {
         flexDirection: 'row',
-        padding: 20
+        padding: [15,0],
+        margin: [0,15],
+        borderTopWidth: 1,
+        borderTopColor: '#CCC'
     },
     statusIcon: { marginRight: 5 },
     orderStatus: {
@@ -273,7 +276,7 @@ const s = StyleSheet.create({
     },
     orderStatusProgress: {
         flexDirection: 'row',
-        margin: [0,10,10,10]
+        margin: [0,10,0,10]
     },
     orderStatusProgressBar: {
         flex: 1,
@@ -314,7 +317,7 @@ const s = StyleSheet.create({
     billingTextSeparator: {
         width: 1,
         height: 90,
-        backgroundColor: '#666'
+        backgroundColor: '#CCC'
     },
     button: {
         paddingLeft: 10,
