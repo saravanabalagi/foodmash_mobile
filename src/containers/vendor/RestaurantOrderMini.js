@@ -68,14 +68,8 @@ class RestaurantOrderMini extends React.Component {
     render() {
         return (
             <View style={s.parent}>
-                <TouchableOpacity onPress={()=>Actions.vendorViewOrder({
-                    restaurantOrder:this.props.restaurantOrder,
-                    orderStatus:this.props.orderStatus,
-                    paymentMethod:this.props.paymentMethod,
-                    getIconForOrderStatus:this.getIconForOrderStatus,
-                    getIconForPaymentMethod:this.getIconForPaymentMethod
-                })}>
-                    <View style={s.shortView}>
+                <TouchableOpacity onPress={()=>Actions.vendorViewOrder({ restaurantOrderId: this.props.restaurantOrder.id })}>
+                <View style={s.shortView}>
                         <View style={s.leftPane}>
                             <View style={s.icon}><Icon name={this.getIconForOrderStatus(this.props.orderStatus?this.props.orderStatus.name:"")} size={15} color={"#007402"}/></View>
                             <Text style={s.date}>{ moment(new Date(this.props.restaurantOrder.ordered_at)).format('MMM DD') }</Text>
