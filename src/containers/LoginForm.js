@@ -9,12 +9,14 @@ import {
 
 import {connect} from 'react-redux';
 import {fetchJwt} from '../reducers/session/sessionActions';
-import {Actions} from 'react-native-router-flux';
+import {fetchUser} from '../reducers/user/userActions';
 
+import {ActionConst, Actions} from 'react-native-router-flux';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 @connect((store) => {
     return {
+        user: store.user.user,
         jwt: store.session.jwt,
         inProgress: store.session.inProgress,
         error: store.session.error
@@ -26,20 +28,33 @@ class LoginForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            shouldRedirect: false,
             email: "",
             password: "",
             secureText: true
         };
     }
 
-    componentWillMount = () => { this.componentWillReceiveProps(this.props) };
-    componentWillReceiveProps = (nextProps) => { if(nextProps.jwt!=null) Actions.app(); };
+    componentWillMount = () => { this.checkAndRedirect(this.props.jwt, this.props.user) };
+    componentWillReceiveProps = (nextProps) => {
+        if(nextProps.jwt!=null && this.props.jwt!=nextProps.jwt) this.props.dispatch(fetchUser());
+        if(this.state.shouldRedirect && this.props.user != nextProps.user) this.checkAndRedirect(nextProps.jwt, nextProps.user);
+    };
+
+    checkAndRedirect = (jwt, user) => {
+        if(jwt!=null && user.mobile!=null)
+            if(user.roles.some(role=>role.name=="restaurant_admin"))
+                this.setState({shouldRedirect:false},()=>Actions.app());
+            else this.setState({shouldRedirect:false},()=>Actions.app());
+    };
 
     handleSubmit = () => {
-        this.props.dispatch(fetchJwt({
-            email: this.state.email,
-            password: this.state.password
-        }));
+        this.setState({shouldRedirect: true},
+            ()=>{ this.props.dispatch(fetchJwt({
+                    email: this.state.email,
+                    password: this.state.password
+                }));
+            });
     };
 
     render() {
