@@ -1,10 +1,6 @@
 export default (state = {
     inProgress: false,
-    name: null,
-    email: null,
-    mobile: null,
-    roles: [],
-    location_id: null,
+    user: {},
     error: null
 },action) => {
     switch(action.type) {
@@ -13,11 +9,7 @@ export default (state = {
                 inProgress: true};
         case "FETCH_USER_FULFILLED":
             return {...state,
-                name: action.payload.hasOwnProperty('name')?action.payload.name:null,
-                email: action.payload.hasOwnProperty('email')?action.payload.email:null,
-                mobile: action.payload.hasOwnProperty('mobile')?action.payload.mobile:null,
-                location_id: action.payload.hasOwnProperty('location_id')?action.payload.location_id:null,
-                roles: action.payload.hasOwnProperty('roles')?action.payload.roles:[],
+                user: user(state.user, action),
                 inProgress: false,
                 error: null};
         case "FETCH_USER_FAILED":
@@ -30,6 +22,26 @@ export default (state = {
         case "SELECT_LOCATION_FAILED":
             return {...state,
                 error: action.payload};
+    }
+    return {...state,
+        user: user(state.user,action)};
+};
+
+const user = (state = {
+    name: null,
+    email: null,
+    mobile: null,
+    roles: [],
+    location_id: null,
+}, action) => {
+    switch(action.type) {
+        case "FETCH_USER_FULFILLED":
+            return {...state,
+                name: action.payload.hasOwnProperty('name')?action.payload.name:null,
+                email: action.payload.hasOwnProperty('email')?action.payload.email:null,
+                mobile: action.payload.hasOwnProperty('mobile')?action.payload.mobile:null,
+                location_id: action.payload.hasOwnProperty('location_id')?action.payload.location_id:null,
+                roles: action.payload.hasOwnProperty('roles')?action.payload.roles:[] }
     }
     return state;
 };

@@ -18,7 +18,7 @@ import DishCategoryList from '../containers/DishCategoryList';
 
 @connect((store) => {
     return {
-        location_id: store.user.location_id,
+        location_id: store.user.user.location_id,
         locations: store.location.locations,
         cities: store.city.cities
     };

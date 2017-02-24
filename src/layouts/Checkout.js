@@ -25,8 +25,8 @@ import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
         restaurants: store.restaurant.restaurants,
         restaurantOrders: Object.values(store.cart.restaurant_orders),
         inProgress: store.cart.inProgress,
-        user: store.user,
-        location_id: store.user.location_id,
+        user: store.user.user,
+        location_id: store.user.user.location_id,
         locations: store.location.locations,
         cities: store.city.cities
     }

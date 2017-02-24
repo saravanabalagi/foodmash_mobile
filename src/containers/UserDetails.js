@@ -15,9 +15,9 @@ import {fetchUser} from '../reducers/user/userActions';
 
 @connect((store) => {
     return {
-        name: store.user.name,
-        email: store.user.email,
-        mobile: store.user.mobile,
+        name: store.user.user.name,
+        email: store.user.user.email,
+        mobile: store.user.user.mobile,
         inProgress: store.user.inProgress,
         error: store.user.error
     }
