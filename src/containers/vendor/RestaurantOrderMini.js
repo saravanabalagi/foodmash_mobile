@@ -58,6 +58,13 @@ class RestaurantOrderMini extends React.Component {
         this.props.dispatch(fetchPaymentMethod(this.props.restaurantOrder.payment_method_id));
     };
 
+    componentWillReceiveProps = (nextProps) => {
+        if (this.props.restaurantOrder != nextProps.restaurantOrder) {
+            this.props.dispatch(fetchOrderStatus(nextProps.restaurantOrder.order_status_id));
+            this.props.dispatch(fetchPaymentMethod(nextProps.restaurantOrder.payment_method_id));
+        }
+    };
+
     render() {
         return (
             <View style={s.parent}>
