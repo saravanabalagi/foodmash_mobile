@@ -44,7 +44,7 @@ class LoginForm extends React.Component {
     checkAndRedirect = (jwt, user) => {
         if(jwt!=null && user.mobile!=null)
             if(user.roles.some(role=>role.name=="restaurant_admin"))
-                this.setState({shouldRedirect:false},()=>Actions.app());
+                this.setState({shouldRedirect:false},()=>Actions.vendorApp());
             else this.setState({shouldRedirect:false},()=>Actions.app());
     };
 

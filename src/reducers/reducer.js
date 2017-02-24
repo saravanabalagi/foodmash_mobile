@@ -18,6 +18,7 @@ import locationReducer from './location/locationReducer';
 import orderReducer from './order/orderReducer';
 import sessionReducer from './session/sessionReducer';
 import userReducer from './user/userReducer';
+import restaurantOrderReducer from './vendor/restaurantOrder/restaurantOrderReducer';
 
 export default combineReducers({
     cart: cartReducer,
@@ -37,5 +38,8 @@ export default combineReducers({
     location: locationReducer,
     order: orderReducer,
     session: sessionReducer,
-    user: userReducer
+    user: userReducer,
+    vendor: combineReducers({
+        restaurantOrder: restaurantOrderReducer
+    })
 });
