@@ -37,7 +37,7 @@ export default (state = {
 
         case "RESET_CART":
             return {...state,
-                restaurant_orders: [],
+                restaurant_orders: {},
                 inProgress: false,
                 values: {id: null, total: null, sub_total: null, vat: null, delivery: null},
                 error: null };
