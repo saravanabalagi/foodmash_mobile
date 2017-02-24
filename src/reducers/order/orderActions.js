@@ -15,7 +15,7 @@ export function fetchOrders() {
 }
 
 export function fetchOrder(id) {
-    const url = '/orders' + id.toString();
+    const url = '/orders/' + id.toString();
     return (dispatch) => {
         if(store.getState().order.inProgress.includes(id)) return;
         dispatch({type: "FETCH_ORDER_IN_PROGRESS", id: id});
