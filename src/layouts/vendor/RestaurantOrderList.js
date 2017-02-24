@@ -9,13 +9,17 @@ import {
 } from 'react-native'
 
 import {connect} from 'react-redux';
+import {fetchRestaurant} from '../../reducers/restaurant/restaurantActions';
 import {fetchRestaurantOrders} from '../../reducers/vendor/restaurantOrder/restaurantOrderActions';
 import RestaurantOrderMini from '../../containers/vendor/RestaurantOrderMini';
 import Loading from '../../views/Loading';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 
 @connect((store) => {
     return {
+        restaurant_id: store.user.user.roles.filter(role=>role.resource_type=="Restaurant")[0].resource_id,
+        restaurant: store.restaurant.restaurants[store.user.user.roles.filter(role=>role.resource_type=="Restaurant")[0].resource_id],
         restaurantOrders: Object.values(store.vendor.restaurantOrder.restaurantOrders).sort((a,b)=>new Date(b.ordered_at)-new Date(a.ordered_at)),
         inProgress: store.vendor.restaurantOrder.inProgress,
         error: store.vendor.restaurantOrder.error
@@ -32,9 +36,10 @@ class RestaurantOrderList extends React.Component {
             refreshing: false
         };
     }
-
-    componentWillMount = () => { this.props.dispatch(fetchRestaurantOrders()) };
-    updatePriceWidth = (width) => { this.state.priceWidth<width && this.setState({priceWidth: width}); };
+    componentWillMount = () => {
+        this.props.dispatch(fetchRestaurantOrders());
+        this.props.restaurant_id && this.props.dispatch(fetchRestaurant(this.props.restaurant_id))
+    };
 
     componentWillReceiveProps = (nextProps) => {
         if(this.state.refreshing
@@ -43,11 +48,20 @@ class RestaurantOrderList extends React.Component {
             this.setState({refreshing: false});
     };
 
+    updatePriceWidth = (width) => { this.state.priceWidth<width && this.setState({priceWidth: width}); };
     refreshOrders = () => { this.setState({refreshing: true, priceWidth: 0},()=>{this.props.dispatch(fetchRestaurantOrders());}); };
 
     render() {
         return (
             <View style={s.parent}>
+                <View style={s.titleBar}>
+                    <View style={{width:60}}/>
+                    <View style={s.titleWrapper}>
+                        <MaterialIcon style={s.orderIcon} name={"restaurant-menu"} size={20} color={"#e16800"}/>
+                        <Text style={s.title}>{this.props.restaurant?this.props.restaurant.name:"Loading"}</Text>
+                    </View>
+                    <View style={{width:60}}/>
+                </View>
                 { this.props.inProgress.length>0 && <Loading/> }
                 {
                     !this.props.inProgress.length>0 && this.props.restaurantOrders.length === 0 &&
@@ -86,6 +100,19 @@ const s = StyleSheet.create({
     parent: {
         flex: 1
     },
+    titleBar: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        height: 70,
+        backgroundColor: '#EEE',
+    },
+    titleWrapper: {
+        flexDirection: 'row',
+        alignItems: 'center'
+    },
+    title: { fontSize: 20 },
+    orderIcon: { marginRight: 5 },
     noOrdersLayout: {
         flex: 1,
         alignItems: 'center',
