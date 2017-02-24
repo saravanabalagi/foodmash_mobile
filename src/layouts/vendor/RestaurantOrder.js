@@ -49,6 +49,16 @@ class RestaurantOrder extends React.Component {
         }
     };
 
+    getStatusChangeButtonName = () => {
+        if(this.props.orderStatus)
+            switch (this.props.orderStatus.name) {
+                case "Purchased": return "APPROVE";
+                case "Accepted": return "READY";
+                case "Ready": return "COLLECTED";
+            }
+        return "Loading";
+    };
+
     render() {
         return (
             <View style={s.parent}>
@@ -85,10 +95,31 @@ class RestaurantOrder extends React.Component {
                         <Icon style={s.statusIcon} name={this.props.getIconForOrderStatus(this.props.orderStatus?this.props.orderStatus.name:"")} size={20} color={"#F37521"}/>
                         <Text> {this.props.orderStatus?this.props.orderStatus.name:"Loading"} </Text>
                     </View>
-                    <View style={s.paymentMethod}>
-                        <Icon style={s.statusIcon} name={this.props.getIconForPaymentMethod(this.props.paymentMethod?this.props.paymentMethod.name:"")} size={20} color={"#F37521"}/>
-                        <Text> {this.props.paymentMethod.name} </Text>
-                    </View>
+                    {
+                        this.props.orderStatus && this.props.orderStatus.name=="Completed" &&
+                        <View style={s.paymentMethod}>
+                            <Icon style={s.statusIcon} name={this.props.getIconForPaymentMethod(this.props.paymentMethod?this.props.paymentMethod.name:"")} size={20} color={"#F37521"}/>
+                            <Text> {this.props.paymentMethod.name} </Text>
+                        </View>
+                    }
+                    {
+                        this.props.orderStatus && this.props.orderStatus.name!="Completed" &&
+                        <View style={[s.statusChangeButtonWrapper,this.getStatusChangeButtonWrapperFlex()]}>
+                            <TouchableOpacity
+                                style={[s.statusChangeButton,this.getStatusChangeButtonStyle()]}
+                                onPress={()=>{}}>
+                                <Text style={s.statusButtonText}>{this.getStatusChangeButtonName()}</Text>
+                            </TouchableOpacity>
+                            {
+                                this.props.orderStatus && this.props.orderStatus.name=="Purchased" &&
+                                <TouchableOpacity
+                                    style={[s.statusChangeButton, s.rejectButton]}
+                                    onPress={() => {}}>
+                                    <Text style={s.statusButtonText}>REJECT</Text>
+                                </TouchableOpacity>
+                            }
+                        </View>
+                    }
                 </View>
                 <View style={s.orderStatusProgress}>
                     <View style={[s.orderStatusProgressBar, this.getOrderStatusProgressBarStyle(0)]}/>
@@ -131,14 +162,29 @@ class RestaurantOrder extends React.Component {
 
     }
 
+    getStatusChangeButtonWrapperFlex = () => { return {flex:(this.props.orderStatus && this.props.orderStatus.name=="Purchased")?1.3:1}; };
+    getStatusChangeButtonStyle = () => {
+        let backgroundColor = '#666';
+        let paddingLeft = 20;
+        let paddingRight = 20;
+        if(this.props.orderStatus)
+            switch (this.props.orderStatus.name) {
+                case "Purchased": backgroundColor = "#669966"; paddingLeft=10; paddingRight=10; break;
+                case "Accepted": backgroundColor = "#66A055"; break;
+                case "Ready": backgroundColor = "#66AA44"; break;
+            }
+        return ({backgroundColor: backgroundColor, paddingLeft:paddingLeft, paddingRight:paddingRight });
+    };
+
     getOrderStatusProgressBarStyle = (index) => {
         let backgroundColor = '#EEE';
-        switch (index) {
-            case 0: if(this.props.orderStatus.name == "Purchased") backgroundColor = "#00a803";
-            case 1: if(this.props.orderStatus.name == "Accepted") backgroundColor = "#00a803";
-            case 2: if(this.props.orderStatus.name == "Ready") backgroundColor = "#00a803";
-            case 3: if(this.props.orderStatus.name == "Completed") backgroundColor = "#00a803";
-        }
+        if(this.props.orderStatus)
+            switch (index) {
+                case 0: if(this.props.orderStatus.name == "Purchased") backgroundColor = "#00a803";
+                case 1: if(this.props.orderStatus.name == "Accepted") backgroundColor = "#00a803";
+                case 2: if(this.props.orderStatus.name == "Ready") backgroundColor = "#00a803";
+                case 3: if(this.props.orderStatus.name == "Completed") backgroundColor = "#00a803";
+            }
         if(this.props.orderStatus.name == "Rejected") backgroundColor = "#e10000";
         return ({backgroundColor: backgroundColor});
     };
@@ -164,6 +210,8 @@ const s = StyleSheet.create({
     },
     title: { fontSize: 20 },
     orderIcon: { marginRight: 5 },
+
+
     orderDetails: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -208,19 +256,38 @@ const s = StyleSheet.create({
         borderRadius: 5,
         marginTop: 4
     },
+
+
     restaurantStatusIcon: { padding: [5,0,0,10] },
     status: {
+        height: 60,
         flexDirection: 'row',
-        padding: [15,0],
+        alignItems: 'center',
+        padding: [10,0],
         margin: [0,15],
         borderTopWidth: 1,
-        borderTopColor: '#CCC'
+        borderTopColor: '#CCC',
     },
     statusIcon: { marginRight: 5 },
     orderStatus: {
         flex: 1,
         flexDirection: 'row',
         justifyContent: 'center'
+    },
+    statusChangeButtonWrapper: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    statusChangeButton: {
+        backgroundColor: '#666',
+        padding: 10,
+        margin: [0,5],
+        borderRadius: 5
+    },
+    statusButtonText: {
+        fontSize: 12,
+        color: '#FFF'
     },
     paymentMethod: {
         flex: 1,
@@ -237,6 +304,8 @@ const s = StyleSheet.create({
         margin: 2,
         borderRadius: 5
     },
+
+
     billing: {
         flexDirection: 'row',
         alignItems: 'center',
