@@ -24,3 +24,9 @@ export function fetchOrder(id) {
             .catch((error) => { dispatch({type: "FETCH_ORDER_FAILED", payload: error, id: id}); });
     };
 }
+
+export function updateOrder(order) {
+    return (dispatch) => {
+        dispatch({type: "FETCH_ORDER_FULFILLED", payload: order, id: order.id});
+    }
+}

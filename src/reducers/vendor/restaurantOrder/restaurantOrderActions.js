@@ -42,3 +42,9 @@ export function makeRestaurantOrder(id, action) {
             .catch((error) => { dispatch({type: "FETCH_RESTAURANT_ORDER_FAILED", payload: error, id: id}); });
     }
 }
+
+export function updateRestaurantOrder(restaurantOrder) {
+    return (dispatch) => {
+        dispatch({type: "FETCH_RESTAURANT_ORDER_FULFILLED", payload: restaurantOrder, id: restaurantOrder.id});
+    }
+}
