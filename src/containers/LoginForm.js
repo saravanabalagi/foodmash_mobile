@@ -79,6 +79,24 @@ class LoginForm extends React.Component {
                     <Icon onPress={() => this.setState({secureText:!this.state.secureText})}
                         name={this.state.secureText? 'eye-slash': 'eye'} size={24} color={'black'}/>
                 </View>
+
+                {/*TODO: remove after debugging*/}
+                <View style={s.row}>
+                    <TouchableHighlight
+                        style={s.setButton}
+                        underlayColor={'#777777'}
+                        onPress={() => this.setState({email:"saravanabalagi@hotmail.com",password:"12345678"})}>
+                        <Text style={s.buttonText}> Customer </Text>
+                    </TouchableHighlight>
+                    <TouchableHighlight
+                        style={s.setButton}
+                        underlayColor={'#777777'}
+                        onPress={() => this.setState({email:"restaurant@guy.com",password:"qwertyuiop"})}>
+                        <Text style={s.buttonText}> RestaurantAdmin </Text>
+                    </TouchableHighlight>
+                </View>
+
+
                 <View style={s.row}>
                     <TouchableHighlight
                         style={this.signinButtonStyle()}
@@ -143,6 +161,16 @@ const s = StyleSheet.create({
     inputIcon: {
         width: 40
     },
+
+    //TODO: remove after debugginh
+    setButton: {
+        margin: 10,
+        padding: 10,
+        backgroundColor: '#5fc8ee',
+        borderRadius: 10
+    },
+
+
     signupButton: {
         margin: 10,
         padding: 10,
