@@ -15,7 +15,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import RestaurantOrderItem from '../../containers/vendor/RestaurantOrderItem';
 import Loading from '../../views/Loading';
 
-import {makeRestaurantOrder} from '../../reducers/vendor/restaurantOrder/restaurantOrderActions';
+import {changeRestaurantOrderStatus} from '../../reducers/vendor/restaurantOrder/restaurantOrderActions';
 import {fetchPaymentMethod} from '../../reducers/paymentMethod/paymentMethodActions';
 import {fetchRestaurantOrder} from '../../reducers/vendor/restaurantOrder/restaurantOrderActions';
 import {fetchOrderStatus} from '../../reducers/orderStatus/orderStatusActions';
@@ -96,7 +96,7 @@ class RestaurantOrder extends React.Component {
                 case "Ready": action="collected"; break;
                 default: return
             }
-        this.props.dispatch(makeRestaurantOrder(this.props.restaurantOrder.id,action));
+        this.props.dispatch(changeRestaurantOrderStatus(this.props.restaurantOrder.id,action));
     };
 
     render() {

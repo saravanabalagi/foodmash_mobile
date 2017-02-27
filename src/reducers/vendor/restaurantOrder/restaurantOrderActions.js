@@ -25,7 +25,7 @@ export function fetchRestaurantOrder(id) {
     };
 }
 
-export function makeRestaurantOrder(id, action) {
+export function changeRestaurantOrderStatus(id, action) {
     let url = '/vendor/restaurant_orders/' + id.toString();
     switch(action) {
         case "approve": url+='/approve'; break;
