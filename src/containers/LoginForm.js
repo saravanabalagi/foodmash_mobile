@@ -44,8 +44,8 @@ class LoginForm extends React.Component {
     checkAndRedirect = (jwt, user) => {
         if(jwt!=null && user.mobile!=null)
             if(user.roles.some(role=>role.name=="restaurant_admin"))
-                this.setState({shouldRedirect:false},()=>Actions.vendorApp());
-            else this.setState({shouldRedirect:false},()=>Actions.app());
+                this.setState({shouldRedirect:false},()=>{ this.props.createCable(jwt); Actions.vendorApp(); });
+            else this.setState({shouldRedirect:false},()=>{ this.props.createCable(jwt); Actions.app(); });
     };
 
     handleSubmit = () => {
@@ -64,6 +64,7 @@ class LoginForm extends React.Component {
                     <Icon style={s.inputIcon} name='user' size={30} color={'#CC0000'} />
                     <TextInput
                         placeholder='Phone number or Email address'
+                        value={this.state.email}
                         style={s.inputFields}
                         onChangeText={(text) => this.setState({email:text}) }/>
                 </View>
@@ -71,6 +72,7 @@ class LoginForm extends React.Component {
                     <Icon style={s.inputIcon} name='unlock' size={30} color={'#CC0000'}/>
                     <TextInput
                         placeholder='Password'
+                        value={this.state.password}
                         style={s.inputFields}
                         secureTextEntry={this.state.secureText}
                         onChangeText={(text) => this.setState({password:text})} />

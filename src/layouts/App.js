@@ -19,6 +19,10 @@ import VendorOrderList from './vendor/RestaurantOrderList';
 import VendorOrder from './vendor/RestaurantOrder';
 import VendorAccount from './vendor/Account';
 
+import {connect} from 'react-redux';
+import ActionCable from 'react-native-actioncable';
+import {updateOrder} from '../reducers/order/orderActions';
+import {updateRestaurantOrder} from '../reducers/vendor/restaurantOrder/restaurantOrderActions';
 
 const reducerCreate = (params) => {
     const defaultReducer = Reducer(params);
@@ -29,13 +33,43 @@ const reducerCreate = (params) => {
     }
 };
 
+@connect((store) => {
+    return {
+    };
+})
+
 export default class App extends Component {
+
+    componentDidMount = () => {
+        this.cable = null;
+        this.subscription = null;
+    };
+
+    componentWillUnmount () {
+        this.subscription &&
+        this.cable.subscriptions.remove(this.subscription)
+    }
+
+    createCable = (jwt) => {
+        this.cable = ActionCable.createConsumer("ws://localhost:8000/cable", jwt);
+        this.subscription = this.cable.subscriptions.create({channel: "OrderChannel"}, {
+                connected: function() { console.log("cable: connected") },
+                disconnected: function() { console.log("cable: disconnected") },
+                received: (data) => {
+                    console.log("cable: ", data);
+                    if(data.hasOwnProperty("order")) this.props.dispatch(updateOrder(data.order));
+                    if(data.hasOwnProperty("restaurant_order")) this.props.dispatch(updateRestaurantOrder(data.restaurant_order));
+                }
+            }
+        )
+    };
 
     render() {
         return (
             <Router createReducer={reducerCreate}>
                 <Scene hideNavBar={true}
                        component={LoginForm}
+                       createCable={this.createCable}
                        key="login"/>
                 <Scene key="app"
                        tabs={true}
