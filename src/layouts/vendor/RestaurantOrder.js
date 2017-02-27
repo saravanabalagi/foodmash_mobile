@@ -47,12 +47,14 @@ class RestaurantOrder extends React.Component {
     };
 
     componentWillReceiveProps = (nextProps) => {
-        let restaurantOrder = nextProps.restaurantOrder;
+        let restaurantOrderId = nextProps.restaurantOrderId;
+        let restaurantOrder = restaurantOrderId?nextProps.restaurantOrder:null;
         let orderStatus = restaurantOrder?nextProps.orderStatuses[restaurantOrder.order_status_id]:null;
         let paymentMethod = restaurantOrder?nextProps.paymentMethods[restaurantOrder.paymentMethod_id]:null;
 
-        if(restaurantOrder && orderStatus==null) this.props.dispatch(fetchOrderStatus(nextProps.restaurantOrder.order_status_id));
-        if(restaurantOrder && paymentMethod==null) this.props.dispatch(fetchPaymentMethod(nextProps.restaurantOrder.payment_method_id));
+        if(restaurantOrderId && restaurantOrder==null) this.props.dispatch(fetchRestaurantOrder(nextProps.restaurantOrderId));
+        if(restaurantOrderId && restaurantOrder && orderStatus==null) this.props.dispatch(fetchOrderStatus(nextProps.restaurantOrder.order_status_id));
+        if(restaurantOrderId && restaurantOrder && paymentMethod==null) this.props.dispatch(fetchPaymentMethod(nextProps.restaurantOrder.payment_method_id));
     };
 
     getOrderStatus = () => { return this.props.restaurantOrder?this.props.orderStatuses[this.props.restaurantOrder.order_status_id]:null };
