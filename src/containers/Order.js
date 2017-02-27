@@ -14,13 +14,17 @@ import moment from 'moment';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import OrderItem from './OrderItem';
 
+import {fetchOrder} from '../reducers/order/orderActions';
 import {fetchPaymentMethod} from '../reducers/paymentMethod/paymentMethodActions';
 import {fetchOrderStatus} from '../reducers/orderStatus/orderStatusActions';
 import {fetchRestaurant} from '../reducers/restaurant/restaurantActions';
 
 @connect((store,props) => {
     return {
+        order: store.order.orders[props.orderId],
+        inProgress: store.order.inProgress,
         orderStatuses: store.orderStatus.orderStatuses,
+        paymentMethods: store.paymentMethod.paymentMethods,
         dishVariants: store.dishVariant.dishVariants,
         dishes: store.dish.dishes,
         restaurants: store.restaurant.restaurants,
@@ -36,20 +40,53 @@ class Order extends React.Component {
     }
 
     componentWillMount = () => {
-        this.props.dispatch(fetchOrderStatus(this.props.order.order_status_id));
-        this.props.dispatch(fetchPaymentMethod(this.props.order.payment_method_id));
-        this.props.order.restaurant_orders.forEach(restaurantOrder=> {
-            this.props.dispatch(fetchRestaurant(restaurantOrder.restaurant_id));
-            this.props.dispatch(fetchOrderStatus(restaurantOrder.order_status_id));
-        });
-    };
-
-    componentWillReceiveProps = (nextProps) => {
-        if(this.props.order!==nextProps.order)
-            nextProps.order.restaurant_orders.forEach(restaurantOrder=> {
+        if(this.props.order) {
+            this.props.dispatch(fetchOrderStatus(this.props.order.order_status_id));
+            this.props.dispatch(fetchPaymentMethod(this.props.order.payment_method_id));
+            this.props.order.restaurant_orders.forEach(restaurantOrder => {
                 this.props.dispatch(fetchRestaurant(restaurantOrder.restaurant_id));
                 this.props.dispatch(fetchOrderStatus(restaurantOrder.order_status_id));
             });
+        } else this.props.dispatch(fetchOrder(this.props.orderId))
+    };
+
+    componentWillReceiveProps = (nextProps) => {
+        let orderId = nextProps.orderId;
+        let order = orderId?nextProps.order:null;
+        let orderStatus = order?nextProps.orderStatuses[order.order_status_id]:null;
+        let paymentMethod = order?nextProps.paymentMethods[order.paymentMethod_id]:null;
+
+        if(orderId && order==null) this.props.dispatch(fetchOrder(nextProps.orderId));
+        if(orderId && order && orderStatus==null) this.props.dispatch(fetchOrderStatus(nextProps.order.order_status_id));
+        if(orderId && order && paymentMethod==null) this.props.dispatch(fetchPaymentMethod(nextProps.order.payment_method_id));
+        if(orderId && order)
+            order.restaurant_orders.forEach(restaurantOrder=> {
+                this.props.dispatch(fetchRestaurant(restaurantOrder.restaurant_id));
+                this.props.dispatch(fetchOrderStatus(restaurantOrder.order_status_id));
+            });
+    };
+
+    getOrderStatus = () => { return this.props.order?this.props.orderStatuses[this.props.order.order_status_id]:null };
+    getPaymentMethod = () => { return this.props.order?this.props.paymentMethods[this.props.order.payment_method_id]:null };
+
+    getIconForOrderStatus = (status) => {
+        switch (status) {
+            case "Processing": return "spinner";
+            case "Ready": return "bell";
+            case "Purchased": return "inr";
+            case "Completed": return "check";
+            case "Cancelled": return "times";
+        }
+        return "question-circle";
+    };
+
+    getIconForPaymentMethod = (method) => {
+        switch (method) {
+            case "COD": return "money";
+            case "Netbanking": return "globe";
+            case "Card": return "credit-card";
+        }
+        return "question-circle";
     };
 
     getPickupCode = (restaurantOrder) => {
@@ -129,12 +166,12 @@ class Order extends React.Component {
                 </ListView>
                 <View style={s.status}>
                     <View style={s.orderStatus}>
-                        <Icon style={s.statusIcon} name={this.props.getIconForOrderStatus(this.props.orderStatus?this.props.orderStatus.name:"")} size={20} color={"#F37521"}/>
-                        <Text> {this.props.orderStatus?this.props.orderStatus.name:"Loading"} </Text>
+                        <Icon style={s.statusIcon} name={this.getIconForOrderStatus(this.getOrderStatus()?this.getOrderStatus().name:"")} size={20} color={"#F37521"}/>
+                        <Text> {this.getOrderStatus()?this.getOrderStatus().name:"Loading"} </Text>
                     </View>
                     <View style={s.paymentMethod}>
-                        <Icon style={s.statusIcon} name={this.props.getIconForPaymentMethod(this.props.paymentMethod?this.props.paymentMethod.name:"")} size={20} color={"#F37521"}/>
-                        <Text> {this.props.paymentMethod.name} </Text>
+                        <Icon style={s.statusIcon} name={this.getIconForPaymentMethod(this.getPaymentMethod()?this.getPaymentMethod().name:"")} size={20} color={"#F37521"}/>
+                        <Text> {this.getPaymentMethod().name} </Text>
                     </View>
                 </View>
                 <View style={s.orderStatusProgress}>
@@ -181,12 +218,12 @@ class Order extends React.Component {
     getOrderStatusProgressBarStyle = (index) => {
         let backgroundColor = '#EEE';
         switch (index) {
-            case 0: if(this.props.orderStatus.name == "Purchased") backgroundColor = "#00a803";
-            case 1: if(this.props.orderStatus.name == "Processing") backgroundColor = "#00a803";
-            case 2: if(this.props.orderStatus.name == "Ready") backgroundColor = "#00a803";
-            case 3: if(this.props.orderStatus.name == "Completed") backgroundColor = "#00a803";
+            case 0: if(this.getOrderStatus().name == "Purchased") backgroundColor = "#00a803";
+            case 1: if(this.getOrderStatus().name == "Processing") backgroundColor = "#00a803";
+            case 2: if(this.getOrderStatus().name == "Ready") backgroundColor = "#00a803";
+            case 3: if(this.getOrderStatus().name == "Completed") backgroundColor = "#00a803";
         }
-        if(this.props.orderStatus.name == "Cancelled") backgroundColor = "#e10000";
+        if(this.getOrderStatus() && this.getOrderStatus().name == "Cancelled") backgroundColor = "#e10000";
         return ({backgroundColor: backgroundColor});
     };
 

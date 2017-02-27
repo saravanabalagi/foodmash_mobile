@@ -63,13 +63,7 @@ class OrderMini extends React.Component {
     render() {
         return (
             <View style={s.parent}>
-                <TouchableOpacity onPress={()=>Actions.order({
-                    order:this.props.order,
-                    orderStatus:this.props.orderStatus,
-                    paymentMethod:this.props.paymentMethod,
-                    getIconForOrderStatus:this.getIconForOrderStatus,
-                    getIconForPaymentMethod:this.getIconForPaymentMethod
-                })}>
+                <TouchableOpacity onPress={()=>Actions.order({ orderId: this.props.order.id })}>
                     <View style={s.shortView}>
                         <View style={s.leftPane}>
                             <View style={s.icon}><Icon name={this.getIconForOrderStatus(this.props.orderStatus?this.props.orderStatus.name:"")} size={15} color={"#007402"}/></View>
