@@ -38,6 +38,10 @@ acorn@^2.1.0, acorn@^2.4.0:
   version "2.7.0"
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-2.7.0.tgz#ab6e7d9d886aaca8b085bc3312b79a198433f0e7"
 
+actioncable@^5.0.0:
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/actioncable/-/actioncable-5.0.1.tgz#be84ce1857ccdd1a20177f43852d6b43a71ec17b"
+
 align-text@^0.1.1, align-text@^0.1.3:
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/align-text/-/align-text-0.1.4.tgz#0cd90a561093f35d0a99256c22b7069433fad117"
@@ -355,6 +359,10 @@ babel-plugin-istanbul@^2.0.0:
 babel-plugin-jest-hoist@^16.0.0:
   version "16.0.0"
   resolved "https://registry.yarnpkg.com/babel-plugin-jest-hoist/-/babel-plugin-jest-hoist-16.0.0.tgz#b58ca3f770982a7e7c25b5614b2e57e9dafc6e76"
+
+babel-plugin-react-native-css-shorthand@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/babel-plugin-react-native-css-shorthand/-/babel-plugin-react-native-css-shorthand-1.0.1.tgz#273309ec87a31d36269e2927cb8bbffda5e4c99c"
 
 babel-plugin-react-transform@2.0.2:
   version "2.0.2"
@@ -694,7 +702,7 @@ babel-preset-jest@^16.0.0:
   dependencies:
     babel-plugin-jest-hoist "^16.0.0"
 
-babel-preset-react-native@1.9.0, babel-preset-react-native@^1.9.0:
+babel-preset-react-native@^1.9.0:
   version "1.9.0"
   resolved "https://registry.yarnpkg.com/babel-preset-react-native/-/babel-preset-react-native-1.9.0.tgz#035fc06c65f4f2a02d0336a100b2da142f36dab1"
   dependencies:
@@ -2634,7 +2642,7 @@ mkdirp@0.5.x, mkdirp@^0.5.1:
   dependencies:
     minimist "0.0.8"
 
-moment@2.x.x:
+moment@2.x.x, moment@^2.17.1:
   version "2.17.1"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.17.1.tgz#fed9506063f36b10f066c8b59a144d7faebe1d82"
 
@@ -3008,6 +3016,12 @@ react-deep-force-update@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/react-deep-force-update/-/react-deep-force-update-1.0.1.tgz#f911b5be1d2a6fe387507dd6e9a767aa2924b4c7"
 
+react-native-actioncable@0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/react-native-actioncable/-/react-native-actioncable-0.0.3.tgz#24c14a8364d9f2a905f6b788fba3183468ddb270"
+  dependencies:
+    actioncable "^5.0.0"
+
 react-native-button@^1.7.1:
   version "1.7.1"
   resolved "https://registry.yarnpkg.com/react-native-button/-/react-native-button-1.7.1.tgz#0c3fb34e7f99dc2c9a8166094be878eb7cb3c36e"
@@ -3031,6 +3045,16 @@ react-native-router-flux@^3.36.0:
     react-native-experimental-navigation "0.26.x"
     react-native-tabs "^1.0.9"
     react-static-container "1.0.1"
+
+react-native-scrollable-tab-view@^0.7.2:
+  version "0.7.2"
+  resolved "https://registry.yarnpkg.com/react-native-scrollable-tab-view/-/react-native-scrollable-tab-view-0.7.2.tgz#8d35bfdcd922d22beb8cbb079be277e09e86978a"
+  dependencies:
+    react-timer-mixin "^0.13.3"
+
+react-native-sound@^0.9.0:
+  version "0.9.0"
+  resolved "https://registry.yarnpkg.com/react-native-sound/-/react-native-sound-0.9.0.tgz#e4992491e59980fc49d5b408002a512b1f0e452c"
 
 react-native-tabs@^1.0.9:
   version "1.0.9"
@@ -3149,7 +3173,7 @@ react-test-renderer@15.4.2:
     fbjs "^0.8.4"
     object-assign "^4.1.0"
 
-react-timer-mixin@^0.13.2:
+react-timer-mixin@^0.13.2, react-timer-mixin@^0.13.3:
   version "0.13.3"
   resolved "https://registry.yarnpkg.com/react-timer-mixin/-/react-timer-mixin-0.13.3.tgz#0da8b9f807ec07dc3e854d082c737c65605b3d22"
 

@@ -19,8 +19,10 @@ import VendorOrderList from './vendor/RestaurantOrderList';
 import VendorOrder from './vendor/RestaurantOrder';
 import VendorAccount from './vendor/Account';
 
-import {connect} from 'react-redux';
 import ActionCable from 'react-native-actioncable';
+import Sound from 'react-native-sound';
+
+import {connect} from 'react-redux';
 import {updateOrder} from '../reducers/order/orderActions';
 import {updateRestaurantOrder} from '../reducers/vendor/restaurantOrder/restaurantOrderActions';
 
@@ -33,16 +35,14 @@ const reducerCreate = (params) => {
     }
 };
 
-@connect((store) => {
-    return {
-    };
-})
-
+@connect((store) => { return {}; })
 export default class App extends Component {
 
     componentDidMount = () => {
         this.cable = null;
         this.subscription = null;
+        this.newRestaurantOrderSound = new Sound('new_order.mp3', Sound.MAIN_BUNDLE);
+        this.orderUpdateSound = new Sound('update.mp3', Sound.MAIN_BUNDLE);
     };
 
     componentWillUnmount () {
@@ -57,8 +57,14 @@ export default class App extends Component {
                 disconnected: function() { console.log("cable: disconnected") },
                 received: (data) => {
                     console.log("cable: ", data);
-                    if(data.hasOwnProperty("order")) this.props.dispatch(updateOrder(data.order));
-                    if(data.hasOwnProperty("restaurant_order")) this.props.dispatch(updateRestaurantOrder(data.restaurant_order));
+                    if(data.hasOwnProperty("order")) {
+                        this.props.dispatch(updateOrder(data.order));
+                        this.orderUpdateSound.play();
+                    }
+                    if(data.hasOwnProperty("restaurant_order")) {
+                        this.props.dispatch(updateRestaurantOrder(data.restaurant_order));
+                        this.newRestaurantOrderSound.play();
+                    }
                 }
             }
         )
