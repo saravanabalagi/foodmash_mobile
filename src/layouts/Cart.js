@@ -21,7 +21,7 @@ import CartItem from '../containers/CartItem';
 @connect((store) => {
     return {
         signedIn: store.session.jwt!=null,
-        restaurantOrders: Object.values(store.cart.restaurant_orders),
+        restaurantOrders: store.cart.restaurant_orders,
         restaurants: store.restaurant.restaurants,
         inProgress: store.cart.inProgress,
         error: store.cart.error,
@@ -34,11 +34,36 @@ export default class Cart extends Component {
 
     constructor(props) {
         super(props);
-        this.ds = new ListView.DataSource({rowHasChanged: (a,b)=>a!==b});
-        this.state = {}
+        this.ds = new ListView.DataSource({
+            rowHasChanged: (a,b)=>a!==b,
+            sectionHeaderHasChanged: (a,b)=>a!==b,
+            getRowData: (dataBlob, sectionId, rowId)=>dataBlob[sectionId + ':' + rowId],
+            getSectionData: (dataBlob, sectionId)=>dataBlob[sectionId]
+        });
+        this.state = {
+            dataSource: this.ds.cloneWithRowsAndSections({},[],[])
+        }
     }
 
-    componentWillMount = () => { this.props.restaurantOrders.forEach(restaurantOrder=>this.props.dispatch(fetchRestaurant(restaurantOrder.restaurant_id))); };
+    componentWillMount = () => { this.componentWillReceiveProps(this.props) };
+    componentWillReceiveProps = (nextProps) => {
+        let restaurantIds = Object.values(nextProps.restaurantOrders).map(restaurantOrder=>restaurantOrder.restaurant_id);
+        restaurantIds.forEach(restaurantId=>{ if(nextProps.restaurants[restaurantId]==null) this.props.dispatch(fetchRestaurant(restaurantId)); });
+
+        if(restaurantIds.every(restaurantId=>nextProps.restaurants[restaurantId]!=null)) {
+            let dataBlob = {};
+            let orderItemsForRestaurant = {};
+            restaurantIds.forEach(restaurantId=>{
+                dataBlob[restaurantId] = nextProps.restaurants[restaurantId].name;
+                orderItemsForRestaurant[restaurantId] = [];
+                nextProps.restaurantOrders[restaurantId].order_items.forEach((orderItem,index)=>{
+                    orderItemsForRestaurant[restaurantId].push(index);
+                    dataBlob[restaurantId + ':' + index] = orderItem;
+                });
+            });
+            this.setState({dataSource: this.ds.cloneWithRowsAndSections(dataBlob, restaurantIds, Object.values(orderItemsForRestaurant))});
+        }
+    };
 
     handleAddToCart = (orderItem, restaurantId) => { this.props.dispatch(plusOneDishVariantToCart(orderItem, restaurantId)); };
     handleRemoveFromCart = (orderItem, restaurantId) => { this.props.dispatch(minusOneDishVariantToCart(orderItem, restaurantId)); };
@@ -54,7 +79,7 @@ export default class Cart extends Component {
                 </View>
                 { this.props.inProgress && <Loading/> }
                 {
-                    this.props.restaurantOrders.length===0 &&
+                    Object.values(this.props.restaurantOrders).length===0 &&
                     <View style={s.noItemsInCart}>
                         <Icon name={"frown-o"} size={100} color={"#e16800"}/>
                         <Text style={s.cartIsEmpty}>Your cart is empty</Text>
@@ -62,37 +87,26 @@ export default class Cart extends Component {
                     </View>
                 }
                 {
-                    this.props.restaurantOrders.length>0 &&
+                    Object.values(this.props.restaurantOrders).length>0 &&
                     <ListView style={s.scrollableArea}
-                              dataSource={this.ds.cloneWithRows(this.props.restaurantOrders)}
-                              enableEmptySections={true}
-                              renderRow={restaurantOrder=>{
-                                  return (
-                                      <View key={restaurantOrder.restaurant_id}>
-                                          <View style={s.restaurantWrapper}>
-                                              <Icon name={"angle-right"} size={20} color={"#e16800"}/>
-                                              <Text style={s.restaurantName}>{this.props.restaurants[restaurantOrder.restaurant_id]
-                                                        ?this.props.restaurants[restaurantOrder.restaurant_id].name
-                                                        :"Loading"}</Text>
-                                          </View>
-                                          <View>
-                                          {
-                                              restaurantOrder.order_items.map((orderItem, index) => {
-                                                  return <CartItem
-                                                      key={index}
-                                                      addToCart={()=>this.handleAddToCart(orderItem, restaurantOrder.restaurant_id)}
-                                                      removeFromCart={()=>this.handleRemoveFromCart(orderItem, restaurantOrder.restaurant_id)}
-                                                      orderItem={orderItem}/>
-                                              })
-                                          }
-                                          </View>
+                              dataSource={this.state.dataSource}
+                              renderSectionHeader={sectionData=>{
+                                  return <View style={s.restaurantWrapper}>
+                                          <Icon name={"angle-right"} size={20} color={"#e16800"}/>
+                                          <Text style={s.restaurantName}>{sectionData}</Text>
                                       </View>
-                                  )
-                              } }>
+                              }}
+                              renderRow={(orderItem,sectionId,rowId)=>{
+                                  return <CartItem
+                                              key={rowId}
+                                              addToCart={()=>this.handleAddToCart(orderItem,sectionId)}
+                                              removeFromCart={()=>this.handleRemoveFromCart(orderItem,sectionId)}
+                                              orderItem={orderItem}/>
+                              }}>
                     </ListView>
                 }
                 {
-                    this.props.restaurantOrders.length>0 &&
+                    Object.values(this.props.restaurantOrders).length>0 &&
                     <TouchableOpacity
                         style={s.touchableBottomBar}
                         onPress={()=>this.props.dispatch(submitCart())}>
@@ -139,7 +153,7 @@ const s = StyleSheet.create({
     cartIcon: { marginRight: 5 },
     scrollableArea: {
         flex: 1,
-        padding: 10
+        padding: [0,10]
     },
     restaurantWrapper: {
         flexDirection: 'row',
@@ -151,9 +165,7 @@ const s = StyleSheet.create({
     },
     touchableBottomBar: {
         height: 70,
-        marginLeft: 10,
-        marginRight: 10,
-        marginTop: 10,
+        margin: [0,10],
         borderTopColor: '#BBB',
         borderTopWidth: 1
     },
