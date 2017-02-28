@@ -34,3 +34,5 @@ export function selectLocation(id) {
             .catch((error) => { dispatch({ type: "SELECT_LOCATION_FAILED", payload: error, id: id }); });
     }
 }
+
+export function updateLocation(location) { return (dispatch) => dispatch({ type: "FETCH_LOCATION_FULFILLED", payload: location}); }

@@ -25,3 +25,5 @@ export function fetchCity(id) {
             .catch((error) => { dispatch({ type: "FETCH_CITY_FAILED", payload: error, id: id }); });
     };
 }
+
+export function updateCity(city) { return (dispatch) => dispatch({ type: "FETCH_CITY_FULFILLED", payload: city}); }

@@ -11,3 +11,5 @@ export function fetchUser() {
             .catch((error) => { dispatch({ type: "FETCH_USER_FAILED", payload: error }); });
     };
 }
+
+export function updateUser(user) { return (dispatch) => dispatch({ type: "FETCH_USER_FULFILLED", payload: user}); }
