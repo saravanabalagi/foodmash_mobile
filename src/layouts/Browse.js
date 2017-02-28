@@ -3,7 +3,7 @@ import {
     Text,
     View,
     TextInput,
-    TouchableHighlight,
+    TouchableOpacity,
     ScrollView,
     StyleSheet
 } from 'react-native'
@@ -12,6 +12,7 @@ import {connect} from 'react-redux';
 import {fetchLocation} from '../reducers/location/locationActions';
 import {fetchCity} from '../reducers/city/cityActions';
 import {fetchUser} from '../reducers/user/userActions';
+import {Actions} from 'react-native-router-flux';
 
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import DishCategoryList from '../containers/DishCategoryList';
@@ -52,16 +53,18 @@ class Browse extends React.Component {
         return (
             <View style={s.parent}>
                 <View style={s.titleBar}>
-                    <View style={s.titleWrapper}>
-                        <MaterialIcon style={s.locationIcon} name={"location-on"} size={35} color={"#e16800"}/>
-                        <View style={s.locationWrapper}>
-                            <Text style={s.location}> { this.getLocation() ? this.props.locations[this.props.location_id].name : "Loading"}</Text>
-                            {
-                                this.getCity() &&
-                                <Text style={s.city}>{ this.getCity().name.toUpperCase() }</Text>
-                            }
+                    <TouchableOpacity onPress={()=>Actions.selectLocation()}>
+                        <View style={s.titleWrapper}>
+                            <MaterialIcon style={s.locationIcon} name={"location-on"} size={35} color={"#e16800"}/>
+                            <View style={s.locationWrapper}>
+                                <Text style={s.location}> { this.getLocation() ? this.props.locations[this.props.location_id].name : "Loading"}</Text>
+                                {
+                                    this.getCity() &&
+                                    <Text style={s.city}>{ this.getCity().name.toUpperCase() }</Text>
+                                }
+                            </View>
                         </View>
-                    </View>
+                    </TouchableOpacity>
                 </View>
                 <DishCategoryList/>
             </View>

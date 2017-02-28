@@ -15,6 +15,8 @@ import {connect} from 'react-redux';
 import {updateCity} from '../reducers/city/cityActions';
 import {updateLocation} from '../reducers/location/locationActions';
 import {updateUser} from '../reducers/user/userActions';
+import {dropDishCategories} from '../reducers/dishCategory/dishCategoryActions';
+
 import Icon from 'react-native-vector-icons/FontAwesome';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 
@@ -56,6 +58,7 @@ class SelectLocation extends Component {
                             this.props.dispatch(updateLocation({id: data.location.id, name: data.location.name, city_id: data.location.city_id}));
                             this.props.dispatch(updateCity(data.location.city));
                         }
+                        this.props.dispatch(dropDishCategories());
                         Actions.app();
                     }
                 }
@@ -64,9 +67,9 @@ class SelectLocation extends Component {
 
     handleChangeSearchQuery = (text) => {
         this.setState({query: text}, ()=>{
-            // if(text.length!=0)
+            if(text.length!=0)
                 this.setState({inProgress: true}, ()=>this.subscription.query(this.state.query));
-            // if(text.length==0) this.setState({locations:[]});
+            if(text.length==0) this.setState({locations:[]});
         });
     };
 
