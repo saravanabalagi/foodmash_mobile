@@ -26,3 +26,5 @@ export function fetchDishCategory(id) {
             .catch((error) => { dispatch({type: "FETCH_DISH_CATEGORY_FAILED", payload: error, id: id}); });
     };
 }
+
+export function dropDishCategories() { return dispatch => dispatch({type: "DROP_DISH_CATEGORIES"}); }

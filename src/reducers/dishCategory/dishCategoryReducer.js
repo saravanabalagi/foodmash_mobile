@@ -20,6 +20,11 @@ export default (state = {
             return {...state,
                 inProgress: state.inProgress.filter(id => id!=action.id),
                 error: {...state.error, [action.id]: action.payload}};
+        case "DROP_DISH_CATEGORIES":
+            return {...state,
+                error: {},
+                inProgress: [],
+                dishCategories: {}};
     }
     return state;
 }
