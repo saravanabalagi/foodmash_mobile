@@ -13,10 +13,12 @@ import Loading from '../views/Loading';
 
 import {connect} from 'react-redux';
 import {fetchDish} from '../reducers/dish/dishActions';
+import {fetchRestaurant} from '../reducers/restaurant/restaurantActions';
 
 @connect((store, props) => {
     return {
-        dishes: props.dish_ids.map(key => store.dish.dishes[key]).filter(Boolean),
+        dishes: store.dish.dishes,
+        restaurants: store.restaurant.restaurants,
         inProgress: store.dish.inProgress,
         error: store.dish.error
     };
@@ -26,22 +28,54 @@ class DishList extends React.Component {
 
     constructor(props) {
         super(props);
-        this.ds = new ListView.DataSource({rowHasChanged: (a,b)=>a!==b});
+        this.ds = new ListView.DataSource({
+            rowHasChanged: (a,b)=>a!==b,
+            sectionHeaderHasChanged: (a,b)=>a!==b,
+            getRowData: (dataBlob, sectionId, rowId)=>dataBlob[sectionId + ':' + rowId],
+            getSectionData: (dataBlob, sectionId)=>dataBlob[sectionId]
+        });
         this.state = {
+            dataSource: this.ds.cloneWithRowsAndSections({},[],[]),
             selectedDish: null,
         }
     }
 
-    componentWillMount = () => { this.props.dish_ids.map(dish_id => this.props.dispatch(fetchDish(dish_id))); };
+    componentWillMount = () => { this.componentWillReceiveProps(this.props); };
+    componentWillReceiveProps = (nextProps) => {
+        this.props.dish_ids.forEach(dishId => { if (nextProps.dishes[dishId]==null) this.props.dispatch(fetchDish(dishId)); });
+        if(this.props.dish_ids.every(dishId => nextProps.dishes[dishId]!=null)) {
+            let dishes = this.props.dish_ids.map(dishId => nextProps.dishes[dishId]);
+            let restaurantIds = dishes.reduce((restaurantIds,dish)=>restaurantIds.includes(dish.restaurant_id)?restaurantIds:(restaurantIds.push(dish.restaurant_id),restaurantIds),[]);
+            restaurantIds.forEach(restaurantId=>{ if (nextProps.restaurants[restaurantId]==null) this.props.dispatch(fetchRestaurant(restaurantId)); });
+            if(restaurantIds.every(restaurantId=>nextProps.restaurants[restaurantId]!=null)) {
+                let dataBlob = {};
+                let dishesForRestaurant = {};
+                restaurantIds.forEach(restaurantId=>{
+                    dataBlob[restaurantId] = nextProps.restaurants[restaurantId].name;
+                    dishesForRestaurant[restaurantId] = [];
+                });
+                dishes.forEach(dish=>{
+                    dishesForRestaurant[dish.restaurant_id].push(dish.id);
+                    dataBlob[dish.restaurant_id + ':' + dish.id] = dish;
+                });
+                this.setState({ dataSource: this.ds.cloneWithRowsAndSections(dataBlob, restaurantIds, Object.values(dishesForRestaurant))});
+            }
+        }
+    };
+
     toggleSelectDish = (dish) => { if(this.state.selectedDish!=dish) this.setState({selectedDish: dish}); else this.setState({selectedDish:null}); };
 
     render() {
         return (
             <View style={s.parent}>
                 { this.props.inProgress.length>0 && <Loading /> }
-                <ListView dataSource={this.ds.cloneWithRows(this.props.dishes)}
-                          enableEmptySections={true}
+                <ListView dataSource={this.state.dataSource}
+                          renderSectionHeader={(sectionData) => {
+                              console.log(sectionData);
+                              return <Text style={s.restaurantName}>{sectionData.toUpperCase()}</Text>
+                          }}
                           renderRow={(dish) => {
+                              console.log("RowData: ",dish);
                         return <Dish dish={dish}
                                      key={dish.id}
                                      toggleSelect={()=>this.toggleSelectDish(dish)}
@@ -57,8 +91,12 @@ class DishList extends React.Component {
 }
 
 const s = StyleSheet.create({
-    parent: {
-        paddingTop: 10
+    parent: {},
+    restaurantName: {
+        fontSize: 14,
+        padding: [10,15],
+        backgroundColor: '#F6F6F6',
+        marginBottom: 5
     }
 });
 
