@@ -70,17 +70,13 @@ class DishList extends React.Component {
             <View style={s.parent}>
                 { this.props.inProgress.length>0 && <Loading /> }
                 <ListView dataSource={this.state.dataSource}
-                          renderSectionHeader={(sectionData) => {
-                              console.log(sectionData);
-                              return <Text style={s.restaurantName}>{sectionData.toUpperCase()}</Text>
-                          }}
+                          renderSectionHeader={(sectionData) => { return <Text style={s.restaurantName}>{sectionData.toUpperCase()}</Text> }}
                           renderRow={(dish) => {
-                              console.log("RowData: ",dish);
-                        return <Dish dish={dish}
-                                     key={dish.id}
-                                     toggleSelect={()=>this.toggleSelectDish(dish)}
-                                     selected={dish==this.state.selectedDish}/>
-                    }}>
+                            return <Dish dish={dish}
+                                         key={dish.id}
+                                         toggleSelect={()=>this.toggleSelectDish(dish)}
+                                         selected={dish==this.state.selectedDish}/>
+                          }}>
                 </ListView>
                 { this.props.error != null && !this.props.inProgress && <Text> {this.props.error.toString()} </Text> }
             </View>
