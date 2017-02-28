@@ -45,7 +45,7 @@ class LoginForm extends React.Component {
         if(jwt!=null && user.mobile!=null)
             if(user.roles.some(role=>role.name=="restaurant_admin"))
                 this.setState({shouldRedirect:false},()=>{ this.props.createCable(jwt); Actions.vendorApp(); });
-            else this.setState({shouldRedirect:false},()=>{ this.props.createCable(jwt); Actions.app(); });
+            else this.setState({shouldRedirect:false},()=>{ this.props.createCable(jwt); (this.props.user.location_id)?Actions.app():Actions.selectLocation(); });
     };
 
     handleSubmit = () => {

@@ -14,6 +14,7 @@ import Order from '../containers/Order';
 import LoginForm from '../containers/LoginForm';
 import TabIcon from '../views/TabIcon';
 import Browse from './Browse';
+import SelectLocation from './SelectLocation';
 
 import VendorOrderList from './vendor/RestaurantOrderList';
 import VendorOrder from './vendor/RestaurantOrder';
@@ -50,6 +51,7 @@ export default class App extends Component {
         this.cable.subscriptions.remove(this.subscription)
     }
 
+    getCable = () => { return this.cable; };
     createCable = (jwt) => {
         this.cable = ActionCable.createConsumer("ws://localhost:8000/cable", jwt);
         this.subscription = this.cable.subscriptions.create({channel: "OrderChannel"}, {
@@ -77,6 +79,10 @@ export default class App extends Component {
                        component={LoginForm}
                        createCable={this.createCable}
                        key="login"/>
+                <Scene hideNavBar={true}
+                       component={SelectLocation}
+                       getCable={this.getCable}
+                       key="selectLocation"/>
                 <Scene key="app"
                        tabs={true}
                        tabBarStyle={s.mainTabs}>
