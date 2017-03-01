@@ -97,6 +97,13 @@ class SelectLocation extends Component {
                             this.state.locations.length!=0 &&
                             <Icon style={s.downIcon} name='angle-down' size={20} color={'#e16800'} /> }
                     </View>
+                    { this.state.query.length==0 &&
+                        <View style={s.noLocationLayout}>
+                            <MaterialIcon name={"my-location"} size={100} color={"#e16800"}/>
+                            <Text style={s.noLocationTopText}>Type a letter to get suggestions</Text>
+                            <Text style={s.noLocationBottomText}>Tell us where you work</Text>
+                        </View>
+                    }
                     { this.state.query.length>0 &&
                         this.state.locations.length==0 &&
                         !this.state.inProgress &&
