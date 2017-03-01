@@ -1,16 +1,19 @@
 import axios from 'axios';
 import store from '../../store';
 
-export function fetchOrders() {
-    const url = '/orders';
+export function fetchOrders(page) {
+    if(page == null) page=1;
+    const url = '/orders' + '?page=' + page;
     return (dispatch) => {
-        if(store.getState().order.inProgress.includes(0)) return;
-        dispatch({type: "FETCH_ORDER_IN_PROGRESS", id: 0});
+        if(store.getState().order.inProgress.includes(-page)) return;
+        dispatch({type: "FETCH_ORDER_IN_PROGRESS", id: -page});
         axios.get(url)
             .then((response) => {
-                dispatch({type: "FETCH_ORDERS_FULFILLED", id: 0});
+                let totalPages = parseInt(response.headers['pagination-total-pages']);
+                let totalCount = parseInt(response.headers['pagination-total-count']);
+                dispatch({type: "FETCH_ORDERS_FULFILLED", id: -page, totalPages: totalPages, totalCount: totalCount});
                 response.data.forEach(order => dispatch({type: "FETCH_ORDER_FULFILLED", payload: order, id: order.id})); })
-            .catch((error) => { dispatch({ type: "FETCH_ORDER_FAILED", payload: error, id: 0}); });
+            .catch((error) => { dispatch({ type: "FETCH_ORDER_FAILED", payload: error, id: -page}); });
     };
 }
 

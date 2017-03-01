@@ -5,7 +5,8 @@ import {
     TextInput,
     ListView,
     StyleSheet,
-    RefreshControl
+    RefreshControl,
+    TouchableOpacity
 } from 'react-native'
 
 import {connect} from 'react-redux';
@@ -22,7 +23,9 @@ import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
         restaurant: store.restaurant.restaurants[store.user.user.roles.filter(role=>role.resource_type=="Restaurant")[0].resource_id],
         restaurantOrders: Object.values(store.vendor.restaurantOrder.restaurantOrders).sort((a,b)=>new Date(b.ordered_at)-new Date(a.ordered_at)),
         inProgress: store.vendor.restaurantOrder.inProgress,
-        error: store.vendor.restaurantOrder.error
+        error: store.vendor.restaurantOrder.error,
+        lastPageFetched: store.vendor.restaurantOrder.lastPageFetched,
+        totalPages: store.vendor.restaurantOrder.totalPages
     };
 })
 
@@ -50,6 +53,25 @@ class RestaurantOrderList extends React.Component {
 
     updatePriceWidth = (width) => { this.state.priceWidth<width && this.setState({priceWidth: width}); };
     refreshOrders = () => { this.setState({refreshing: true, priceWidth: 0},()=>{this.props.dispatch(fetchRestaurantOrders());}); };
+    fetchMoreRestaurantOrders = () => { this.props.dispatch(fetchRestaurantOrders(this.props.lastPageFetched+1)) };
+
+    renderFooter = () => {
+        return (
+            <View>
+                {
+                    this.props.lastPageFetched &&
+                    this.props.totalPages &&
+                    this.props.lastPageFetched!==this.props.totalPages &&
+                    <TouchableOpacity
+                        onPress={this.fetchMoreRestaurantOrders}
+                        disabled={this.props.inProgress.some(id=>id<-1)}
+                        style={s.loadMoreWrapper}>
+                        <Text style={s.loadMoreText}>{this.props.inProgress.some(id=>id<0)?"Loading...":"Load more orders"}</Text>
+                    </TouchableOpacity>
+                }
+            </View>
+        )
+    };
 
     render() {
         return (
@@ -62,7 +84,7 @@ class RestaurantOrderList extends React.Component {
                     </View>
                     <View style={{width:60}}/>
                 </View>
-                { this.props.inProgress.length>0 && <Loading/> }
+                { this.props.inProgress.length>0 && !this.props.inProgress.some(id=>id<-1) && <Loading/> }
                 {
                     !this.props.inProgress.length>0 && this.props.restaurantOrders.length === 0 &&
                     <View style={s.noOrdersLayout}>
@@ -79,6 +101,7 @@ class RestaurantOrderList extends React.Component {
                                 refreshControl={<RefreshControl
                                     refreshing={this.state.refreshing}
                                     onRefresh={this.refreshOrders}/>}
+                              renderFooter={this.renderFooter}
                               renderRow={(restaurantOrder) => {
                                   return <RestaurantOrderMini
                                       priceWidth={this.state.priceWidth}
@@ -126,8 +149,15 @@ const s = StyleSheet.create({
         fontSize: 17,
         padding: 5
     },
-    scrollableArea: {
+    scrollableArea: { marginTop: 10},
+    loadMoreWrapper: {
+        alignItems: 'center',
         marginTop: 10
+    },
+    loadMoreText: {
+        padding: [10,20],
+        backgroundColor: '#EEE',
+        borderRadius: 5,
     }
 });
 

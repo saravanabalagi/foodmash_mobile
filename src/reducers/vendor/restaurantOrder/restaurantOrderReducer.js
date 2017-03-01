@@ -1,7 +1,10 @@
 export default (state = {
     restaurantOrders: {},
     inProgress: [],
-    error: {}
+    error: {},
+    totalCount: null,
+    totalPages: null,
+    lastPageFetched: null,
 }, action) => {
     switch(action.type) {
         case "FETCH_RESTAURANT_ORDER_IN_PROGRESS":
@@ -14,6 +17,9 @@ export default (state = {
                 error: {...state.error, [action.payload.id]: null}};
         case "FETCH_RESTAURANT_ORDERS_FULFILLED":
             return {...state,
+                totalPages: action.totalPages,
+                totalCount: action.totalCount,
+                lastPageFetched: -action.id,
                 inProgress: state.inProgress.filter(id => id!=action.id),
                 error: {...state.error, [action.id]: null}};
         case "FETCH_RESTAURANT_ORDER_FAILED":

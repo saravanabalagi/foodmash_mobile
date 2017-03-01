@@ -1,16 +1,19 @@
 import axios from 'axios';
 import store from '../../../store';
 
-export function fetchRestaurantOrders() {
-    const url = '/vendor/restaurant_orders';
+export function fetchRestaurantOrders(page) {
+    if(page == null) page=1;
+    const url = '/vendor/restaurant_orders' + '?page=' + page;
     return (dispatch) => {
-        if(store.getState().vendor.restaurantOrder.inProgress.includes(0)) return;
-        dispatch({type: "FETCH_RESTAURANT_ORDER_IN_PROGRESS", id: 0});
+        if(store.getState().vendor.restaurantOrder.inProgress.includes(-page)) return;
+        dispatch({type: "FETCH_RESTAURANT_ORDER_IN_PROGRESS", id: -page});
         axios.get(url)
             .then((response) => {
-                dispatch({type: "FETCH_RESTAURANT_ORDERS_FULFILLED", id: 0});
+                let totalPages = parseInt(response.headers['pagination-total-pages']);
+                let totalCount = parseInt(response.headers['pagination-total-count']);
+                dispatch({type: "FETCH_RESTAURANT_ORDERS_FULFILLED", id: -page, totalPages: totalPages, totalCount: totalCount});
                 response.data.forEach(restaurantOrder => dispatch({type: "FETCH_RESTAURANT_ORDER_FULFILLED", payload: restaurantOrder, id: restaurantOrder.id})); })
-            .catch((error) => { dispatch({ type: "FETCH_RESTAURANT_ORDER_FAILED", payload: error, id: 0}); });
+            .catch((error) => { dispatch({ type: "FETCH_RESTAURANT_ORDER_FAILED", payload: error, id: -page}); });
     };
 }
 
