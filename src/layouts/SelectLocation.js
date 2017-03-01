@@ -86,6 +86,9 @@ class SelectLocation extends Component {
                     <View style={s.locationInputWrapper}>
                         <MaterialIcon style={s.locationIcon} name='business' size={30} color={'#e16800'} />
                         <TextInput
+                            returnKeyType={"search"}
+                            autoCorrect={false}
+                            autoFocus={true}
                             underlineColorAndroid={"#e16800"}
                             style={s.locationInput}
                             onChangeText={this.handleChangeSearchQuery}
