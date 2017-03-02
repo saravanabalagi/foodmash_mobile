@@ -12,6 +12,7 @@ import Cart from './Cart';
 import Checkout from './Checkout';
 import Order from '../containers/Order';
 import LoginForm from '../containers/LoginForm';
+import Signup from './Signup';
 import TabIcon from '../views/TabIcon';
 import Browse from './Browse';
 import SelectLocation from './SelectLocation';
@@ -53,6 +54,8 @@ export default class App extends Component {
 
     getCable = () => { return this.cable; };
     createCable = (jwt) => {
+        if(this.cable && this.cable.jwt == jwt) return;
+        console.log("Cable: ", this.cable, jwt);
         this.cable = ActionCable.createConsumer("ws://localhost:8000/cable", jwt);
         this.subscription = this.cable.subscriptions.create({channel: "OrderChannel"}, {
                 connected: function() { console.log("cable: connected") },
@@ -79,6 +82,10 @@ export default class App extends Component {
                        component={LoginForm}
                        createCable={this.createCable}
                        key="login"/>
+                <Scene hideNavBar={true}
+                       component={Signup}
+                       createCable={this.createCable}
+                       key="signup"/>
                 <Scene hideNavBar={true}
                        component={SelectLocation}
                        getCable={this.getCable}
