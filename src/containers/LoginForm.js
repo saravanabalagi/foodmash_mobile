@@ -36,7 +36,8 @@ class LoginForm extends React.Component {
             shouldRedirect: false,
             email: "",
             password: "",
-            secureText: true
+            secureText: true,
+            facebookLoading: ""
         };
     }
 
@@ -54,13 +55,20 @@ class LoginForm extends React.Component {
             else this.setState({shouldRedirect:false},()=>{ this.props.createCable(jwt); (this.props.user.location_id)?Actions.app():Actions.selectLocation(); });
     };
 
-    handleReceivedAccessToken = (access_token, provider) => { this.props.dispatch(sendOauthToken(access_token, provider)); };
-    handleFacebookLogin = () => {
-        this.setState({shouldRedirect:true},
-            ()=>LoginManager.logInWithReadPermissions(['public_profile']).then(result => {
-                if(!result.isCancelled) AccessToken.getCurrentAccessToken().then((data)=>this.handleReceivedAccessToken(data.accessToken,"facebook"))
-            },(error)=>(alert(error.toString()),console.log(error))));
+    isInternetError = (error) => {
+        let errorString = error.toString().replace(/_/g, " ").replace(/([a-z])([A-Z])/g, '$1 $2').replace(/\b([A-Z]+)([A-Z])([a-z])/, '$1 $2$3').toLowerCase();
+        let compareString = ["resolve host","connection exception","connection failure","connection error","unknown host"];
+        return compareString.some(compareString=>errorString.includes(compareString.toLowerCase()));
     };
+    handleReceivedAccessToken = (access_token, provider) => { this.setState({facebookLoading:"Logging in"},()=>this.props.dispatch(sendOauthToken(access_token, provider))); };
+    handleFacebookLogin = () => {
+        this.setState({facebookLoading:"Requesting",shouldRedirect:true},
+            ()=>LoginManager.logInWithReadPermissions(['public_profile','email']).then(result => {
+                if(result.isCancelled) this.setState({facebookLoading:"Cancelled",shouldRedirect:false});
+                if(!result.isCancelled) this.setState({facebookLoading:"Loading"}, ()=>AccessToken.getCurrentAccessToken().then((data)=>this.handleReceivedAccessToken(data.accessToken,"facebook")));
+            },(error)=>{console.log(error); this.setState({facebookLoading:(this.isInternetError(error))?"No Internet":"Error",shouldRedirect:false}); }));
+    };
+
 
     handleSubmit = () => {
         this.setState({shouldRedirect: true},
@@ -144,9 +152,13 @@ class LoginForm extends React.Component {
                         <View style={s.line} />
                     </View>
                     <View style={s.oauthWrapper}>
-                        <TouchableOpacity onPress={()=>this.handleFacebookLogin()}>
-                            <Icon name='facebook-square' size={70} color={'#3b5998'} />
-                        </TouchableOpacity>
+                        <View style={s.oauthInstanceWrapper}>
+                            <TouchableOpacity onPress={()=>this.handleFacebookLogin()}>
+                                <Icon name='facebook-square' size={70} color={'#3b5998'} />
+                            </TouchableOpacity>
+                            { !!this.state.facebookLoading && <Text style={s.oauthLoading}>{ this.state.facebookLoading }</Text> }
+                        </View>
+
                     </View>
                 </View>
                 { this.props.jwt != null && !this.props.inProgress && <Text> {this.props.jwt} </Text> }
@@ -191,12 +203,12 @@ const s = StyleSheet.create({
     inputFields: { flex: 1},
     inputIcon: { width: 40},
 
-    //TODO: remove after debugginh
+    //TODO: remove after debugging
     setButton: { backgroundColor: '#5fc8ee',},
 
     button: {
-        margin: 10,
-        padding: [10,20],
+        margin: 5,
+        padding: [10,15],
         backgroundColor: '#e16800',
         borderRadius: 5
     },
@@ -214,7 +226,17 @@ const s = StyleSheet.create({
         marginTop: 5
     },
     loginUsingText: { fontSize: 15 },
-    oauthWrapper: { alignItems: 'center' }
+    oauthWrapper: { flexDirection:'row', justifyContent: 'center' },
+    oauthInstanceWrapper: { alignItems: 'center' },
+    oauthLoading: {
+        margin: 5,
+        padding: [5,10],
+        fontSize: 10,
+        borderRadius: 5,
+        borderColor: '#EEE',
+        borderWidth: 1,
+        backgroundColor: '#F6F6F6'
+    }
 });
 
 export default LoginForm;
