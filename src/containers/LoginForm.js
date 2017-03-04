@@ -3,6 +3,7 @@ import {
     Text,
     View,
     TextInput,
+    Keyboard,
     TouchableHighlight,
     TouchableOpacity,
     StyleSheet
@@ -14,9 +15,12 @@ import {connect} from 'react-redux';
 import {fetchJwt, sendOauthToken} from '../reducers/session/sessionActions';
 import {fetchUser} from '../reducers/user/userActions';
 
+import {getErrorDisplayString} from '../helpers/errorHelper';
 import {ActionConst, Actions} from 'react-native-router-flux';
+
 import Icon from 'react-native-vector-icons/FontAwesome';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
+import SnackBar from 'react-native-snackbar-dialog';
 
 @connect((store) => {
     return {
@@ -46,6 +50,14 @@ class LoginForm extends React.Component {
         if(nextProps.jwt!=null && this.props.jwt!=nextProps.jwt) this.props.dispatch(fetchUser());
         if(this.state.shouldRedirect && this.props.user != nextProps.user) this.checkAndRedirect(nextProps.jwt, nextProps.user);
         if(this.state.shouldRedirect && nextProps.oauthDetails!=null && nextProps.oauthDetails!=this.props.oauthDetails && nextProps.jwt==null) this.setState({shouldRedirect:false},()=>Actions.signup());
+        if(this.props.error!=nextProps.error && nextProps!=null) SnackBar.show(this.getErrorString(nextProps.error), { confirmText:"Dismiss", onConfirm: ()=>SnackBar.dismiss()});
+    };
+
+    getErrorString = (error) => {
+        if(error.response && error.response.status)
+            if(parseInt(error.response.status)==404)
+                return "Invalid email or password";
+        else return getErrorString(error);
     };
 
     checkAndRedirect = (jwt, user) => {
@@ -71,6 +83,7 @@ class LoginForm extends React.Component {
 
 
     handleSubmit = () => {
+        Keyboard.dismiss();
         this.setState({shouldRedirect: true},
             ()=>{ this.props.dispatch(fetchJwt({
                     email: this.state.email,
@@ -161,8 +174,6 @@ class LoginForm extends React.Component {
 
                     </View>
                 </View>
-                { this.props.jwt != null && !this.props.inProgress && <Text> {this.props.jwt} </Text> }
-                { this.props.error != null && !this.props.inProgress && <Text> {this.props.error.toString()} </Text> }
             </View>
         );
 
