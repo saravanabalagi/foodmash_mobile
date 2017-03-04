@@ -21,7 +21,7 @@ import VendorOrderList from './vendor/RestaurantOrderList';
 import VendorOrder from './vendor/RestaurantOrder';
 import VendorAccount from './vendor/Account';
 
-import ActionCable from 'react-native-actioncable';
+import ActionCable from 'action-cable-react-jwt';
 import Sound from 'react-native-sound';
 
 import {connect} from 'react-redux';
