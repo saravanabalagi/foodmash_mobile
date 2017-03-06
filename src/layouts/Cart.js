@@ -17,6 +17,8 @@ import {getTotal, getTotalItems, submitCart} from '../reducers/cart/cartActions'
 import {fetchRestaurant} from '../reducers/restaurant/restaurantActions';
 
 import CartItem from '../containers/CartItem';
+import {getErrorDisplayString} from '../helpers/errorHelper';
+import SnackBar from 'react-native-snackbar-dialog';
 
 @connect((store) => {
     return {
@@ -63,6 +65,11 @@ export default class Cart extends Component {
             });
             this.setState({dataSource: this.ds.cloneWithRowsAndSections(dataBlob, restaurantIds, Object.values(orderItemsForRestaurant))});
         }
+
+        if(this.props.error!=nextProps.error && nextProps.error!=null)
+            SnackBar.show(getErrorDisplayString(nextProps.error),
+                { confirmText:"Dismiss", onConfirm: ()=>SnackBar.dismiss()});
+
     };
 
     handleAddToCart = (orderItem, restaurantId) => { this.props.dispatch(plusOneDishVariantToCart(orderItem, restaurantId)); };
@@ -82,8 +89,8 @@ export default class Cart extends Component {
                     Object.values(this.props.restaurantOrders).length===0 &&
                     <View style={s.noItemsInCart}>
                         <Icon name={"frown-o"} size={100} color={"#e16800"}/>
-                        <Text style={s.cartIsEmpty}>Your cart is empty</Text>
-                        <Text style={s.shouldntBe}>but it shouldn't be</Text>
+                        <Text style={s.cartIsEmpty}>{"Your cart is empty"}</Text>
+                        <Text style={s.shouldntBe}>{"but it shouldn't be"}</Text>
                     </View>
                 }
                 {
@@ -126,7 +133,6 @@ export default class Cart extends Component {
                         </View>
                     </TouchableOpacity>
                 }
-                { this.props.error != null && !this.props.inProgress && <Text> {this.props.error.toString()} </Text> }
             </View>
         );
     }

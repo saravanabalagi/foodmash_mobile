@@ -28,6 +28,9 @@ import {connect} from 'react-redux';
 import {updateOrder} from '../reducers/order/orderActions';
 import {updateRestaurantOrder} from '../reducers/vendor/restaurantOrder/restaurantOrderActions';
 
+import {getErrorDisplayString} from '../helpers/errorHelper';
+import SnackBar from 'react-native-snackbar-dialog';
+
 const reducerCreate = (params) => {
     const defaultReducer = Reducer(params);
     return (state, action)=> {
@@ -55,13 +58,11 @@ export default class App extends Component {
     getCable = () => { return this.cable; };
     createCable = (jwt) => {
         if(this.cable && this.cable.jwt == jwt) return;
-        console.log("Cable: ", this.cable, jwt);
         this.cable = ActionCable.createConsumer("ws://localhost:8000/cable", jwt);
         this.subscription = this.cable.subscriptions.create({channel: "OrderChannel"}, {
-                connected: function() { console.log("cable: connected") },
-                disconnected: function() { console.log("cable: disconnected") },
+                connected: ()=> { console.log("cable: connected") },
+                disconnected: ()=> { console.loeg("cable: disconnected"); SnackBar.show("Disconnected", { confirmText:"Dismiss", onConfirm: ()=>SnackBar.dismiss()}); },
                 received: (data) => {
-                    console.log("cable: ", data);
                     if(data.hasOwnProperty("order")) {
                         this.props.dispatch(updateOrder(data.order));
                         this.orderUpdateSound.play();

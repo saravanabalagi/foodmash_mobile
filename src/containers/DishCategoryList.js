@@ -14,6 +14,8 @@ import ScrollableTabView from 'react-native-scrollable-tab-view';
 import DishList from '../containers/DishList';
 import {fetchDishCategories} from '../reducers/dishCategory/dishCategoryActions';
 
+import {getErrorDisplayString} from '../helpers/errorHelper';
+import SnackBar from 'react-native-snackbar-dialog';
 
 @connect((store) => {
     return {
@@ -33,6 +35,12 @@ class DishCategoryList extends React.Component {
     }
 
     componentWillMount = () => { this.props.dispatch(fetchDishCategories()); };
+    componentWillReceiveProps = (nextProps) => {
+        if(this.props.error!=nextProps.error && Object.values(nextProps.error).length>0)
+            Object.values(nextProps.error).reduce((errors,error)=>
+                error!=null&&errors.includes(getErrorDisplayString(error))?(errors.push(getErrorDisplayString(error)),errors):errors,[])
+                .forEach(errorString=> SnackBar.add(errorString,{ confirmText:"Dismiss", onConfirm: ()=>SnackBar.dismiss()}));
+    };
 
     render() {
         return (

@@ -43,7 +43,6 @@ export default class UserDetails extends Component {
                         <Text style={s.mobile} numberOfLines={1}>+91 {this.props.mobile?(this.props.mobile.substring(0,5) + " " + this.props.mobile.substring(5)):"99999 99999"} </Text>
                     </View>
                 </View>
-                { this.props.error != null && !this.props.inProgress && <Text> {this.props.error.toString()} </Text> }
             </View>
         );
     }

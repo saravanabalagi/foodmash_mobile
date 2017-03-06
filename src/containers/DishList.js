@@ -15,6 +15,9 @@ import {connect} from 'react-redux';
 import {fetchDish} from '../reducers/dish/dishActions';
 import {fetchRestaurant} from '../reducers/restaurant/restaurantActions';
 
+import {getErrorDisplayString} from '../helpers/errorHelper';
+import SnackBar from 'react-native-snackbar-dialog';
+
 @connect((store, props) => {
     return {
         dishes: store.dish.dishes,
@@ -61,6 +64,12 @@ class DishList extends React.Component {
                 this.setState({ dataSource: this.ds.cloneWithRowsAndSections(dataBlob, restaurantIds, Object.values(dishesForRestaurant))});
             }
         }
+
+        if(this.props.error!=nextProps.error && Object.values(nextProps.error).length>0)
+            Object.values(nextProps.error).reduce((errors,error)=>
+                error!=null&&errors.includes(getErrorDisplayString(error))?(errors.push(getErrorDisplayString(error)),errors):errors,[])
+                .forEach(errorString=> SnackBar.add(errorString,{ confirmText:"Dismiss", onConfirm: ()=>SnackBar.dismiss()}));
+
     };
 
     toggleSelectDish = (dish) => { if(this.state.selectedDish!=dish) this.setState({selectedDish: dish}); else this.setState({selectedDish:null}); };
@@ -78,7 +87,6 @@ class DishList extends React.Component {
                                          selected={dish==this.state.selectedDish}/>
                           }}>
                 </ListView>
-                { this.props.error != null && !this.props.inProgress && <Text> {this.props.error.toString()} </Text> }
             </View>
         );
 

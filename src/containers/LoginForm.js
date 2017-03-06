@@ -50,7 +50,9 @@ class LoginForm extends React.Component {
         if(nextProps.jwt!=null && this.props.jwt!=nextProps.jwt) this.props.dispatch(fetchUser());
         if(this.state.shouldRedirect && this.props.user != nextProps.user) this.checkAndRedirect(nextProps.jwt, nextProps.user);
         if(this.state.shouldRedirect && nextProps.oauthDetails!=null && nextProps.oauthDetails!=this.props.oauthDetails && nextProps.jwt==null) this.setState({shouldRedirect:false},()=>Actions.signup());
-        if(this.props.error!=nextProps.error && nextProps!=null) SnackBar.show(this.getErrorString(nextProps.error), { confirmText:"Dismiss", onConfirm: ()=>SnackBar.dismiss()});
+        if(this.props.error!=nextProps.error && nextProps.error!=null)
+            SnackBar.show(this.getErrorString(nextProps.error),
+                { confirmText:"Dismiss", onConfirm: ()=>SnackBar.dismiss()});
     };
 
     getErrorString = (error) => {

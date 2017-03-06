@@ -19,9 +19,13 @@ import {fetchPaymentMethod} from '../reducers/paymentMethod/paymentMethodActions
 import {fetchOrderStatus} from '../reducers/orderStatus/orderStatusActions';
 import {fetchRestaurant} from '../reducers/restaurant/restaurantActions';
 
+import {getErrorDisplayString} from '../helpers/errorHelper';
+import SnackBar from 'react-native-snackbar-dialog';
+
 @connect((store,props) => {
     return {
         order: store.order.orders[props.orderId],
+        error: store.order.error[props.orderId],
         inProgress: store.order.inProgress,
         orderStatuses: store.orderStatus.orderStatuses,
         paymentMethods: store.paymentMethod.paymentMethods,
@@ -64,6 +68,11 @@ class Order extends React.Component {
                 this.props.dispatch(fetchRestaurant(restaurantOrder.restaurant_id));
                 this.props.dispatch(fetchOrderStatus(restaurantOrder.order_status_id));
             });
+
+        if(this.props.error!=nextProps.error && nextProps.error!=null)
+            SnackBar.show(getErrorDisplayString(nextProps.error),
+                { confirmText:"Dismiss", onConfirm: ()=>SnackBar.dismiss()});
+
     };
 
     getOrderStatus = () => { return this.props.order?this.props.orderStatuses[this.props.order.order_status_id]:null };

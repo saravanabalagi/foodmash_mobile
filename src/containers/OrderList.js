@@ -15,6 +15,9 @@ import OrderMini from './OrderMini';
 import Loading from '../views/Loading';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
+import {getErrorDisplayString} from '../helpers/errorHelper';
+import SnackBar from 'react-native-snackbar-dialog';
+
 @connect((store) => {
     return {
         orders: Object.values(store.order.orders).sort((a,b)=>new Date(b.ordered_at)-new Date(a.ordered_at)),
@@ -44,6 +47,10 @@ class OrderList extends React.Component {
             && this.props.inProgress
             && nextProps.inProgress == false)
             this.setState({refreshing: false});
+        if(this.props.error!=nextProps.error && Object.values(nextProps.error).length>0)
+            Object.values(nextProps.error).reduce((errors,error)=>
+                error!=null&&errors.includes(getErrorDisplayString(error))?(errors.push(getErrorDisplayString(error)),errors):errors,[])
+                .forEach(errorString=> SnackBar.add(errorString,{ confirmText:"Dismiss", onConfirm: ()=>SnackBar.dismiss()}));
     };
 
     refreshOrders = () => { this.setState({refreshing: true, priceWidth: 0},()=>{this.props.dispatch(fetchOrders());}); };
@@ -75,8 +82,8 @@ class OrderList extends React.Component {
                     !this.props.inProgress.length>0 && this.props.orders.length === 0 &&
                     <View style={s.noOrdersLayout}>
                         <Icon name={"exclamation-triangle"} size={100} color={"#e16800"}/>
-                        <Text style={s.ordersEmpty}>You haven't ordered yet</Text>
-                        <Text style={s.getReady}>Get ready to eat now</Text>
+                        <Text style={s.ordersEmpty}>{"You haven't ordered yet"}</Text>
+                        <Text style={s.getReady}>{"Get ready to eat now"}</Text>
                     </View>
                 }
                 {
@@ -97,7 +104,6 @@ class OrderList extends React.Component {
                               }}>
                     </ListView>
                 }
-                { this.props.error != null && !this.props.inProgress && <Text> {this.props.error.toString()} </Text> }
             </View>
         );
 

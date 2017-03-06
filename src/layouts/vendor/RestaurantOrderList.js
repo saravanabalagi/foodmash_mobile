@@ -13,9 +13,13 @@ import {connect} from 'react-redux';
 import {fetchRestaurant} from '../../reducers/restaurant/restaurantActions';
 import {fetchRestaurantOrders} from '../../reducers/vendor/restaurantOrder/restaurantOrderActions';
 import RestaurantOrderMini from '../../containers/vendor/RestaurantOrderMini';
+
 import Loading from '../../views/Loading';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
+
+import {getErrorDisplayString} from '../../helpers/errorHelper';
+import SnackBar from 'react-native-snackbar-dialog';
 
 @connect((store) => {
     return {
@@ -49,6 +53,10 @@ class RestaurantOrderList extends React.Component {
             && this.props.inProgress
             && nextProps.inProgress == false)
             this.setState({refreshing: false});
+        if(this.props.error!=nextProps.error && Object.values(nextProps.error).length>0)
+            Object.values(nextProps.error).reduce((errors,error)=>
+                error!=null&&errors.includes(getErrorDisplayString(error))?(errors.push(getErrorDisplayString(error)),errors):errors,[])
+                .forEach(errorString=> SnackBar.add(errorString,{ confirmText:"Dismiss", onConfirm: ()=>SnackBar.dismiss()}));
     };
 
     updatePriceWidth = (width) => { this.state.priceWidth<width && this.setState({priceWidth: width}); };
@@ -89,8 +97,8 @@ class RestaurantOrderList extends React.Component {
                     !this.props.inProgress.length>0 && this.props.restaurantOrders.length === 0 &&
                     <View style={s.noOrdersLayout}>
                         <Icon name={"exclamation-triangle"} size={100} color={"#e16800"}/>
-                        <Text style={s.ordersEmpty}>You haven't ordered yet</Text>
-                        <Text style={s.getReady}>Get ready to eat now</Text>
+                        <Text style={s.ordersEmpty}>{"You haven't ordered yet"}</Text>
+                        <Text style={s.getReady}>{"Get ready to eat now"}</Text>
                     </View>
                 }
                 {
@@ -111,7 +119,6 @@ class RestaurantOrderList extends React.Component {
                               }}>
                     </ListView>
                 }
-                { this.props.error != null && !this.props.inProgress && <Text> {this.props.error.toString()} </Text> }
             </View>
         );
 

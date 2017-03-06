@@ -19,6 +19,9 @@ import Loading from '../views/Loading';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 
+import {getErrorDisplayString} from '../helpers/errorHelper';
+import SnackBar from 'react-native-snackbar-dialog';
+
 @connect((store) => {
     return {
         values: store.cart.values,
@@ -28,7 +31,8 @@ import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
         user: store.user.user,
         location_id: store.user.user.location_id,
         locations: store.location.locations,
-        cities: store.city.cities
+        cities: store.city.cities,
+        error: store.cart.error
     }
 })
 
@@ -51,6 +55,11 @@ export default class Checkout extends Component {
         let location = nextProps.location_id? nextProps.locations[nextProps.location_id]:null;
         let city = location? nextProps.cities[location.city_id]:null;
         if(location && city==null) this.props.dispatch(fetchCity(location.city_id));
+
+        if(this.props.error!=nextProps.error && nextProps.error!=null)
+            SnackBar.show(getErrorDisplayString(nextProps.error),
+                { confirmText:"Dismiss", onConfirm: ()=>SnackBar.dismiss()});
+
     };
 
     getLocation = () => { return (this.props.location_id)?this.props.locations[this.props.location_id]:null };

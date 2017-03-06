@@ -19,13 +19,17 @@ import Loading from '../views/Loading';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 
+import {getErrorDisplayString} from '../helpers/errorHelper';
+import SnackBar from 'react-native-snackbar-dialog';
+
 @connect((store) => {
     return {
         jwt: store.session.jwt,
         user: store.user.user,
         name: store.session.oauthDetails?store.session.oauthDetails.name:null,
         email: store.session.oauthDetails?store.session.oauthDetails.email:null,
-        inProgress: store.session.inProgress
+        inProgress: store.session.inProgress,
+        error: store.session.error
     }
 })
 
@@ -53,6 +57,9 @@ export default class Signup extends Component {
                 this.setState({shouldRedirect:false},()=>{ nextProps.createCable(nextProps.jwt); Actions.vendorApp(); });
             else this.setState({shouldRedirect:false},()=>{ nextProps.createCable(nextProps.jwt); (nextProps.user.location_id)?Actions.app():Actions.selectLocation(); });
 
+        if(this.props.error!=nextProps.error && nextProps.error!=null)
+            SnackBar.show(getErrorDisplayString(nextProps.error),
+                { confirmText:"Dismiss", onConfirm: ()=>SnackBar.dismiss()});
     };
 
     handleSubmit = () => {

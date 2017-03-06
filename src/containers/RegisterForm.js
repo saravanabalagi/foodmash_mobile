@@ -12,6 +12,9 @@ import {signupUser} from '../reducers/session/sessionActions';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
 
+import {getErrorDisplayString} from '../helpers/errorHelper';
+import SnackBar from 'react-native-snackbar-dialog';
+
 @connect((store) => {
     return {
         accessToken: store.session.oauth,
@@ -31,6 +34,12 @@ class RegisterForm extends React.Component {
             password: ''
         };
     }
+
+    componentWillReceiveProps = (nextProps) => {
+        if(this.props.error!=nextProps.error && nextProps.error!=null)
+            SnackBar.show(getErrorDisplayString(nextProps.error),
+                { confirmText:"Dismiss", onConfirm: ()=>SnackBar.dismiss()});
+    };
 
     handleSubmit = () => {
         this.props.dispatch(signupUser({
@@ -94,9 +103,6 @@ class RegisterForm extends React.Component {
                 <View style={}>
                     <Icon name='facebook-square' size={45} color={'blue'} />
                 </View>
-
-                { this.props.jwt != null && !this.props.inProgress && <Text> {this.props.jwt} </Text> }
-                { this.props.error != null && !this.props.inProgress && <Text> {this.props.error.toString()} </Text> }
             </View>
         );
 
